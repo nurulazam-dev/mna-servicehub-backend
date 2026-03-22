@@ -1,0 +1,13 @@
+model JobApplication {
+    id        String               @id @default(uuid())
+    userId    String
+    user      User                 @relation(fields: [userId], references: [id])
+    jobPostId String
+    jobPost   JobPost              @relation(fields: [jobPostId], references: [id])
+    cvUrl     String
+    status    JobApplicationStatus @default(PENDING)
+    feedback  String?
+    createdAt DateTime             @default(now())
+
+    @@unique([userId, jobPostId])
+}
