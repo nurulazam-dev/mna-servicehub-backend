@@ -1,7 +1,7 @@
 model CostBreakdown {
     id             String         @id @default(uuid())
     requestId      String         @unique
-    serviceRequest ServiceRequest @relation(fields: [requestId], references: [id])
+    serviceRequest ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
     serviceCharge  Decimal        @default(0)
     productCost    Decimal        @default(0)
     additionalCost Decimal        @default(0)

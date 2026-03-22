@@ -1,7 +1,7 @@
 model ServiceSchedule {
     id             String          @id @default(uuid())
     providerId     String
-    provider       ServiceProvider @relation(fields: [providerId], references: [id])
+    provider       ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
     scheduleDate   DateTime
     isBooked       Boolean         @default(false)
     serviceRequest ServiceRequest?

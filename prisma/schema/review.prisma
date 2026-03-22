@@ -1,11 +1,11 @@
 model Review {
     id              String          @id @default(uuid())
     requestId       String          @unique
-    serviceRequest  ServiceRequest  @relation(fields: [requestId], references: [id])
+    serviceRequest  ServiceRequest  @relation(fields: [requestId], references: [id], onDelete: Cascade)
     providerId      String
-    serviceProvider ServiceProvider @relation(fields: [providerId], references: [id])
+    serviceProvider ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
     customerId      String
-    customer        User            @relation("CustomerReviews", fields: [customerId], references: [id])
+    customer        User            @relation("CustomerReviews", fields: [customerId], references: [id], onDelete: Cascade)
     rating          Int
     comment         String?
     createdAt       DateTime        @default(now())

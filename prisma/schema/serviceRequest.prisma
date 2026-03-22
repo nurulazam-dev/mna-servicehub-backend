@@ -1,11 +1,11 @@
 model ServiceRequest {
     id              String               @id @default(uuid())
     customerId      String
-    customer        User                 @relation("CustomerServiceRequests", fields: [customerId], references: [id])
+    customer        User                 @relation("CustomerServiceRequests", fields: [customerId], references: [id], onDelete: Cascade)
     providerId      String?
-    provider        ServiceProvider?     @relation("ServiceProviderJobs", fields: [providerId], references: [id])
+    provider        ServiceProvider?     @relation("ServiceProviderJobs", fields: [providerId], references: [id], onDelete: Cascade)
     scheduleId      String?              @unique
-    schedule        ServiceSchedule?     @relation(fields: [scheduleId], references: [id])
+    schedule        ServiceSchedule?     @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
     status          ServiceRequestStatus @default(PENDING)
     rejectionReason String?
     createdAt       DateTime             @default(now())
