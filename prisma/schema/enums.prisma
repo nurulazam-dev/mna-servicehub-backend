@@ -1,0 +1,21 @@
+enum UserRole {
+    ADMIN
+    MANAGER
+    SERVICE_PROVIDER
+    CUSTOMER
+    JOB_CANDIDATE
+}
+
+enum ServiceRequestStatus {
+    PENDING
+    ACCEPTED
+    IN_PROGRESS
+    COMPLETED
+    REJECTED
+}
+
+enum JobApplicationStatus {
+    PENDING
+    ACCEPTED
+    REJECTED
+}
