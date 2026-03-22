@@ -1,0 +1,8 @@
+model Payment {
+    id              String         @id @default(uuid())
+    requestId       String         @unique
+    serviceRequest  ServiceRequest @relation(fields: [requestId], references: [id])
+    stripePaymentId String         @unique
+    amount          Decimal
+    paidAt          DateTime       @default(now())
+}
