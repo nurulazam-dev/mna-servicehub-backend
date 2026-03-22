@@ -13,4 +13,5 @@ model Review {
     @@index([requestId])
     @@index([providerId])
     @@index([customerId])
+    @@map("reviews")
 }

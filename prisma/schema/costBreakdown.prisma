@@ -6,4 +6,6 @@ model CostBreakdown {
     productCost    Decimal        @default(0)
     additionalCost Decimal        @default(0)
     totalAmount    Decimal        @default(0)
+
+    @@map("cost_breakdowns")
 }

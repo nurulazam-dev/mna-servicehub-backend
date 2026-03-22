@@ -14,5 +14,6 @@ model JobPost {
     applications JobApplication[]
 
     @@index([serviceType])
+    @@index([isActive])
     @@map("job_posts")
 }

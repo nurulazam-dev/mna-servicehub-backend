@@ -13,4 +13,9 @@ model ServiceRequest {
     costBreakdown   CostBreakdown?
     payment         Payment?
     review          Review?
+
+    @@index([customerId])
+    @@index([providerId])
+    @@index([status])
+    @@map("service_requests")
 }

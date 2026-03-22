@@ -7,4 +7,5 @@ model ServiceSchedule {
     serviceRequest ServiceRequest?
 
     @@index([providerId, scheduleDate])
+    @@map("service_schedules")
 }

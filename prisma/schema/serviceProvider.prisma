@@ -11,4 +11,7 @@ model ServiceProvider {
     schedules     ServiceSchedule[]
     assignedJobs  ServiceRequest[]  @relation("ServiceProviderJobs")
     reviews       Review[]
+
+    @@index([serviceType])
+    @@map("service_providers")
 }

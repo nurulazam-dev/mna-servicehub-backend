@@ -10,4 +10,7 @@ model JobApplication {
     createdAt DateTime             @default(now())
 
     @@unique([userId, jobPostId])
+    @@index([jobPostId])
+    @@index([status])
+    @@map("job_applications")
 }
