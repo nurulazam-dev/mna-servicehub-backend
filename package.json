@@ -1,13 +1,24 @@
 {
-  "name": "backend",
+  "name": "mna-service-hub-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "tsx watch src/server.ts",
+    "lint": "eslint ./src/**/*",
+    "migrate": "prisma migrate dev",
+    "generate": "prisma generate",
+    "studio": "prisma studio",
+    "push": "prisma db push",
+    "pull": "prisma db pull",
+    "stripe:webhook": "stripe listen --forward-to localhost:5000/webhook",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "type": "module",
   "keywords": [],
-  "author": "",
+  "author": "nurulazam-dev",
   "license": "ISC",
   "packageManager": "pnpm@10.30.2",
   "dependencies": {
