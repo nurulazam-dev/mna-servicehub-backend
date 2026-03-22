@@ -1,0 +1,18 @@
+model JobPost {
+    id           String           @id @default(uuid())
+    title        String
+    description  String           @db.Text
+    requirements String           @db.Text
+    location     String?          @default("Remote")
+    serviceType  String
+    vacancy      Int              @default(1)
+    salaryRange  String?
+    deadline     DateTime
+    isActive     Boolean          @default(true)
+    createdAt    DateTime         @default(now())
+    updatedAt    DateTime         @updatedAt
+    applications JobApplication[]
+
+    @@index([serviceType])
+    @@map("job_posts")
+}
