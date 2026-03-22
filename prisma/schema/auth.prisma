@@ -17,6 +17,7 @@ model User {
   serviceProvider    ServiceProvider?
   serviceRequests    ServiceRequest[] @relation("CustomerServiceRequests")
   jobApplications    JobApplication[]
+  reviews            Review[]         @relation("CustomerReviews")
 
   @@unique([email])
   @@map("user")
