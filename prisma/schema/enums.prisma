@@ -6,6 +6,12 @@ enum UserRole {
     JOB_CANDIDATE
 }
 
+enum UserStatus {
+    ACTIVE
+    BLOCKED
+    DELETED
+}
+
 enum ServiceRequestStatus {
     PENDING
     ACCEPTED
