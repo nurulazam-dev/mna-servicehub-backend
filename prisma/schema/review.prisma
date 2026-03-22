@@ -1,0 +1,16 @@
+model Review {
+    id              String          @id @default(uuid())
+    requestId       String          @unique
+    serviceRequest  ServiceRequest  @relation(fields: [requestId], references: [id])
+    providerId      String
+    serviceProvider ServiceProvider @relation(fields: [providerId], references: [id])
+    customerId      String
+    customer        User            @relation("CustomerReviews", fields: [customerId], references: [id])
+    rating          Int
+    comment         String?
+    createdAt       DateTime        @default(now())
+
+    @@index([requestId])
+    @@index([providerId])
+    @@index([customerId])
+}
