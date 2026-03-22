@@ -1,0 +1,10 @@
+model ServiceSchedule {
+    id             String          @id @default(uuid())
+    providerId     String
+    provider       ServiceProvider @relation(fields: [providerId], references: [id])
+    scheduleDate   DateTime
+    isBooked       Boolean         @default(false)
+    serviceRequest ServiceRequest?
+
+    @@index([providerId, scheduleDate])
+}
