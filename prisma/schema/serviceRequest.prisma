@@ -1,0 +1,16 @@
+model ServiceRequest {
+    id              String               @id @default(uuid())
+    customerId      String
+    customer        User                 @relation("CustomerServiceRequests", fields: [customerId], references: [id])
+    providerId      String?
+    provider        ServiceProvider?     @relation("ServiceProviderJobs", fields: [providerId], references: [id])
+    scheduleId      String?              @unique
+    schedule        ServiceSchedule?     @relation(fields: [scheduleId], references: [id])
+    status          ServiceRequestStatus @default(PENDING)
+    rejectionReason String?
+    createdAt       DateTime             @default(now())
+    updatedAt       DateTime             @updatedAt
+    costBreakdown   CostBreakdown?
+    payment         Payment?
+    review          Review?
+}
