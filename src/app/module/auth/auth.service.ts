@@ -10,6 +10,7 @@ import {
   ILoginUserPayload,
   IRegisterCustomerPayload,
   IRegisterJobCandidatePayload,
+  IUpdateApplicationStatusPayload,
 } from "./auth.interface";
 import { jwtUtils } from "../../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
@@ -147,6 +148,43 @@ const registerJobCandidate = async (payload: IRegisterJobCandidatePayload) => {
     await prisma.user.delete({ where: { id: data.user.id } }).catch(() => {});
     throw error;
   }
+};
+
+const updateApplicationStatus = async (
+  applicationId: string,
+  payload: IUpdateApplicationStatusPayload,
+) => {
+  const { status, feedback } = payload;
+
+  return await prisma.$transaction(async (tx) => {
+    const application = await tx.jobApplication.update({
+      where: { id: applicationId },
+      data: {
+        status: status === "ACCEPTED" ? "ACCEPTED" : "REJECTED",
+        feedback: feedback,
+      },
+      include: { user: true },
+    });
+
+    if (status === "ACCEPTED") {
+      await tx.user.update({
+        where: { id: application.userId },
+        data: {
+          role: "SERVICE_PROVIDER",
+          status: "ACTIVE",
+        },
+      });
+      /* =================================================
+      congratulation email send for selected service_provider
+     ================================================= */
+    } else {
+      /* =================================================
+             add rejected feedback and send email
+      ================================================= */
+    }
+
+    return application;
+  });
 };
 
 const loginUser = async (payload: ILoginUserPayload) => {
@@ -478,6 +516,7 @@ const googleLoginSuccess = async (session: Record<string, any>) => {
 export const AuthService = {
   registerCustomer,
   registerJobCandidate,
+  updateApplicationStatus,
   loginUser,
   logoutUser,
   getMe,

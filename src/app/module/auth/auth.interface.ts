@@ -22,3 +22,8 @@ export interface IRegisterJobCandidatePayload {
   phone: string;
   cvUrl: string;
 }
+
+export interface IUpdateApplicationStatusPayload {
+  status: "ACCEPTED" | "REJECTED";
+  feedback?: string;
+}
