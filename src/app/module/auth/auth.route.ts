@@ -10,6 +10,17 @@ router.post("/register", AuthController.registerCustomer);
 router.post("/verify-email", AuthController.verifyEmail);
 
 router.post("/login", AuthController.loginUser);
+router.post(
+  "/logout",
+  checkAuth(
+    UserRole.ADMIN,
+    UserRole.MANAGER,
+    UserRole.SERVICE_PROVIDER,
+    UserRole.JOB_CANDIDATE,
+    UserRole.CUSTOMER,
+  ),
+  AuthController.logoutUser,
+);
 
 router.get(
   "/me",

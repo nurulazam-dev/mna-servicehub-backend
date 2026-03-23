@@ -127,6 +127,16 @@ const loginUser = async (payload: ILoginUserPayload) => {
   return { ...data, accessToken, refreshToken };
 };
 
+const logoutUser = async (sessionToken: string) => {
+  const result = await auth.api.signOut({
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`,
+    }),
+  });
+
+  return result;
+};
+
 const getMe = async (user: IRequestUser) => {
   const isUserExists = await prisma.user.findUnique({
     where: {
@@ -230,6 +240,7 @@ export const AuthService = {
   registerCustomer,
   // registerJobCandidate,
   loginUser,
+  logoutUser,
   getMe,
   getNewToken,
   verifyEmail,
