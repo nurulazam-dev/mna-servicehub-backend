@@ -7,7 +7,6 @@ import z from "zod";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 import { handleZodError } from "../errorHelpers/handleZodError";
 import AppError from "../errorHelpers/AppError";
-import { deleteUploadedFilesFromGlobalErrorHandler } from "../utils/deleteUploadedFilesFromGlobalErrorHandler";
 import { Prisma } from "../../generated/prisma/client";
 import {
   handlePrismaClientKnownRequestError,
@@ -26,9 +25,6 @@ export const globalErrorHandler = async (
   if (envVars.NODE_ENV === "development") {
     console.log("Err from GlobalErrorHandler :", err);
   }
-
-  // ==img deleted from cloudinary if failed or error==
-  await deleteUploadedFilesFromGlobalErrorHandler(req); // Create the function (step- )
 
   let errorSources: TErrorSources[] = [];
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
