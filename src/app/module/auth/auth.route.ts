@@ -6,6 +6,7 @@ import { UserRole } from "../../../generated/prisma/enums";
 const router = Router();
 
 router.post("/register", AuthController.registerCustomer);
+router.post("/register-candidate", AuthController.registerJobCandidate);
 
 router.post("/verify-email", AuthController.verifyEmail);
 
@@ -48,5 +49,7 @@ router.post(
   AuthController.changePassword,
 );
 router.post("/refresh-token", AuthController.getNewToken);
+router.get("/google/success", AuthController.googleLoginSuccess);
+router.get("/oauth/error", AuthController.handleOAuthError);
 
 export const AuthRoutes = router;

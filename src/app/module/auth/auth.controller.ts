@@ -32,6 +32,31 @@ const registerCustomer = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const registerJobCandidate = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthService.registerJobCandidate(req.body);
+
+  const { accessToken, refreshToken, token, ...rest } = result;
+
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+  if (token) {
+    tokenUtils.setBetterAuthSessionCookie(res, token as string);
+  }
+
+  sendResponse(res, {
+    httpStatusCode: status.CREATED,
+    success: true,
+    message:
+      "Candidate application submitted successfully! Please wait for admin approval.",
+    data: {
+      token,
+      accessToken,
+      refreshToken,
+      ...rest,
+    },
+  });
+});
+
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.loginUser(req.body);
 
@@ -245,6 +270,7 @@ const handleOAuthError = catchAsync((req: Request, res: Response) => {
 
 export const AuthController = {
   registerCustomer,
+  registerJobCandidate,
   loginUser,
   logoutUser,
   getMe,

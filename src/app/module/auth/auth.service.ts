@@ -9,10 +9,15 @@ import {
   IChangePasswordPayload,
   ILoginUserPayload,
   IRegisterCustomerPayload,
+  IRegisterJobCandidatePayload,
 } from "./auth.interface";
 import { jwtUtils } from "../../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
-import { UserStatus } from "../../../generated/prisma/enums";
+import {
+  JobApplicationStatus,
+  UserRole,
+  UserStatus,
+} from "../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 
 const registerCustomer = async (payload: IRegisterCustomerPayload) => {
@@ -87,7 +92,62 @@ const registerCustomer = async (payload: IRegisterCustomerPayload) => {
   }
 };
 
-/* const registerJobCandidate = async (payload: IRegisterJobCandidatePayload) => {}; */
+const registerJobCandidate = async (payload: IRegisterJobCandidatePayload) => {
+  const { name, email, password, phone, cvUrl } = payload;
+
+  const data = await auth.api.signUpEmail({
+    body: { name, email, password, phone },
+  });
+
+  if (!data || !data.user) {
+    throw new AppError(status.BAD_REQUEST, "Failed to register!");
+  }
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const updatedUser = await tx.user.update({
+        where: { id: data.user.id },
+        data: {
+          role: UserRole.JOB_CANDIDATE,
+          status: UserStatus.ACTIVE,
+        },
+      });
+      const application = await tx.jobApplication.create({
+        data: {
+          userId: updatedUser.id,
+          cvUrl: cvUrl,
+          status: JobApplicationStatus.PENDING,
+          jobPostId: undefined,
+        },
+      });
+
+      return { updatedUser, application };
+    });
+
+    const tokenPayload = {
+      userId: result.updatedUser.id,
+      role: result.updatedUser.role,
+      name: result.updatedUser.name,
+      email: result.updatedUser.email,
+      phone: result.updatedUser.phone,
+      status: result.updatedUser.status,
+    };
+
+    const accessToken = tokenUtils.getAccessToken(tokenPayload);
+    const refreshToken = tokenUtils.getRefreshToken(tokenPayload);
+
+    return {
+      user: result.updatedUser,
+      application: result.application,
+      accessToken,
+      refreshToken,
+      token: data.token,
+    };
+  } catch (error) {
+    await prisma.user.delete({ where: { id: data.user.id } }).catch(() => {});
+    throw error;
+  }
+};
 
 const loginUser = async (payload: ILoginUserPayload) => {
   const { email, password } = payload;
@@ -417,7 +477,7 @@ const googleLoginSuccess = async (session: Record<string, any>) => {
 
 export const AuthService = {
   registerCustomer,
-  // registerJobCandidate,
+  registerJobCandidate,
   loginUser,
   logoutUser,
   getMe,

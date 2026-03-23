@@ -457,9 +457,9 @@ export type JobPostUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type JobPostScalarRelationFilter = {
-  is?: Prisma.JobPostWhereInput
-  isNot?: Prisma.JobPostWhereInput
+export type JobPostNullableScalarRelationFilter = {
+  is?: Prisma.JobPostWhereInput | null
+  isNot?: Prisma.JobPostWhereInput | null
 }
 
 export type JobPostCountOrderByAggregateInput = {
@@ -521,10 +521,12 @@ export type JobPostCreateNestedOneWithoutApplicationsInput = {
   connect?: Prisma.JobPostWhereUniqueInput
 }
 
-export type JobPostUpdateOneRequiredWithoutApplicationsNestedInput = {
+export type JobPostUpdateOneWithoutApplicationsNestedInput = {
   create?: Prisma.XOR<Prisma.JobPostCreateWithoutApplicationsInput, Prisma.JobPostUncheckedCreateWithoutApplicationsInput>
   connectOrCreate?: Prisma.JobPostCreateOrConnectWithoutApplicationsInput
   upsert?: Prisma.JobPostUpsertWithoutApplicationsInput
+  disconnect?: Prisma.JobPostWhereInput | boolean
+  delete?: Prisma.JobPostWhereInput | boolean
   connect?: Prisma.JobPostWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobPostUpdateToOneWithWhereWithoutApplicationsInput, Prisma.JobPostUpdateWithoutApplicationsInput>, Prisma.JobPostUncheckedUpdateWithoutApplicationsInput>
 }

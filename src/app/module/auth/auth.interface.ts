@@ -14,3 +14,11 @@ export interface IChangePasswordPayload {
   currentPassword: string;
   newPassword: string;
 }
+
+export interface IRegisterJobCandidatePayload {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  cvUrl: string;
+}
