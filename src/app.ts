@@ -3,10 +3,19 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { envVars } from "./app/config/env";
 import qs from "qs";
+import { IndexRoutes } from "./app/routes";
+import { notFound } from "./app/middleware/notFound";
+import path from "path";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./app/lib/auth";
+import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
 
 const app: Application = express();
 
 app.set("query parser", (str: string) => qs.parse(str));
+
+app.set("view engine", "ejs");
+app.set("views", path.resolve(process.cwd(), `src/app/templates`));
 
 app.use(
   cors({
@@ -22,11 +31,20 @@ app.use(
   }),
 );
 
+app.use("/api/auth", toNodeHandler(auth));
+
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/api/v1", IndexRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("MNA ServiceHub");
 });
+
+app.use(globalErrorHandler);
+app.use(notFound);
 
 export default app;
