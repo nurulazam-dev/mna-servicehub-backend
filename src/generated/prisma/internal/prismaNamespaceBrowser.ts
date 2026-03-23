@@ -60,6 +60,7 @@ export const ModelName = {
   JobPost: 'JobPost',
   Payment: 'Payment',
   Review: 'Review',
+  Service: 'Service',
   ServiceProvider: 'ServiceProvider',
   ServiceRequest: 'ServiceRequest',
   ServiceSchedule: 'ServiceSchedule'
@@ -216,6 +217,19 @@ export const ReviewScalarFieldEnum = {
 } as const
 
 export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const ServiceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
 
 
 export const ServiceProviderScalarFieldEnum = {

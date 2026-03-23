@@ -63,6 +63,11 @@ export type Payment = Prisma.PaymentModel
  */
 export type Review = Prisma.ReviewModel
 /**
+ * Model Service
+ * 
+ */
+export type Service = Prisma.ServiceModel
+/**
  * Model ServiceProvider
  * 
  */

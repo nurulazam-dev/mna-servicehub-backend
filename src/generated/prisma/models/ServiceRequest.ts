@@ -212,6 +212,7 @@ export type ServiceRequestWhereInput = {
   costBreakdown?: Prisma.XOR<Prisma.CostBreakdownNullableScalarRelationFilter, Prisma.CostBreakdownWhereInput> | null
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
   review?: Prisma.XOR<Prisma.ReviewNullableScalarRelationFilter, Prisma.ReviewWhereInput> | null
+  services?: Prisma.ServiceListRelationFilter
 }
 
 export type ServiceRequestOrderByWithRelationInput = {
@@ -229,6 +230,7 @@ export type ServiceRequestOrderByWithRelationInput = {
   costBreakdown?: Prisma.CostBreakdownOrderByWithRelationInput
   payment?: Prisma.PaymentOrderByWithRelationInput
   review?: Prisma.ReviewOrderByWithRelationInput
+  services?: Prisma.ServiceOrderByRelationAggregateInput
 }
 
 export type ServiceRequestWhereUniqueInput = Prisma.AtLeast<{
@@ -249,6 +251,7 @@ export type ServiceRequestWhereUniqueInput = Prisma.AtLeast<{
   costBreakdown?: Prisma.XOR<Prisma.CostBreakdownNullableScalarRelationFilter, Prisma.CostBreakdownWhereInput> | null
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
   review?: Prisma.XOR<Prisma.ReviewNullableScalarRelationFilter, Prisma.ReviewWhereInput> | null
+  services?: Prisma.ServiceListRelationFilter
 }, "id" | "scheduleId">
 
 export type ServiceRequestOrderByWithAggregationInput = {
@@ -291,6 +294,7 @@ export type ServiceRequestCreateInput = {
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateInput = {
@@ -305,6 +309,7 @@ export type ServiceRequestUncheckedCreateInput = {
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUpdateInput = {
@@ -319,6 +324,7 @@ export type ServiceRequestUpdateInput = {
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateInput = {
@@ -333,6 +339,7 @@ export type ServiceRequestUncheckedUpdateInput = {
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestCreateManyInput = {
@@ -502,6 +509,44 @@ export type ServiceRequestUpdateOneRequiredWithoutReviewNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceRequestUpdateToOneWithWhereWithoutReviewInput, Prisma.ServiceRequestUpdateWithoutReviewInput>, Prisma.ServiceRequestUncheckedUpdateWithoutReviewInput>
 }
 
+export type ServiceRequestCreateNestedManyWithoutServicesInput = {
+  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput> | Prisma.ServiceRequestCreateWithoutServicesInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServicesInput[]
+  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServicesInput | Prisma.ServiceRequestCreateOrConnectWithoutServicesInput[]
+  connect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+}
+
+export type ServiceRequestUncheckedCreateNestedManyWithoutServicesInput = {
+  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput> | Prisma.ServiceRequestCreateWithoutServicesInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServicesInput[]
+  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServicesInput | Prisma.ServiceRequestCreateOrConnectWithoutServicesInput[]
+  connect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+}
+
+export type ServiceRequestUpdateManyWithoutServicesNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput> | Prisma.ServiceRequestCreateWithoutServicesInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServicesInput[]
+  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServicesInput | Prisma.ServiceRequestCreateOrConnectWithoutServicesInput[]
+  upsert?: Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServicesInput | Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServicesInput[]
+  set?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+  disconnect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+  delete?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+  connect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+  update?: Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServicesInput | Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServicesInput[]
+  updateMany?: Prisma.ServiceRequestUpdateManyWithWhereWithoutServicesInput | Prisma.ServiceRequestUpdateManyWithWhereWithoutServicesInput[]
+  deleteMany?: Prisma.ServiceRequestScalarWhereInput | Prisma.ServiceRequestScalarWhereInput[]
+}
+
+export type ServiceRequestUncheckedUpdateManyWithoutServicesNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput> | Prisma.ServiceRequestCreateWithoutServicesInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServicesInput[]
+  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServicesInput | Prisma.ServiceRequestCreateOrConnectWithoutServicesInput[]
+  upsert?: Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServicesInput | Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServicesInput[]
+  set?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+  disconnect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+  delete?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+  connect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
+  update?: Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServicesInput | Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServicesInput[]
+  updateMany?: Prisma.ServiceRequestUpdateManyWithWhereWithoutServicesInput | Prisma.ServiceRequestUpdateManyWithWhereWithoutServicesInput[]
+  deleteMany?: Prisma.ServiceRequestScalarWhereInput | Prisma.ServiceRequestScalarWhereInput[]
+}
+
 export type ServiceRequestCreateNestedManyWithoutProviderInput = {
   create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutProviderInput, Prisma.ServiceRequestUncheckedCreateWithoutProviderInput> | Prisma.ServiceRequestCreateWithoutProviderInput[] | Prisma.ServiceRequestUncheckedCreateWithoutProviderInput[]
   connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutProviderInput | Prisma.ServiceRequestCreateOrConnectWithoutProviderInput[]
@@ -591,6 +636,7 @@ export type ServiceRequestCreateWithoutCustomerInput = {
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutCustomerInput = {
@@ -604,6 +650,7 @@ export type ServiceRequestUncheckedCreateWithoutCustomerInput = {
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutCustomerInput = {
@@ -657,6 +704,7 @@ export type ServiceRequestCreateWithoutCostBreakdownInput = {
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutCostBreakdownInput = {
@@ -670,6 +718,7 @@ export type ServiceRequestUncheckedCreateWithoutCostBreakdownInput = {
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutCostBreakdownInput = {
@@ -699,6 +748,7 @@ export type ServiceRequestUpdateWithoutCostBreakdownInput = {
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutCostBreakdownInput = {
@@ -712,6 +762,7 @@ export type ServiceRequestUncheckedUpdateWithoutCostBreakdownInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestCreateWithoutPaymentInput = {
@@ -725,6 +776,7 @@ export type ServiceRequestCreateWithoutPaymentInput = {
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutPaymentInput = {
@@ -738,6 +790,7 @@ export type ServiceRequestUncheckedCreateWithoutPaymentInput = {
   updatedAt?: Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutPaymentInput = {
@@ -767,6 +820,7 @@ export type ServiceRequestUpdateWithoutPaymentInput = {
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutPaymentInput = {
@@ -780,6 +834,7 @@ export type ServiceRequestUncheckedUpdateWithoutPaymentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestCreateWithoutReviewInput = {
@@ -793,6 +848,7 @@ export type ServiceRequestCreateWithoutReviewInput = {
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutReviewInput = {
@@ -806,6 +862,7 @@ export type ServiceRequestUncheckedCreateWithoutReviewInput = {
   updatedAt?: Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutReviewInput = {
@@ -835,6 +892,7 @@ export type ServiceRequestUpdateWithoutReviewInput = {
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutReviewInput = {
@@ -848,6 +906,56 @@ export type ServiceRequestUncheckedUpdateWithoutReviewInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
+}
+
+export type ServiceRequestCreateWithoutServicesInput = {
+  id?: string
+  status?: $Enums.ServiceRequestStatus
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
+  provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
+  schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
+  costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
+  review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
+}
+
+export type ServiceRequestUncheckedCreateWithoutServicesInput = {
+  id?: string
+  customerId: string
+  providerId?: string | null
+  scheduleId?: string | null
+  status?: $Enums.ServiceRequestStatus
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
+  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
+  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
+}
+
+export type ServiceRequestCreateOrConnectWithoutServicesInput = {
+  where: Prisma.ServiceRequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput>
+}
+
+export type ServiceRequestUpsertWithWhereUniqueWithoutServicesInput = {
+  where: Prisma.ServiceRequestWhereUniqueInput
+  update: Prisma.XOR<Prisma.ServiceRequestUpdateWithoutServicesInput, Prisma.ServiceRequestUncheckedUpdateWithoutServicesInput>
+  create: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput>
+}
+
+export type ServiceRequestUpdateWithWhereUniqueWithoutServicesInput = {
+  where: Prisma.ServiceRequestWhereUniqueInput
+  data: Prisma.XOR<Prisma.ServiceRequestUpdateWithoutServicesInput, Prisma.ServiceRequestUncheckedUpdateWithoutServicesInput>
+}
+
+export type ServiceRequestUpdateManyWithWhereWithoutServicesInput = {
+  where: Prisma.ServiceRequestScalarWhereInput
+  data: Prisma.XOR<Prisma.ServiceRequestUpdateManyMutationInput, Prisma.ServiceRequestUncheckedUpdateManyWithoutServicesInput>
 }
 
 export type ServiceRequestCreateWithoutProviderInput = {
@@ -861,6 +969,7 @@ export type ServiceRequestCreateWithoutProviderInput = {
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutProviderInput = {
@@ -874,6 +983,7 @@ export type ServiceRequestUncheckedCreateWithoutProviderInput = {
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutProviderInput = {
@@ -913,6 +1023,7 @@ export type ServiceRequestCreateWithoutScheduleInput = {
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutScheduleInput = {
@@ -926,6 +1037,7 @@ export type ServiceRequestUncheckedCreateWithoutScheduleInput = {
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutScheduleInput = {
@@ -955,6 +1067,7 @@ export type ServiceRequestUpdateWithoutScheduleInput = {
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutScheduleInput = {
@@ -968,6 +1081,7 @@ export type ServiceRequestUncheckedUpdateWithoutScheduleInput = {
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestCreateManyCustomerInput = {
@@ -991,6 +1105,7 @@ export type ServiceRequestUpdateWithoutCustomerInput = {
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutCustomerInput = {
@@ -1004,10 +1119,50 @@ export type ServiceRequestUncheckedUpdateWithoutCustomerInput = {
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateManyWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ServiceRequestUpdateWithoutServicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
+  provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
+  schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
+  costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
+  review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
+}
+
+export type ServiceRequestUncheckedUpdateWithoutServicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
+  review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
+}
+
+export type ServiceRequestUncheckedUpdateManyWithoutServicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
@@ -1037,6 +1192,7 @@ export type ServiceRequestUpdateWithoutProviderInput = {
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutProviderInput = {
@@ -1050,6 +1206,7 @@ export type ServiceRequestUncheckedUpdateWithoutProviderInput = {
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateManyWithoutProviderInput = {
@@ -1062,6 +1219,35 @@ export type ServiceRequestUncheckedUpdateManyWithoutProviderInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type ServiceRequestCountOutputType
+ */
+
+export type ServiceRequestCountOutputType = {
+  services: number
+}
+
+export type ServiceRequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  services?: boolean | ServiceRequestCountOutputTypeCountServicesArgs
+}
+
+/**
+ * ServiceRequestCountOutputType without action
+ */
+export type ServiceRequestCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ServiceRequestCountOutputType
+   */
+  select?: Prisma.ServiceRequestCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ServiceRequestCountOutputType without action
+ */
+export type ServiceRequestCountOutputTypeCountServicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ServiceWhereInput
+}
 
 
 export type ServiceRequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1079,6 +1265,8 @@ export type ServiceRequestSelect<ExtArgs extends runtime.Types.Extensions.Intern
   costBreakdown?: boolean | Prisma.ServiceRequest$costBreakdownArgs<ExtArgs>
   payment?: boolean | Prisma.ServiceRequest$paymentArgs<ExtArgs>
   review?: boolean | Prisma.ServiceRequest$reviewArgs<ExtArgs>
+  services?: boolean | Prisma.ServiceRequest$servicesArgs<ExtArgs>
+  _count?: boolean | Prisma.ServiceRequestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceRequest"]>
 
 export type ServiceRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1128,6 +1316,8 @@ export type ServiceRequestInclude<ExtArgs extends runtime.Types.Extensions.Inter
   costBreakdown?: boolean | Prisma.ServiceRequest$costBreakdownArgs<ExtArgs>
   payment?: boolean | Prisma.ServiceRequest$paymentArgs<ExtArgs>
   review?: boolean | Prisma.ServiceRequest$reviewArgs<ExtArgs>
+  services?: boolean | Prisma.ServiceRequest$servicesArgs<ExtArgs>
+  _count?: boolean | Prisma.ServiceRequestCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ServiceRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1149,6 +1339,7 @@ export type $ServiceRequestPayload<ExtArgs extends runtime.Types.Extensions.Inte
     costBreakdown: Prisma.$CostBreakdownPayload<ExtArgs> | null
     payment: Prisma.$PaymentPayload<ExtArgs> | null
     review: Prisma.$ReviewPayload<ExtArgs> | null
+    services: Prisma.$ServicePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1559,6 +1750,7 @@ export interface Prisma__ServiceRequestClient<T, Null = never, ExtArgs extends r
   costBreakdown<T extends Prisma.ServiceRequest$costBreakdownArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$costBreakdownArgs<ExtArgs>>): Prisma.Prisma__CostBreakdownClient<runtime.Types.Result.GetResult<Prisma.$CostBreakdownPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   payment<T extends Prisma.ServiceRequest$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$paymentArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   review<T extends Prisma.ServiceRequest$reviewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$reviewArgs<ExtArgs>>): Prisma.Prisma__ReviewClient<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  services<T extends Prisma.ServiceRequest$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2089,6 +2281,30 @@ export type ServiceRequest$reviewArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.ReviewInclude<ExtArgs> | null
   where?: Prisma.ReviewWhereInput
+}
+
+/**
+ * ServiceRequest.services
+ */
+export type ServiceRequest$servicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Service
+   */
+  select?: Prisma.ServiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Service
+   */
+  omit?: Prisma.ServiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServiceInclude<ExtArgs> | null
+  where?: Prisma.ServiceWhereInput
+  orderBy?: Prisma.ServiceOrderByWithRelationInput | Prisma.ServiceOrderByWithRelationInput[]
+  cursor?: Prisma.ServiceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
 }
 
 /**
