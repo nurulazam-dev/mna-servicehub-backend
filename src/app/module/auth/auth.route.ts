@@ -34,6 +34,9 @@ router.get(
   AuthController.getMe,
 );
 
+router.post("/forger-password", AuthController.forgetPassword);
+router.post("/reset-password", AuthController.resetPassword);
+
 router.post("/refresh-token", AuthController.getNewToken);
 
 export const AuthRoutes = router;

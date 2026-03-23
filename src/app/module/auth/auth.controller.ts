@@ -96,6 +96,18 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const verifyEmail = catchAsync(async (req: Request, res: Response) => {
+  const { email, otp } = req.body;
+
+  await AuthService.verifyEmail(email, otp);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Email verified successfully",
+  });
+});
+
 const getNewToken = catchAsync(async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken;
 
@@ -128,15 +140,27 @@ const getNewToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const verifyEmail = catchAsync(async (req: Request, res: Response) => {
-  const { email, otp } = req.body;
+const forgetPassword = catchAsync(async (req: Request, res: Response) => {
+  const { email } = req.body;
 
-  await AuthService.verifyEmail(email, otp);
+  await AuthService.forgetPassword(email);
 
   sendResponse(res, {
     httpStatusCode: status.OK,
     success: true,
-    message: "Email verified successfully",
+    message: "Password reset OTP send to email successfully",
+  });
+});
+
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const { email, otp, newPassword } = req.body;
+
+  await AuthService.resetPassword(email, otp, newPassword);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Password reset successfully",
   });
 });
 
@@ -145,6 +169,8 @@ export const AuthController = {
   loginUser,
   logoutUser,
   getMe,
-  getNewToken,
   verifyEmail,
+  getNewToken,
+  forgetPassword,
+  resetPassword,
 };
