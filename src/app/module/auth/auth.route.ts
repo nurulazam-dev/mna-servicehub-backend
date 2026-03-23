@@ -36,7 +36,17 @@ router.get(
 
 router.post("/forger-password", AuthController.forgetPassword);
 router.post("/reset-password", AuthController.resetPassword);
-
+router.post(
+  "/change-password",
+  checkAuth(
+    UserRole.ADMIN,
+    UserRole.MANAGER,
+    UserRole.SERVICE_PROVIDER,
+    UserRole.JOB_CANDIDATE,
+    UserRole.CUSTOMER,
+  ),
+  AuthController.changePassword,
+);
 router.post("/refresh-token", AuthController.getNewToken);
 
 export const AuthRoutes = router;
