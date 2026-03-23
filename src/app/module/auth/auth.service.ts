@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import status from "http-status";
 import { envVars } from "../../config/env";
 import AppError from "../../errorHelpers/AppError";
@@ -378,6 +379,42 @@ const changePassword = async (
   return { ...result, accessToken, refreshToken };
 };
 
+const googleLoginSuccess = async (session: Record<string, any>) => {
+  const isUserExists = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+  });
+
+  if (!isUserExists) {
+    await prisma.user.create({
+      data: {
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        phone: session.user.phone,
+      },
+    });
+  }
+
+  const accessToken = tokenUtils.getAccessToken({
+    userId: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+  });
+
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+  });
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
+
 export const AuthService = {
   registerCustomer,
   // registerJobCandidate,
@@ -389,4 +426,5 @@ export const AuthService = {
   forgetPassword,
   resetPassword,
   changePassword,
+  googleLoginSuccess,
 };
