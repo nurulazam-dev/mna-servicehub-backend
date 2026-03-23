@@ -13,6 +13,7 @@ model ServiceRequest {
     costBreakdown   CostBreakdown?
     payment         Payment?
     review          Review?
+    services        Service[]
 
     @@index([customerId])
     @@index([providerId])
