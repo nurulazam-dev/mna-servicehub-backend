@@ -5,7 +5,7 @@ import AppError from "../../errorHelpers/AppError";
 import { UserRole } from "../../../generated/prisma/enums";
 
 const applyToJob = async (payload: IJobApplicationPayload) => {
-  if (payload.jobPostId) {
+  if (payload.userId && payload.jobPostId) {
     const isAlreadyApplied = await prisma.jobApplication.findUnique({
       where: {
         userId_jobPostId: {

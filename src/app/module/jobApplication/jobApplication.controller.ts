@@ -6,7 +6,7 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 
 const applyToJob = catchAsync(async (req: Request, res: Response) => {
-  const userId = (req.user as any).id;
+  const userId = (req.user as any).id || (req.user as any).userId;
 
   const result = await JobApplicationServices.applyToJob({
     ...req.body,
