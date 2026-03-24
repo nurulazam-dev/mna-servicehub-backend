@@ -2,10 +2,18 @@ import express from "express";
 import { JobApplicationController } from "./jobApplication.controller";
 import { checkAuth } from "../../middleware/checkAuth";
 import { UserRole } from "../../../generated/prisma/enums";
+import { validateRequest } from "../../middleware/validateRequest.ts";
+import { JobApplicationValidation } from "./jobApplication.validation";
 
 const router = express.Router();
 
-router.post("/apply", checkAuth(), JobApplicationController.applyToJob);
+router.post(
+  "/apply",
+  checkAuth(),
+  validateRequest(JobApplicationValidation.createJobApplicationZodSchema),
+  JobApplicationController.applyToJob,
+);
+
 router.get(
   "/",
   checkAuth(UserRole.ADMIN),

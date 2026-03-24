@@ -38,8 +38,12 @@ const createJobPostZodSchema = z.object({
     .max(100, "Salary range must not exceed 100 characters")
     .optional(),
 
-  deadline: z.coerce.date({
-    error: "Deadline must be a valid date",
+  // deadline: z.coerce.date({
+  //   error: "Deadline must be a valid date",
+  // }),
+
+  deadline: z.coerce.date().refine((date) => date > new Date(), {
+    message: "Deadline must be a future date",
   }),
 
   isActive: z.boolean().optional(),
