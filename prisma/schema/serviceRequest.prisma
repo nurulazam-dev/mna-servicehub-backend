@@ -1,0 +1,22 @@
+model ServiceRequest {
+    id              String               @id @default(uuid())
+    customerId      String
+    customer        User                 @relation("CustomerServiceRequests", fields: [customerId], references: [id], onDelete: Cascade)
+    providerId      String?
+    provider        ServiceProvider?     @relation("ServiceProviderJobs", fields: [providerId], references: [id], onDelete: Cascade)
+    scheduleId      String?              @unique
+    schedule        ServiceSchedule?     @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+    status          ServiceRequestStatus @default(PENDING)
+    rejectionReason String?
+    createdAt       DateTime             @default(now())
+    updatedAt       DateTime             @updatedAt
+    costBreakdown   CostBreakdown?
+    payment         Payment?
+    review          Review?
+    services        Service[]
+
+    @@index([customerId])
+    @@index([providerId])
+    @@index([status])
+    @@map("service_requests")
+}

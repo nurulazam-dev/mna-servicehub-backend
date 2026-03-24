@@ -1,0 +1,16 @@
+model JobApplication {
+    id        String               @id @default(uuid())
+    userId    String
+    user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+    jobPostId String?
+    jobPost   JobPost?             @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
+    cvUrl     String
+    status    JobApplicationStatus @default(PENDING)
+    feedback  String?
+    createdAt DateTime             @default(now())
+
+    @@unique([userId, jobPostId])
+    @@index([jobPostId])
+    @@index([status])
+    @@map("jobApplications")
+}
