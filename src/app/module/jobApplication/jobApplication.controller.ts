@@ -35,7 +35,7 @@ const getMyApplications = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getApplicationById = catchAsync(async (req: Request, res: Response) => {
-  const userId = (req.user as any).id;
+  const userId = (req.user as any).userId;
   const role = (req.user as any).role;
   const { id } = req.params;
 
