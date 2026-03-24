@@ -53,6 +53,7 @@ router.get(
 
 router.post("/forger-password", AuthController.forgetPassword);
 router.post("/reset-password", AuthController.resetPassword);
+
 router.post(
   "/change-password",
   validateRequest(AuthValidation.changePasswordZodSchema),
@@ -65,6 +66,7 @@ router.post(
   ),
   AuthController.changePassword,
 );
+
 router.post("/refresh-token", AuthController.getNewToken);
 router.get("/google/success", AuthController.googleLoginSuccess);
 router.get("/oauth/error", AuthController.handleOAuthError);
