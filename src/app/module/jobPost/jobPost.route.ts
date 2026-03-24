@@ -9,7 +9,7 @@ router.get("/", JobPostController.getAllJobPosts);
 router.get("/:id", JobPostController.getSingleJobPost);
 
 router.post(
-  "/create-job",
+  "/create-job-post",
   checkAuth(UserRole.ADMIN),
   JobPostController.createJobPost,
 );
