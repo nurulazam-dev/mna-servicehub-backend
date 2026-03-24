@@ -15,5 +15,5 @@ model JobPost {
 
     @@index([serviceType])
     @@index([isActive])
-    @@map("job_posts")
+    @@map("jobPosts")
 }
