@@ -6,6 +6,11 @@ import { UserRole } from "../../../generated/prisma/enums";
 const router = express.Router();
 
 router.post("/apply", checkAuth(), JobApplicationController.applyToJob);
+router.get(
+  "/",
+  checkAuth(UserRole.ADMIN),
+  JobApplicationController.getAllApplicationsForAdmin,
+);
 
 router.get(
   "/my-applications",
@@ -22,12 +27,6 @@ router.get(
     UserRole.CUSTOMER,
   ),
   JobApplicationController.getApplicationById,
-);
-
-router.get(
-  "/",
-  checkAuth(UserRole.ADMIN),
-  JobApplicationController.getAllApplicationsForAdmin,
 );
 
 router.patch(
