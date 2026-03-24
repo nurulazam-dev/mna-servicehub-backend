@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma";
-import { IServicePayload } from "./service.interface";
+import { IServiceCreatePayload } from "./service.interface";
 
-const createService = async (payload: IServicePayload) => {
+const createService = async (payload: IServiceCreatePayload) => {
   const result = await prisma.service.create({
     data: payload,
   });
@@ -10,9 +10,9 @@ const createService = async (payload: IServicePayload) => {
 
 const getAllServices = async () => {
   const result = await prisma.service.findMany({
-    where: {
-      isActive: true,
-    },
+    // where: {
+    //   isActive: true,
+    // },
     include: {
       _count: {
         select: {
@@ -20,6 +20,9 @@ const getAllServices = async () => {
           serviceRequests: true,
         },
       },
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
   return result;
@@ -29,7 +32,13 @@ const getSingleService = async (id: string) => {
   const result = await prisma.service.findUnique({
     where: { id },
     include: {
-      reviews: true,
+      reviews: {
+        include: {
+          customer: {
+            select: { name: true, image: true },
+          },
+        },
+      },
       _count: {
         select: { serviceRequests: true },
       },
@@ -38,17 +47,13 @@ const getSingleService = async (id: string) => {
   return result;
 };
 
-const updateService = async (id: string, payload: Partial<IServicePayload>) => {
+const updateService = async (
+  id: string,
+  payload: Partial<IServiceCreatePayload>,
+) => {
   const result = await prisma.service.update({
     where: { id },
     data: payload,
-  });
-  return result;
-};
-
-const deleteService = async (id: string) => {
-  const result = await prisma.service.delete({
-    where: { id },
   });
   return result;
 };
@@ -58,5 +63,4 @@ export const ServiceServices = {
   getAllServices,
   getSingleService,
   updateService,
-  deleteService,
 };
