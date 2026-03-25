@@ -1,25 +1,23 @@
 import { z } from "zod";
 
-const createServiceZodSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name must not exceed 100 characters"),
+const createServiceScheduleZodSchema = z.object({
+  scheduleDate: z
+    .string({ error: "Schedule date is required" })
+    .refine(
+      (date) => new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0)),
+      {
+        message: "Schedule date cannot be a past date",
+      },
+    ),
 
-  description: z
-    .string()
-    .min(10, "Description must be at least 10 characters")
-    .max(500, "Description must not exceed 500 characters"),
-
-  imageUrl: z
-    .string()
-    .url("Image URL must be a valid URL")
-    .nullable()
-    .optional(),
-
-  isActive: z.boolean().optional(),
+  startTime: z
+    .string({ error: "Initial start time is required" })
+    .regex(
+      /^(0?[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM)$/i,
+      "Invalid time format (e.g. 10:00 AM)",
+    ),
 });
 
-export const ServiceValidation = {
-  createServiceZodSchema,
+export const ServiceScheduleValidation = {
+  createServiceScheduleZodSchema,
 };

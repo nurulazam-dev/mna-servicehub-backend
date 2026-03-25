@@ -1,25 +1,17 @@
 import { Router } from "express";
 import { checkAuth } from "../../middleware/checkAuth";
 import { UserRole } from "../../../generated/prisma/enums";
-import { ServiceController } from "./service.controller";
+import { ServiceScheduleController } from "./serviceSchedule.controller";
 import { validateRequest } from "../../middleware/validateRequest.ts";
-import { ServiceValidation } from "./service.validation";
+import { ServiceScheduleValidation } from "./serviceSchedule.validation";
 
 const router = Router();
 
-router.get("/", ServiceController.getAllServices);
-router.get("/:id", ServiceController.getSingleService);
 router.post(
-  "/create-service",
-  checkAuth(UserRole.ADMIN),
-  validateRequest(ServiceValidation.createServiceZodSchema),
-  ServiceController.createService,
+  "/create-schedule",
+  checkAuth(UserRole.SERVICE_PROVIDER),
+  validateRequest(ServiceScheduleValidation.createServiceScheduleZodSchema),
+  ServiceScheduleController.createServiceSchedule,
 );
 
-router.patch(
-  "/:id",
-  checkAuth(UserRole.ADMIN),
-  ServiceController.updateService,
-);
-
-export const ServiceRoutes = router;
+export const ServiceScheduleRoutes = router;

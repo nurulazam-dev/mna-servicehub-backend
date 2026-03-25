@@ -1,66 +1,54 @@
+import status from "http-status";
+import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
-import { IServiceCreatePayload } from "./service.interface";
+import { ICreateServiceSchedulePayload } from "./serviceSchedule.interface";
+import { addMinutes, format, parse } from "date-fns";
 
-const createService = async (payload: IServiceCreatePayload) => {
-  const result = await prisma.service.create({
-    data: payload,
-  });
-  return result;
-};
-
-const getAllServices = async () => {
-  const result = await prisma.service.findMany({
-    // where: {
-    //   isActive: true,
-    // },
-    include: {
-      _count: {
-        select: {
-          reviews: true,
-          serviceRequests: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  return result;
-};
-
-const getSingleService = async (id: string) => {
-  const result = await prisma.service.findUnique({
-    where: { id },
-    include: {
-      reviews: {
-        include: {
-          customer: {
-            select: { name: true, image: true },
-          },
-        },
-      },
-      _count: {
-        select: { serviceRequests: true },
-      },
-    },
-  });
-  return result;
-};
-
-const updateService = async (
-  id: string,
-  payload: Partial<IServiceCreatePayload>,
+const createServiceSchedule = async (
+  providerId: string,
+  payload: ICreateServiceSchedulePayload,
 ) => {
-  const result = await prisma.service.update({
-    where: { id },
-    data: payload,
+  const { scheduleDate, startTime } = payload;
+
+  const targetDate = new Date(scheduleDate);
+
+  const isExist = await prisma.serviceSchedule.findFirst({
+    where: { providerId, scheduleDate: targetDate },
   });
+
+  if (isExist) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Schedules for this date already exist!",
+    );
+  }
+
+  const slots = [];
+
+  let currentStart = parse(startTime, "hh:mm a", targetDate);
+
+  for (let i = 1; i <= 3; i++) {
+    const slotStart = currentStart;
+    const slotEnd = addMinutes(slotStart, 180); //every schedule duration is 3 hours+gap 15 minutes
+
+    slots.push({
+      providerId,
+      scheduleDate: targetDate,
+      startTime: format(slotStart, "hh:mm a"),
+      endTime: format(slotEnd, "hh:mm a"),
+      slotNumber: i,
+    });
+
+    currentStart = addMinutes(slotStart, 195);
+  }
+
+  const result = await prisma.serviceSchedule.createMany({
+    data: slots,
+  });
+
   return result;
 };
 
-export const ServiceServices = {
-  createService,
-  getAllServices,
-  getSingleService,
-  updateService,
+export const ServiceScheduleServices = {
+  createServiceSchedule,
 };

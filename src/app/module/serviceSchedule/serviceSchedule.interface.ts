@@ -1,6 +1,4 @@
-export interface IServiceCreatePayload {
-  name: string;
-  description: string;
-  imageUrl?: string | null;
-  isActive?: boolean;
+export interface ICreateServiceSchedulePayload {
+  scheduleDate: string;
+  startTime: string;
 }
