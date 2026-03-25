@@ -8,7 +8,7 @@ import { ServiceRequestController } from "./serviceRequest.controller";
 const router = Router();
 
 router.post(
-  "/apply-service-request",
+  "/apply",
   checkAuth(UserRole.CUSTOMER),
   // validateRequest(ServiceRequestValidation.createServiceRequestZodSchema),
   ServiceRequestController.createServiceRequest,
