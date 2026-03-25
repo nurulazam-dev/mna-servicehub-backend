@@ -374,16 +374,16 @@ PATCH /update-service-request/{id}
 
 # 🔐 4. Authorization Matrix
 
-| Method | Endpoint                    | Customer | SP  | Manager | Admin |
-| ------ | --------------------------- | -------- | --- | ------- | ----- |
-| POST   | /apply                      | ✅       | ❌  | ❌      | ❌    |
-| GET    | /my-service-requests        | ✅       | ❌  | ❌      | ❌    |
-| GET    | /my-service-requests-sp     | ❌       | ✅  | ❌      | ❌    |
-| GET    | /:id                        | ✅ (own) | ✅  | ✅      | ✅    |
-| GET    | /                           | ❌       | ❌  | ✅      | ✅    |
-| PATCH  | /cancel/:id                 | ✅       | ❌  | ❌      | ❌    |
-| PATCH  | /update-status-cost/:id     | ❌       | ✅  | ❌      | ❌    |
-| PATCH  | /update-service-request/:id | ❌       | ❌  | ✅      | ✅    |
+| Method | Endpoint                    | Customer | Service Provider | Manager | Admin |
+| ------ | --------------------------- | -------- | ---------------- | ------- | ----- |
+| POST   | /apply                      | ✅       | ❌               | ❌      | ❌    |
+| GET    | /my-service-requests        | ✅       | ❌               | ❌      | ❌    |
+| GET    | /my-service-requests-sp     | ❌       | ✅               | ❌      | ❌    |
+| GET    | /:id                        | ✅ (own) | ✅               | ✅      | ✅    |
+| GET    | /                           | ❌       | ❌               | ✅      | ✅    |
+| PATCH  | /cancel/:id                 | ✅       | ❌               | ❌      | ❌    |
+| PATCH  | /update-status-cost/:id     | ❌       | ✅               | ❌      | ❌    |
+| PATCH  | /update-service-request/:id | ❌       | ❌               | ✅      | ✅    |
 
 ---
 
