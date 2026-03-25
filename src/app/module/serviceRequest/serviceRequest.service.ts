@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "../../lib/prisma";
 import AppError from "../../errorHelpers/AppError";
 import status from "http-status";
-import { ICreateServiceRequestPayload } from "./serviceRequest.interface";
+import {
+  ICreateServiceRequestPayload,
+  IServiceRequestFilterRequest,
+} from "./serviceRequest.interface";
 import { UserRole } from "../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 
@@ -154,9 +158,79 @@ const getServiceRequestById = async (id: string, user: IRequestUser) => {
   return result;
 };
 
+const getAllServiceRequest = async (filters: IServiceRequestFilterRequest) => {
+  const { status, searchTerm, page = 1, limit = 10 } = filters;
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const whereConditions: any = {};
+
+  if (status) {
+    whereConditions.status = status;
+  }
+
+  if (searchTerm) {
+    whereConditions.OR = [
+      { customer: { name: { contains: searchTerm, mode: "insensitive" } } },
+      { activePhone: { contains: searchTerm, mode: "insensitive" } },
+      { service: { name: { contains: searchTerm, mode: "insensitive" } } },
+    ];
+  }
+
+  const result = await prisma.serviceRequest.findMany({
+    where: whereConditions,
+    skip,
+    take: Number(limit),
+    include: {
+      service: { select: { name: true, reviews: true } },
+      customer: {
+        select: {
+          name: true,
+          email: true,
+          emailVerified: true,
+          phone: true,
+          address: true,
+          isDeleted: true,
+          status: true,
+        },
+      },
+      provider: {
+        select: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
+      },
+      schedule: true,
+      payment: {
+        select: {
+          status: true,
+          transactionId: true,
+          amount: true,
+          invoiceUrl: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const total = await prisma.serviceRequest.count({ where: whereConditions });
+  const totalPages = Math.ceil(total / Number(limit));
+
+  return {
+    meta: { page, limit, total, totalPages },
+    data: result,
+  };
+};
+
 export const ServiceRequestServices = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
   getMyServiceRequestByServiceProvider,
   getServiceRequestById,
+  getAllServiceRequest,
 };

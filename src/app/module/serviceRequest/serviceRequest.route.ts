@@ -37,4 +37,10 @@ router.get(
   ServiceRequestController.getServiceRequestById,
 );
 
+router.get(
+  "/",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  ServiceRequestController.getAllServiceRequest,
+);
+
 export const ServiceRequestRoutes = router;

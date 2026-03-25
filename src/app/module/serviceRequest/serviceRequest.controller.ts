@@ -5,6 +5,7 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import status from "http-status";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
+import { IServiceRequestFilterRequest } from "./serviceRequest.interface";
 
 const createServiceRequest = catchAsync(async (req: Request, res: Response) => {
   const customerId = (req.user as any).id;
@@ -83,9 +84,24 @@ const getServiceRequestById = catchAsync(
   },
 );
 
+const getAllServiceRequest = catchAsync(async (req: Request, res: Response) => {
+  const filters = req.query as unknown as IServiceRequestFilterRequest;
+
+  const result = await ServiceRequestServices.getAllServiceRequest(filters);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "All service requests retrieved successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const ServiceRequestController = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
   getMyServiceRequestByServiceProvider,
   getServiceRequestById,
+  getAllServiceRequest,
 };

@@ -13,3 +13,10 @@ export interface ICreateServiceRequestPayload {
   serviceAddress: string;
   activePhone: string;
 }
+
+export interface IServiceRequestFilterRequest {
+  status?: string;
+  searchTerm?: string;
+  page?: number;
+  limit?: number;
+}
