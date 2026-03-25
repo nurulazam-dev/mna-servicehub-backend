@@ -1592,6 +1592,7 @@ export const ServiceRequestScalarFieldEnum = {
   serviceAddress: 'serviceAddress',
   activePhone: 'activePhone',
   status: 'status',
+  isDeleted: 'isDeleted',
   rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
