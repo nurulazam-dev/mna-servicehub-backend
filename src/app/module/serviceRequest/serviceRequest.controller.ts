@@ -27,4 +27,23 @@ const createServiceRequest = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const ServiceRequestController = { createServiceRequest };
+const getMyServiceRequestByCustomer = catchAsync(
+  async (req: Request, res: Response) => {
+    const customerId = (req.user as any).id;
+
+    const result =
+      await ServiceRequestServices.getMyServiceRequestByCustomer(customerId);
+
+    sendResponse(res, {
+      httpStatusCode: status.OK,
+      success: true,
+      message: "Customer service requests retrieved successfully",
+      data: result,
+    });
+  },
+);
+
+export const ServiceRequestController = {
+  createServiceRequest,
+  getMyServiceRequestByCustomer,
+};

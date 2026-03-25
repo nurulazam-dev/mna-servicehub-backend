@@ -17,13 +17,7 @@ const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
       "Service not found or currently unavailable!",
     );
   }
-  /* 
-customerId: string;
-  serviceId: string;
-  serviceDescription: string;
-  serviceAddress: string;
-  activePhone: string;
-*/
+
   const result = await prisma.serviceRequest.create({
     data: {
       customerId: payload.customerId,
@@ -46,4 +40,41 @@ customerId: string;
   return result;
 };
 
-export const ServiceRequestServices = { createServiceRequest };
+const getMyServiceRequestByCustomer = async (customerId: string) => {
+  const result = await prisma.serviceRequest.findMany({
+    where: {
+      customerId: customerId,
+    },
+    include: {
+      service: {
+        select: {
+          name: true,
+          imageUrl: true,
+        },
+      },
+      provider: {
+        select: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
+      },
+      schedule: true,
+      costBreakdown: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return result;
+};
+
+export const ServiceRequestServices = {
+  createServiceRequest,
+  getMyServiceRequestByCustomer,
+};

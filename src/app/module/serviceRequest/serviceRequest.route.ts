@@ -14,4 +14,10 @@ router.post(
   ServiceRequestController.createServiceRequest,
 );
 
+router.get(
+  "/my-service-requests",
+  checkAuth(UserRole.CUSTOMER),
+  ServiceRequestController.getMyServiceRequestByCustomer,
+);
+
 export const ServiceRequestRoutes = router;
