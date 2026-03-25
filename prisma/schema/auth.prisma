@@ -4,6 +4,7 @@ model User {
   email              String
   emailVerified      Boolean          @default(false)
   image              String?
+  address            String?
   phone              String
   role               UserRole         @default(CUSTOMER)
   status             UserStatus       @default(ACTIVE)

@@ -28,8 +28,13 @@ export type ServiceRequestMinAggregateOutputType = {
   id: string | null
   customerId: string | null
   providerId: string | null
+  serviceId: string | null
   scheduleId: string | null
+  serviceDescription: string | null
+  serviceAddress: string | null
+  activePhone: string | null
   status: $Enums.ServiceRequestStatus | null
+  isDeleted: boolean | null
   rejectionReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -39,8 +44,13 @@ export type ServiceRequestMaxAggregateOutputType = {
   id: string | null
   customerId: string | null
   providerId: string | null
+  serviceId: string | null
   scheduleId: string | null
+  serviceDescription: string | null
+  serviceAddress: string | null
+  activePhone: string | null
   status: $Enums.ServiceRequestStatus | null
+  isDeleted: boolean | null
   rejectionReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -50,8 +60,13 @@ export type ServiceRequestCountAggregateOutputType = {
   id: number
   customerId: number
   providerId: number
+  serviceId: number
   scheduleId: number
+  serviceDescription: number
+  serviceAddress: number
+  activePhone: number
   status: number
+  isDeleted: number
   rejectionReason: number
   createdAt: number
   updatedAt: number
@@ -63,8 +78,13 @@ export type ServiceRequestMinAggregateInputType = {
   id?: true
   customerId?: true
   providerId?: true
+  serviceId?: true
   scheduleId?: true
+  serviceDescription?: true
+  serviceAddress?: true
+  activePhone?: true
   status?: true
+  isDeleted?: true
   rejectionReason?: true
   createdAt?: true
   updatedAt?: true
@@ -74,8 +94,13 @@ export type ServiceRequestMaxAggregateInputType = {
   id?: true
   customerId?: true
   providerId?: true
+  serviceId?: true
   scheduleId?: true
+  serviceDescription?: true
+  serviceAddress?: true
+  activePhone?: true
   status?: true
+  isDeleted?: true
   rejectionReason?: true
   createdAt?: true
   updatedAt?: true
@@ -85,8 +110,13 @@ export type ServiceRequestCountAggregateInputType = {
   id?: true
   customerId?: true
   providerId?: true
+  serviceId?: true
   scheduleId?: true
+  serviceDescription?: true
+  serviceAddress?: true
+  activePhone?: true
   status?: true
+  isDeleted?: true
   rejectionReason?: true
   createdAt?: true
   updatedAt?: true
@@ -169,8 +199,13 @@ export type ServiceRequestGroupByOutputType = {
   id: string
   customerId: string
   providerId: string | null
+  serviceId: string
   scheduleId: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status: $Enums.ServiceRequestStatus
+  isDeleted: boolean
   rejectionReason: string | null
   createdAt: Date
   updatedAt: Date
@@ -201,36 +236,46 @@ export type ServiceRequestWhereInput = {
   id?: Prisma.StringFilter<"ServiceRequest"> | string
   customerId?: Prisma.StringFilter<"ServiceRequest"> | string
   providerId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  serviceId?: Prisma.StringFilter<"ServiceRequest"> | string
   scheduleId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  serviceDescription?: Prisma.StringFilter<"ServiceRequest"> | string
+  serviceAddress?: Prisma.StringFilter<"ServiceRequest"> | string
+  activePhone?: Prisma.StringFilter<"ServiceRequest"> | string
   status?: Prisma.EnumServiceRequestStatusFilter<"ServiceRequest"> | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFilter<"ServiceRequest"> | boolean
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
   customer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   provider?: Prisma.XOR<Prisma.ServiceProviderNullableScalarRelationFilter, Prisma.ServiceProviderWhereInput> | null
+  service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
   schedule?: Prisma.XOR<Prisma.ServiceScheduleNullableScalarRelationFilter, Prisma.ServiceScheduleWhereInput> | null
   costBreakdown?: Prisma.XOR<Prisma.CostBreakdownNullableScalarRelationFilter, Prisma.CostBreakdownWhereInput> | null
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
   review?: Prisma.XOR<Prisma.ReviewNullableScalarRelationFilter, Prisma.ReviewWhereInput> | null
-  services?: Prisma.ServiceListRelationFilter
 }
 
 export type ServiceRequestOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   customer?: Prisma.UserOrderByWithRelationInput
   provider?: Prisma.ServiceProviderOrderByWithRelationInput
+  service?: Prisma.ServiceOrderByWithRelationInput
   schedule?: Prisma.ServiceScheduleOrderByWithRelationInput
   costBreakdown?: Prisma.CostBreakdownOrderByWithRelationInput
   payment?: Prisma.PaymentOrderByWithRelationInput
   review?: Prisma.ReviewOrderByWithRelationInput
-  services?: Prisma.ServiceOrderByRelationAggregateInput
 }
 
 export type ServiceRequestWhereUniqueInput = Prisma.AtLeast<{
@@ -241,25 +286,35 @@ export type ServiceRequestWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ServiceRequestWhereInput | Prisma.ServiceRequestWhereInput[]
   customerId?: Prisma.StringFilter<"ServiceRequest"> | string
   providerId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  serviceId?: Prisma.StringFilter<"ServiceRequest"> | string
+  serviceDescription?: Prisma.StringFilter<"ServiceRequest"> | string
+  serviceAddress?: Prisma.StringFilter<"ServiceRequest"> | string
+  activePhone?: Prisma.StringFilter<"ServiceRequest"> | string
   status?: Prisma.EnumServiceRequestStatusFilter<"ServiceRequest"> | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFilter<"ServiceRequest"> | boolean
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
   customer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   provider?: Prisma.XOR<Prisma.ServiceProviderNullableScalarRelationFilter, Prisma.ServiceProviderWhereInput> | null
+  service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
   schedule?: Prisma.XOR<Prisma.ServiceScheduleNullableScalarRelationFilter, Prisma.ServiceScheduleWhereInput> | null
   costBreakdown?: Prisma.XOR<Prisma.CostBreakdownNullableScalarRelationFilter, Prisma.CostBreakdownWhereInput> | null
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
   review?: Prisma.XOR<Prisma.ReviewNullableScalarRelationFilter, Prisma.ReviewWhereInput> | null
-  services?: Prisma.ServiceListRelationFilter
 }, "id" | "scheduleId">
 
 export type ServiceRequestOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -275,8 +330,13 @@ export type ServiceRequestScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
   customerId?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
   providerId?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
+  serviceId?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
   scheduleId?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
+  serviceDescription?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
+  serviceAddress?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
+  activePhone?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
   status?: Prisma.EnumServiceRequestStatusWithAggregatesFilter<"ServiceRequest"> | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"ServiceRequest"> | boolean
   rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceRequest"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceRequest"> | Date | string
@@ -284,70 +344,91 @@ export type ServiceRequestScalarWhereWithAggregatesInput = {
 
 export type ServiceRequestCreateInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
+  service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateInput = {
   id?: string
   customerId: string
   providerId?: string | null
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestCreateManyInput = {
   id?: string
   customerId: string
   providerId?: string | null
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -355,7 +436,11 @@ export type ServiceRequestCreateManyInput = {
 
 export type ServiceRequestUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -365,8 +450,13 @@ export type ServiceRequestUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -391,8 +481,13 @@ export type ServiceRequestCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -402,8 +497,13 @@ export type ServiceRequestMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -413,8 +513,13 @@ export type ServiceRequestMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -509,41 +614,45 @@ export type ServiceRequestUpdateOneRequiredWithoutReviewNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceRequestUpdateToOneWithWhereWithoutReviewInput, Prisma.ServiceRequestUpdateWithoutReviewInput>, Prisma.ServiceRequestUncheckedUpdateWithoutReviewInput>
 }
 
-export type ServiceRequestCreateNestedManyWithoutServicesInput = {
-  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput> | Prisma.ServiceRequestCreateWithoutServicesInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServicesInput[]
-  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServicesInput | Prisma.ServiceRequestCreateOrConnectWithoutServicesInput[]
+export type ServiceRequestCreateNestedManyWithoutServiceInput = {
+  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServiceInput, Prisma.ServiceRequestUncheckedCreateWithoutServiceInput> | Prisma.ServiceRequestCreateWithoutServiceInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServiceInput[]
+  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServiceInput | Prisma.ServiceRequestCreateOrConnectWithoutServiceInput[]
+  createMany?: Prisma.ServiceRequestCreateManyServiceInputEnvelope
   connect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
 }
 
-export type ServiceRequestUncheckedCreateNestedManyWithoutServicesInput = {
-  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput> | Prisma.ServiceRequestCreateWithoutServicesInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServicesInput[]
-  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServicesInput | Prisma.ServiceRequestCreateOrConnectWithoutServicesInput[]
+export type ServiceRequestUncheckedCreateNestedManyWithoutServiceInput = {
+  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServiceInput, Prisma.ServiceRequestUncheckedCreateWithoutServiceInput> | Prisma.ServiceRequestCreateWithoutServiceInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServiceInput[]
+  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServiceInput | Prisma.ServiceRequestCreateOrConnectWithoutServiceInput[]
+  createMany?: Prisma.ServiceRequestCreateManyServiceInputEnvelope
   connect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
 }
 
-export type ServiceRequestUpdateManyWithoutServicesNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput> | Prisma.ServiceRequestCreateWithoutServicesInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServicesInput[]
-  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServicesInput | Prisma.ServiceRequestCreateOrConnectWithoutServicesInput[]
-  upsert?: Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServicesInput | Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServicesInput[]
+export type ServiceRequestUpdateManyWithoutServiceNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServiceInput, Prisma.ServiceRequestUncheckedCreateWithoutServiceInput> | Prisma.ServiceRequestCreateWithoutServiceInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServiceInput[]
+  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServiceInput | Prisma.ServiceRequestCreateOrConnectWithoutServiceInput[]
+  upsert?: Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServiceInput | Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServiceInput[]
+  createMany?: Prisma.ServiceRequestCreateManyServiceInputEnvelope
   set?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
   disconnect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
   delete?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
   connect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
-  update?: Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServicesInput | Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServicesInput[]
-  updateMany?: Prisma.ServiceRequestUpdateManyWithWhereWithoutServicesInput | Prisma.ServiceRequestUpdateManyWithWhereWithoutServicesInput[]
+  update?: Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServiceInput | Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServiceInput[]
+  updateMany?: Prisma.ServiceRequestUpdateManyWithWhereWithoutServiceInput | Prisma.ServiceRequestUpdateManyWithWhereWithoutServiceInput[]
   deleteMany?: Prisma.ServiceRequestScalarWhereInput | Prisma.ServiceRequestScalarWhereInput[]
 }
 
-export type ServiceRequestUncheckedUpdateManyWithoutServicesNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput> | Prisma.ServiceRequestCreateWithoutServicesInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServicesInput[]
-  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServicesInput | Prisma.ServiceRequestCreateOrConnectWithoutServicesInput[]
-  upsert?: Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServicesInput | Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServicesInput[]
+export type ServiceRequestUncheckedUpdateManyWithoutServiceNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServiceInput, Prisma.ServiceRequestUncheckedCreateWithoutServiceInput> | Prisma.ServiceRequestCreateWithoutServiceInput[] | Prisma.ServiceRequestUncheckedCreateWithoutServiceInput[]
+  connectOrCreate?: Prisma.ServiceRequestCreateOrConnectWithoutServiceInput | Prisma.ServiceRequestCreateOrConnectWithoutServiceInput[]
+  upsert?: Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServiceInput | Prisma.ServiceRequestUpsertWithWhereUniqueWithoutServiceInput[]
+  createMany?: Prisma.ServiceRequestCreateManyServiceInputEnvelope
   set?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
   disconnect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
   delete?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
   connect?: Prisma.ServiceRequestWhereUniqueInput | Prisma.ServiceRequestWhereUniqueInput[]
-  update?: Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServicesInput | Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServicesInput[]
-  updateMany?: Prisma.ServiceRequestUpdateManyWithWhereWithoutServicesInput | Prisma.ServiceRequestUpdateManyWithWhereWithoutServicesInput[]
+  update?: Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServiceInput | Prisma.ServiceRequestUpdateWithWhereUniqueWithoutServiceInput[]
+  updateMany?: Prisma.ServiceRequestUpdateManyWithWhereWithoutServiceInput | Prisma.ServiceRequestUpdateManyWithWhereWithoutServiceInput[]
   deleteMany?: Prisma.ServiceRequestScalarWhereInput | Prisma.ServiceRequestScalarWhereInput[]
 }
 
@@ -627,30 +736,38 @@ export type ServiceRequestUncheckedUpdateOneWithoutScheduleNestedInput = {
 
 export type ServiceRequestCreateWithoutCustomerInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
+  service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutCustomerInput = {
   id?: string
   providerId?: string | null
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutCustomerInput = {
@@ -686,8 +803,13 @@ export type ServiceRequestScalarWhereInput = {
   id?: Prisma.StringFilter<"ServiceRequest"> | string
   customerId?: Prisma.StringFilter<"ServiceRequest"> | string
   providerId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  serviceId?: Prisma.StringFilter<"ServiceRequest"> | string
   scheduleId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  serviceDescription?: Prisma.StringFilter<"ServiceRequest"> | string
+  serviceAddress?: Prisma.StringFilter<"ServiceRequest"> | string
+  activePhone?: Prisma.StringFilter<"ServiceRequest"> | string
   status?: Prisma.EnumServiceRequestStatusFilter<"ServiceRequest"> | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFilter<"ServiceRequest"> | boolean
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
@@ -695,30 +817,38 @@ export type ServiceRequestScalarWhereInput = {
 
 export type ServiceRequestCreateWithoutCostBreakdownInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
+  service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutCostBreakdownInput = {
   id?: string
   customerId: string
   providerId?: string | null
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutCostBreakdownInput = {
@@ -739,58 +869,74 @@ export type ServiceRequestUpdateToOneWithWhereWithoutCostBreakdownInput = {
 
 export type ServiceRequestUpdateWithoutCostBreakdownInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutCostBreakdownInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestCreateWithoutPaymentInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
+  service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutPaymentInput = {
   id?: string
   customerId: string
   providerId?: string | null
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutPaymentInput = {
@@ -811,58 +957,74 @@ export type ServiceRequestUpdateToOneWithWhereWithoutPaymentInput = {
 
 export type ServiceRequestUpdateWithoutPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestCreateWithoutReviewInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
+  service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutReviewInput = {
   id?: string
   customerId: string
   providerId?: string | null
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutReviewInput = {
@@ -883,35 +1045,47 @@ export type ServiceRequestUpdateToOneWithWhereWithoutReviewInput = {
 
 export type ServiceRequestUpdateWithoutReviewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutReviewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
-export type ServiceRequestCreateWithoutServicesInput = {
+export type ServiceRequestCreateWithoutServiceInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -923,12 +1097,16 @@ export type ServiceRequestCreateWithoutServicesInput = {
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
 }
 
-export type ServiceRequestUncheckedCreateWithoutServicesInput = {
+export type ServiceRequestUncheckedCreateWithoutServiceInput = {
   id?: string
   customerId: string
   providerId?: string | null
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -937,53 +1115,66 @@ export type ServiceRequestUncheckedCreateWithoutServicesInput = {
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
 }
 
-export type ServiceRequestCreateOrConnectWithoutServicesInput = {
+export type ServiceRequestCreateOrConnectWithoutServiceInput = {
   where: Prisma.ServiceRequestWhereUniqueInput
-  create: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput>
+  create: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServiceInput, Prisma.ServiceRequestUncheckedCreateWithoutServiceInput>
 }
 
-export type ServiceRequestUpsertWithWhereUniqueWithoutServicesInput = {
-  where: Prisma.ServiceRequestWhereUniqueInput
-  update: Prisma.XOR<Prisma.ServiceRequestUpdateWithoutServicesInput, Prisma.ServiceRequestUncheckedUpdateWithoutServicesInput>
-  create: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServicesInput, Prisma.ServiceRequestUncheckedCreateWithoutServicesInput>
+export type ServiceRequestCreateManyServiceInputEnvelope = {
+  data: Prisma.ServiceRequestCreateManyServiceInput | Prisma.ServiceRequestCreateManyServiceInput[]
+  skipDuplicates?: boolean
 }
 
-export type ServiceRequestUpdateWithWhereUniqueWithoutServicesInput = {
+export type ServiceRequestUpsertWithWhereUniqueWithoutServiceInput = {
   where: Prisma.ServiceRequestWhereUniqueInput
-  data: Prisma.XOR<Prisma.ServiceRequestUpdateWithoutServicesInput, Prisma.ServiceRequestUncheckedUpdateWithoutServicesInput>
+  update: Prisma.XOR<Prisma.ServiceRequestUpdateWithoutServiceInput, Prisma.ServiceRequestUncheckedUpdateWithoutServiceInput>
+  create: Prisma.XOR<Prisma.ServiceRequestCreateWithoutServiceInput, Prisma.ServiceRequestUncheckedCreateWithoutServiceInput>
 }
 
-export type ServiceRequestUpdateManyWithWhereWithoutServicesInput = {
+export type ServiceRequestUpdateWithWhereUniqueWithoutServiceInput = {
+  where: Prisma.ServiceRequestWhereUniqueInput
+  data: Prisma.XOR<Prisma.ServiceRequestUpdateWithoutServiceInput, Prisma.ServiceRequestUncheckedUpdateWithoutServiceInput>
+}
+
+export type ServiceRequestUpdateManyWithWhereWithoutServiceInput = {
   where: Prisma.ServiceRequestScalarWhereInput
-  data: Prisma.XOR<Prisma.ServiceRequestUpdateManyMutationInput, Prisma.ServiceRequestUncheckedUpdateManyWithoutServicesInput>
+  data: Prisma.XOR<Prisma.ServiceRequestUpdateManyMutationInput, Prisma.ServiceRequestUncheckedUpdateManyWithoutServiceInput>
 }
 
 export type ServiceRequestCreateWithoutProviderInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
+  service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutProviderInput = {
   id?: string
   customerId: string
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutProviderInput = {
@@ -1014,30 +1205,38 @@ export type ServiceRequestUpdateManyWithWhereWithoutProviderInput = {
 
 export type ServiceRequestCreateWithoutScheduleInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
+  service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   costBreakdown?: Prisma.CostBreakdownCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestUncheckedCreateWithoutScheduleInput = {
   id?: string
   customerId: string
   providerId?: string | null
+  serviceId: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput
 }
 
 export type ServiceRequestCreateOrConnectWithoutScheduleInput = {
@@ -1058,37 +1257,50 @@ export type ServiceRequestUpdateToOneWithWhereWithoutScheduleInput = {
 
 export type ServiceRequestUpdateWithoutScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestCreateManyCustomerInput = {
   id?: string
   providerId?: string | null
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1096,45 +1308,77 @@ export type ServiceRequestCreateManyCustomerInput = {
 
 export type ServiceRequestUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateManyWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ServiceRequestUpdateWithoutServicesInput = {
+export type ServiceRequestCreateManyServiceInput = {
+  id?: string
+  customerId: string
+  providerId?: string | null
+  scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
+  status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ServiceRequestUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1146,12 +1390,16 @@ export type ServiceRequestUpdateWithoutServicesInput = {
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
 }
 
-export type ServiceRequestUncheckedUpdateWithoutServicesInput = {
+export type ServiceRequestUncheckedUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1160,12 +1408,16 @@ export type ServiceRequestUncheckedUpdateWithoutServicesInput = {
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
 }
 
-export type ServiceRequestUncheckedUpdateManyWithoutServicesInput = {
+export type ServiceRequestUncheckedUpdateManyWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1174,8 +1426,13 @@ export type ServiceRequestUncheckedUpdateManyWithoutServicesInput = {
 export type ServiceRequestCreateManyProviderInput = {
   id?: string
   customerId: string
+  serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
+  isDeleted?: boolean
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1183,103 +1440,97 @@ export type ServiceRequestCreateManyProviderInput = {
 
 export type ServiceRequestUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
   costBreakdown?: Prisma.CostBreakdownUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput
 }
 
 export type ServiceRequestUncheckedUpdateManyWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
-/**
- * Count Type ServiceRequestCountOutputType
- */
-
-export type ServiceRequestCountOutputType = {
-  services: number
-}
-
-export type ServiceRequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  services?: boolean | ServiceRequestCountOutputTypeCountServicesArgs
-}
-
-/**
- * ServiceRequestCountOutputType without action
- */
-export type ServiceRequestCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ServiceRequestCountOutputType
-   */
-  select?: Prisma.ServiceRequestCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * ServiceRequestCountOutputType without action
- */
-export type ServiceRequestCountOutputTypeCountServicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ServiceWhereInput
-}
-
 
 export type ServiceRequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   customerId?: boolean
   providerId?: boolean
+  serviceId?: boolean
   scheduleId?: boolean
+  serviceDescription?: boolean
+  serviceAddress?: boolean
+  activePhone?: boolean
   status?: boolean
+  isDeleted?: boolean
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
+  service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.ServiceRequest$scheduleArgs<ExtArgs>
   costBreakdown?: boolean | Prisma.ServiceRequest$costBreakdownArgs<ExtArgs>
   payment?: boolean | Prisma.ServiceRequest$paymentArgs<ExtArgs>
   review?: boolean | Prisma.ServiceRequest$reviewArgs<ExtArgs>
-  services?: boolean | Prisma.ServiceRequest$servicesArgs<ExtArgs>
-  _count?: boolean | Prisma.ServiceRequestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceRequest"]>
 
 export type ServiceRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   customerId?: boolean
   providerId?: boolean
+  serviceId?: boolean
   scheduleId?: boolean
+  serviceDescription?: boolean
+  serviceAddress?: boolean
+  activePhone?: boolean
   status?: boolean
+  isDeleted?: boolean
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
+  service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.ServiceRequest$scheduleArgs<ExtArgs>
 }, ExtArgs["result"]["serviceRequest"]>
 
@@ -1287,13 +1538,19 @@ export type ServiceRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   id?: boolean
   customerId?: boolean
   providerId?: boolean
+  serviceId?: boolean
   scheduleId?: boolean
+  serviceDescription?: boolean
+  serviceAddress?: boolean
+  activePhone?: boolean
   status?: boolean
+  isDeleted?: boolean
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
+  service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.ServiceRequest$scheduleArgs<ExtArgs>
 }, ExtArgs["result"]["serviceRequest"]>
 
@@ -1301,32 +1558,38 @@ export type ServiceRequestSelectScalar = {
   id?: boolean
   customerId?: boolean
   providerId?: boolean
+  serviceId?: boolean
   scheduleId?: boolean
+  serviceDescription?: boolean
+  serviceAddress?: boolean
+  activePhone?: boolean
   status?: boolean
+  isDeleted?: boolean
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServiceRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "providerId" | "scheduleId" | "status" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceRequest"]>
+export type ServiceRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "providerId" | "serviceId" | "scheduleId" | "serviceDescription" | "serviceAddress" | "activePhone" | "status" | "isDeleted" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceRequest"]>
 export type ServiceRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
+  service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.ServiceRequest$scheduleArgs<ExtArgs>
   costBreakdown?: boolean | Prisma.ServiceRequest$costBreakdownArgs<ExtArgs>
   payment?: boolean | Prisma.ServiceRequest$paymentArgs<ExtArgs>
   review?: boolean | Prisma.ServiceRequest$reviewArgs<ExtArgs>
-  services?: boolean | Prisma.ServiceRequest$servicesArgs<ExtArgs>
-  _count?: boolean | Prisma.ServiceRequestCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ServiceRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
+  service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.ServiceRequest$scheduleArgs<ExtArgs>
 }
 export type ServiceRequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
+  service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.ServiceRequest$scheduleArgs<ExtArgs>
 }
 
@@ -1335,18 +1598,23 @@ export type $ServiceRequestPayload<ExtArgs extends runtime.Types.Extensions.Inte
   objects: {
     customer: Prisma.$UserPayload<ExtArgs>
     provider: Prisma.$ServiceProviderPayload<ExtArgs> | null
+    service: Prisma.$ServicePayload<ExtArgs>
     schedule: Prisma.$ServiceSchedulePayload<ExtArgs> | null
     costBreakdown: Prisma.$CostBreakdownPayload<ExtArgs> | null
     payment: Prisma.$PaymentPayload<ExtArgs> | null
     review: Prisma.$ReviewPayload<ExtArgs> | null
-    services: Prisma.$ServicePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     customerId: string
     providerId: string | null
+    serviceId: string
     scheduleId: string | null
+    serviceDescription: string
+    serviceAddress: string
+    activePhone: string
     status: $Enums.ServiceRequestStatus
+    isDeleted: boolean
     rejectionReason: string | null
     createdAt: Date
     updatedAt: Date
@@ -1746,11 +2014,11 @@ export interface Prisma__ServiceRequestClient<T, Null = never, ExtArgs extends r
   readonly [Symbol.toStringTag]: "PrismaPromise"
   customer<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   provider<T extends Prisma.ServiceRequest$providerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$providerArgs<ExtArgs>>): Prisma.Prisma__ServiceProviderClient<runtime.Types.Result.GetResult<Prisma.$ServiceProviderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  service<T extends Prisma.ServiceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceDefaultArgs<ExtArgs>>): Prisma.Prisma__ServiceClient<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   schedule<T extends Prisma.ServiceRequest$scheduleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$scheduleArgs<ExtArgs>>): Prisma.Prisma__ServiceScheduleClient<runtime.Types.Result.GetResult<Prisma.$ServiceSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   costBreakdown<T extends Prisma.ServiceRequest$costBreakdownArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$costBreakdownArgs<ExtArgs>>): Prisma.Prisma__CostBreakdownClient<runtime.Types.Result.GetResult<Prisma.$CostBreakdownPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   payment<T extends Prisma.ServiceRequest$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$paymentArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   review<T extends Prisma.ServiceRequest$reviewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$reviewArgs<ExtArgs>>): Prisma.Prisma__ReviewClient<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  services<T extends Prisma.ServiceRequest$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceRequest$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1783,8 +2051,13 @@ export interface ServiceRequestFieldRefs {
   readonly id: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly customerId: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly providerId: Prisma.FieldRef<"ServiceRequest", 'String'>
+  readonly serviceId: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly scheduleId: Prisma.FieldRef<"ServiceRequest", 'String'>
+  readonly serviceDescription: Prisma.FieldRef<"ServiceRequest", 'String'>
+  readonly serviceAddress: Prisma.FieldRef<"ServiceRequest", 'String'>
+  readonly activePhone: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly status: Prisma.FieldRef<"ServiceRequest", 'ServiceRequestStatus'>
+  readonly isDeleted: Prisma.FieldRef<"ServiceRequest", 'Boolean'>
   readonly rejectionReason: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly createdAt: Prisma.FieldRef<"ServiceRequest", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ServiceRequest", 'DateTime'>
@@ -2281,30 +2554,6 @@ export type ServiceRequest$reviewArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.ReviewInclude<ExtArgs> | null
   where?: Prisma.ReviewWhereInput
-}
-
-/**
- * ServiceRequest.services
- */
-export type ServiceRequest$servicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Service
-   */
-  select?: Prisma.ServiceSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Service
-   */
-  omit?: Prisma.ServiceOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ServiceInclude<ExtArgs> | null
-  where?: Prisma.ServiceWhereInput
-  orderBy?: Prisma.ServiceOrderByWithRelationInput | Prisma.ServiceOrderByWithRelationInput[]
-  cursor?: Prisma.ServiceWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
 }
 
 /**
