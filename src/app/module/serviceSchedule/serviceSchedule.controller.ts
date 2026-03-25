@@ -23,6 +23,20 @@ const createServiceSchedule = catchAsync(
   },
 );
 
+const getMySchedules = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IRequestUser;
+
+  const result = await ServiceScheduleServices.getMySchedules(user.userId);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Provider schedules retrieved successfully",
+    data: result,
+  });
+});
+
 export const ServiceScheduleController = {
   createServiceSchedule,
+  getMySchedules,
 };

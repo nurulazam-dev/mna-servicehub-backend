@@ -49,6 +49,33 @@ const createServiceSchedule = async (
   return result;
 };
 
+const getMySchedules = async (providerId: string) => {
+  const result = await prisma.serviceSchedule.findMany({
+    where: {
+      providerId: providerId,
+    },
+
+    orderBy: {
+      scheduleDate: "desc",
+    },
+
+    include: {
+      serviceRequest: {
+        select: {
+          id: true,
+          status: true,
+          service: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+  });
+
+  return result;
+};
+
 export const ServiceScheduleServices = {
   createServiceSchedule,
+  getMySchedules,
 };

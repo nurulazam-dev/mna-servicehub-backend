@@ -14,4 +14,10 @@ router.post(
   ServiceScheduleController.createServiceSchedule,
 );
 
+router.get(
+  "/my-schedules",
+  checkAuth(UserRole.SERVICE_PROVIDER),
+  ServiceScheduleController.getMySchedules,
+);
+
 export const ServiceScheduleRoutes = router;
