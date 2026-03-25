@@ -268,9 +268,14 @@ export type ServiceRequestScalarFieldEnum = (typeof ServiceRequestScalarFieldEnu
 
 export const ServiceScheduleScalarFieldEnum = {
   id: 'id',
-  providerId: 'providerId',
   scheduleDate: 'scheduleDate',
-  isBooked: 'isBooked'
+  startTime: 'startTime',
+  endTime: 'endTime',
+  slotNumber: 'slotNumber',
+  isBooked: 'isBooked',
+  providerId: 'providerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ServiceScheduleScalarFieldEnum = (typeof ServiceScheduleScalarFieldEnum)[keyof typeof ServiceScheduleScalarFieldEnum]

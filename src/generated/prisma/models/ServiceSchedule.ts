@@ -20,52 +20,100 @@ export type ServiceScheduleModel = runtime.Types.Result.DefaultSelection<Prisma.
 
 export type AggregateServiceSchedule = {
   _count: ServiceScheduleCountAggregateOutputType | null
+  _avg: ServiceScheduleAvgAggregateOutputType | null
+  _sum: ServiceScheduleSumAggregateOutputType | null
   _min: ServiceScheduleMinAggregateOutputType | null
   _max: ServiceScheduleMaxAggregateOutputType | null
 }
 
+export type ServiceScheduleAvgAggregateOutputType = {
+  slotNumber: number | null
+}
+
+export type ServiceScheduleSumAggregateOutputType = {
+  slotNumber: number | null
+}
+
 export type ServiceScheduleMinAggregateOutputType = {
   id: string | null
-  providerId: string | null
   scheduleDate: Date | null
+  startTime: string | null
+  endTime: string | null
+  slotNumber: number | null
   isBooked: boolean | null
+  providerId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ServiceScheduleMaxAggregateOutputType = {
   id: string | null
-  providerId: string | null
   scheduleDate: Date | null
+  startTime: string | null
+  endTime: string | null
+  slotNumber: number | null
   isBooked: boolean | null
+  providerId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ServiceScheduleCountAggregateOutputType = {
   id: number
-  providerId: number
   scheduleDate: number
+  startTime: number
+  endTime: number
+  slotNumber: number
   isBooked: number
+  providerId: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
 
+export type ServiceScheduleAvgAggregateInputType = {
+  slotNumber?: true
+}
+
+export type ServiceScheduleSumAggregateInputType = {
+  slotNumber?: true
+}
+
 export type ServiceScheduleMinAggregateInputType = {
   id?: true
-  providerId?: true
   scheduleDate?: true
+  startTime?: true
+  endTime?: true
+  slotNumber?: true
   isBooked?: true
+  providerId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ServiceScheduleMaxAggregateInputType = {
   id?: true
-  providerId?: true
   scheduleDate?: true
+  startTime?: true
+  endTime?: true
+  slotNumber?: true
   isBooked?: true
+  providerId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ServiceScheduleCountAggregateInputType = {
   id?: true
-  providerId?: true
   scheduleDate?: true
+  startTime?: true
+  endTime?: true
+  slotNumber?: true
   isBooked?: true
+  providerId?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -107,6 +155,18 @@ export type ServiceScheduleAggregateArgs<ExtArgs extends runtime.Types.Extension
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ServiceScheduleAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ServiceScheduleSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ServiceScheduleMinAggregateInputType
@@ -137,16 +197,25 @@ export type ServiceScheduleGroupByArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   _count?: ServiceScheduleCountAggregateInputType | true
+  _avg?: ServiceScheduleAvgAggregateInputType
+  _sum?: ServiceScheduleSumAggregateInputType
   _min?: ServiceScheduleMinAggregateInputType
   _max?: ServiceScheduleMaxAggregateInputType
 }
 
 export type ServiceScheduleGroupByOutputType = {
   id: string
-  providerId: string
   scheduleDate: Date
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked: boolean
+  providerId: string
+  createdAt: Date
+  updatedAt: Date
   _count: ServiceScheduleCountAggregateOutputType | null
+  _avg: ServiceScheduleAvgAggregateOutputType | null
+  _sum: ServiceScheduleSumAggregateOutputType | null
   _min: ServiceScheduleMinAggregateOutputType | null
   _max: ServiceScheduleMaxAggregateOutputType | null
 }
@@ -171,42 +240,65 @@ export type ServiceScheduleWhereInput = {
   OR?: Prisma.ServiceScheduleWhereInput[]
   NOT?: Prisma.ServiceScheduleWhereInput | Prisma.ServiceScheduleWhereInput[]
   id?: Prisma.StringFilter<"ServiceSchedule"> | string
-  providerId?: Prisma.StringFilter<"ServiceSchedule"> | string
   scheduleDate?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
+  startTime?: Prisma.StringFilter<"ServiceSchedule"> | string
+  endTime?: Prisma.StringFilter<"ServiceSchedule"> | string
+  slotNumber?: Prisma.IntFilter<"ServiceSchedule"> | number
   isBooked?: Prisma.BoolFilter<"ServiceSchedule"> | boolean
+  providerId?: Prisma.StringFilter<"ServiceSchedule"> | string
+  createdAt?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
   provider?: Prisma.XOR<Prisma.ServiceProviderScalarRelationFilter, Prisma.ServiceProviderWhereInput>
   serviceRequest?: Prisma.XOR<Prisma.ServiceRequestNullableScalarRelationFilter, Prisma.ServiceRequestWhereInput> | null
 }
 
 export type ServiceScheduleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  providerId?: Prisma.SortOrder
   scheduleDate?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
+  slotNumber?: Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  providerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   provider?: Prisma.ServiceProviderOrderByWithRelationInput
   serviceRequest?: Prisma.ServiceRequestOrderByWithRelationInput
 }
 
 export type ServiceScheduleWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  providerId_scheduleDate_startTime?: Prisma.ServiceScheduleProviderIdScheduleDateStartTimeCompoundUniqueInput
   AND?: Prisma.ServiceScheduleWhereInput | Prisma.ServiceScheduleWhereInput[]
   OR?: Prisma.ServiceScheduleWhereInput[]
   NOT?: Prisma.ServiceScheduleWhereInput | Prisma.ServiceScheduleWhereInput[]
-  providerId?: Prisma.StringFilter<"ServiceSchedule"> | string
   scheduleDate?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
+  startTime?: Prisma.StringFilter<"ServiceSchedule"> | string
+  endTime?: Prisma.StringFilter<"ServiceSchedule"> | string
+  slotNumber?: Prisma.IntFilter<"ServiceSchedule"> | number
   isBooked?: Prisma.BoolFilter<"ServiceSchedule"> | boolean
+  providerId?: Prisma.StringFilter<"ServiceSchedule"> | string
+  createdAt?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
   provider?: Prisma.XOR<Prisma.ServiceProviderScalarRelationFilter, Prisma.ServiceProviderWhereInput>
   serviceRequest?: Prisma.XOR<Prisma.ServiceRequestNullableScalarRelationFilter, Prisma.ServiceRequestWhereInput> | null
-}, "id">
+}, "id" | "providerId_scheduleDate_startTime">
 
 export type ServiceScheduleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  providerId?: Prisma.SortOrder
   scheduleDate?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
+  slotNumber?: Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  providerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.ServiceScheduleCountOrderByAggregateInput
+  _avg?: Prisma.ServiceScheduleAvgOrderByAggregateInput
   _max?: Prisma.ServiceScheduleMaxOrderByAggregateInput
   _min?: Prisma.ServiceScheduleMinOrderByAggregateInput
+  _sum?: Prisma.ServiceScheduleSumOrderByAggregateInput
 }
 
 export type ServiceScheduleScalarWhereWithAggregatesInput = {
@@ -214,61 +306,101 @@ export type ServiceScheduleScalarWhereWithAggregatesInput = {
   OR?: Prisma.ServiceScheduleScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ServiceScheduleScalarWhereWithAggregatesInput | Prisma.ServiceScheduleScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ServiceSchedule"> | string
-  providerId?: Prisma.StringWithAggregatesFilter<"ServiceSchedule"> | string
   scheduleDate?: Prisma.DateTimeWithAggregatesFilter<"ServiceSchedule"> | Date | string
+  startTime?: Prisma.StringWithAggregatesFilter<"ServiceSchedule"> | string
+  endTime?: Prisma.StringWithAggregatesFilter<"ServiceSchedule"> | string
+  slotNumber?: Prisma.IntWithAggregatesFilter<"ServiceSchedule"> | number
   isBooked?: Prisma.BoolWithAggregatesFilter<"ServiceSchedule"> | boolean
+  providerId?: Prisma.StringWithAggregatesFilter<"ServiceSchedule"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceSchedule"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceSchedule"> | Date | string
 }
 
 export type ServiceScheduleCreateInput = {
   id?: string
   scheduleDate: Date | string
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   provider: Prisma.ServiceProviderCreateNestedOneWithoutSchedulesInput
   serviceRequest?: Prisma.ServiceRequestCreateNestedOneWithoutScheduleInput
 }
 
 export type ServiceScheduleUncheckedCreateInput = {
   id?: string
-  providerId: string
   scheduleDate: Date | string
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked?: boolean
+  providerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   serviceRequest?: Prisma.ServiceRequestUncheckedCreateNestedOneWithoutScheduleInput
 }
 
 export type ServiceScheduleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   provider?: Prisma.ServiceProviderUpdateOneRequiredWithoutSchedulesNestedInput
   serviceRequest?: Prisma.ServiceRequestUpdateOneWithoutScheduleNestedInput
 }
 
 export type ServiceScheduleUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  providerId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceRequest?: Prisma.ServiceRequestUncheckedUpdateOneWithoutScheduleNestedInput
 }
 
 export type ServiceScheduleCreateManyInput = {
   id?: string
-  providerId: string
   scheduleDate: Date | string
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked?: boolean
+  providerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ServiceScheduleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ServiceScheduleUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  providerId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ServiceScheduleListRelationFilter = {
@@ -286,25 +418,54 @@ export type ServiceScheduleNullableScalarRelationFilter = {
   isNot?: Prisma.ServiceScheduleWhereInput | null
 }
 
+export type ServiceScheduleProviderIdScheduleDateStartTimeCompoundUniqueInput = {
+  providerId: string
+  scheduleDate: Date | string
+  startTime: string
+}
+
 export type ServiceScheduleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  providerId?: Prisma.SortOrder
   scheduleDate?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
+  slotNumber?: Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  providerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type ServiceScheduleAvgOrderByAggregateInput = {
+  slotNumber?: Prisma.SortOrder
 }
 
 export type ServiceScheduleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  providerId?: Prisma.SortOrder
   scheduleDate?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
+  slotNumber?: Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  providerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ServiceScheduleMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  providerId?: Prisma.SortOrder
   scheduleDate?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
+  slotNumber?: Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  providerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type ServiceScheduleSumOrderByAggregateInput = {
+  slotNumber?: Prisma.SortOrder
 }
 
 export type ServiceScheduleCreateNestedManyWithoutProviderInput = {
@@ -368,14 +529,24 @@ export type ServiceScheduleUpdateOneWithoutServiceRequestNestedInput = {
 export type ServiceScheduleCreateWithoutProviderInput = {
   id?: string
   scheduleDate: Date | string
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   serviceRequest?: Prisma.ServiceRequestCreateNestedOneWithoutScheduleInput
 }
 
 export type ServiceScheduleUncheckedCreateWithoutProviderInput = {
   id?: string
   scheduleDate: Date | string
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   serviceRequest?: Prisma.ServiceRequestUncheckedCreateNestedOneWithoutScheduleInput
 }
 
@@ -410,23 +581,38 @@ export type ServiceScheduleScalarWhereInput = {
   OR?: Prisma.ServiceScheduleScalarWhereInput[]
   NOT?: Prisma.ServiceScheduleScalarWhereInput | Prisma.ServiceScheduleScalarWhereInput[]
   id?: Prisma.StringFilter<"ServiceSchedule"> | string
-  providerId?: Prisma.StringFilter<"ServiceSchedule"> | string
   scheduleDate?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
+  startTime?: Prisma.StringFilter<"ServiceSchedule"> | string
+  endTime?: Prisma.StringFilter<"ServiceSchedule"> | string
+  slotNumber?: Prisma.IntFilter<"ServiceSchedule"> | number
   isBooked?: Prisma.BoolFilter<"ServiceSchedule"> | boolean
+  providerId?: Prisma.StringFilter<"ServiceSchedule"> | string
+  createdAt?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ServiceSchedule"> | Date | string
 }
 
 export type ServiceScheduleCreateWithoutServiceRequestInput = {
   id?: string
   scheduleDate: Date | string
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   provider: Prisma.ServiceProviderCreateNestedOneWithoutSchedulesInput
 }
 
 export type ServiceScheduleUncheckedCreateWithoutServiceRequestInput = {
   id?: string
-  providerId: string
   scheduleDate: Date | string
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked?: boolean
+  providerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ServiceScheduleCreateOrConnectWithoutServiceRequestInput = {
@@ -448,78 +634,128 @@ export type ServiceScheduleUpdateToOneWithWhereWithoutServiceRequestInput = {
 export type ServiceScheduleUpdateWithoutServiceRequestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   provider?: Prisma.ServiceProviderUpdateOneRequiredWithoutSchedulesNestedInput
 }
 
 export type ServiceScheduleUncheckedUpdateWithoutServiceRequestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  providerId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ServiceScheduleCreateManyProviderInput = {
   id?: string
   scheduleDate: Date | string
+  startTime: string
+  endTime: string
+  slotNumber: number
   isBooked?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ServiceScheduleUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceRequest?: Prisma.ServiceRequestUpdateOneWithoutScheduleNestedInput
 }
 
 export type ServiceScheduleUncheckedUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceRequest?: Prisma.ServiceRequestUncheckedUpdateOneWithoutScheduleNestedInput
 }
 
 export type ServiceScheduleUncheckedUpdateManyWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  slotNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
 
 export type ServiceScheduleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  providerId?: boolean
   scheduleDate?: boolean
+  startTime?: boolean
+  endTime?: boolean
+  slotNumber?: boolean
   isBooked?: boolean
+  providerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   provider?: boolean | Prisma.ServiceProviderDefaultArgs<ExtArgs>
   serviceRequest?: boolean | Prisma.ServiceSchedule$serviceRequestArgs<ExtArgs>
 }, ExtArgs["result"]["serviceSchedule"]>
 
 export type ServiceScheduleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  providerId?: boolean
   scheduleDate?: boolean
+  startTime?: boolean
+  endTime?: boolean
+  slotNumber?: boolean
   isBooked?: boolean
+  providerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   provider?: boolean | Prisma.ServiceProviderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceSchedule"]>
 
 export type ServiceScheduleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  providerId?: boolean
   scheduleDate?: boolean
+  startTime?: boolean
+  endTime?: boolean
+  slotNumber?: boolean
   isBooked?: boolean
+  providerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   provider?: boolean | Prisma.ServiceProviderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceSchedule"]>
 
 export type ServiceScheduleSelectScalar = {
   id?: boolean
-  providerId?: boolean
   scheduleDate?: boolean
+  startTime?: boolean
+  endTime?: boolean
+  slotNumber?: boolean
   isBooked?: boolean
+  providerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type ServiceScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerId" | "scheduleDate" | "isBooked", ExtArgs["result"]["serviceSchedule"]>
+export type ServiceScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scheduleDate" | "startTime" | "endTime" | "slotNumber" | "isBooked" | "providerId" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceSchedule"]>
 export type ServiceScheduleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   provider?: boolean | Prisma.ServiceProviderDefaultArgs<ExtArgs>
   serviceRequest?: boolean | Prisma.ServiceSchedule$serviceRequestArgs<ExtArgs>
@@ -539,9 +775,14 @@ export type $ServiceSchedulePayload<ExtArgs extends runtime.Types.Extensions.Int
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    providerId: string
     scheduleDate: Date
+    startTime: string
+    endTime: string
+    slotNumber: number
     isBooked: boolean
+    providerId: string
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["serviceSchedule"]>
   composites: {}
 }
@@ -968,9 +1209,14 @@ export interface Prisma__ServiceScheduleClient<T, Null = never, ExtArgs extends 
  */
 export interface ServiceScheduleFieldRefs {
   readonly id: Prisma.FieldRef<"ServiceSchedule", 'String'>
-  readonly providerId: Prisma.FieldRef<"ServiceSchedule", 'String'>
   readonly scheduleDate: Prisma.FieldRef<"ServiceSchedule", 'DateTime'>
+  readonly startTime: Prisma.FieldRef<"ServiceSchedule", 'String'>
+  readonly endTime: Prisma.FieldRef<"ServiceSchedule", 'String'>
+  readonly slotNumber: Prisma.FieldRef<"ServiceSchedule", 'Int'>
   readonly isBooked: Prisma.FieldRef<"ServiceSchedule", 'Boolean'>
+  readonly providerId: Prisma.FieldRef<"ServiceSchedule", 'String'>
+  readonly createdAt: Prisma.FieldRef<"ServiceSchedule", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"ServiceSchedule", 'DateTime'>
 }
     
 

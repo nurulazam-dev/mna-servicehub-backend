@@ -1,11 +1,17 @@
 model ServiceSchedule {
     id             String          @id @default(uuid())
+    scheduleDate   DateTime
+    startTime      String
+    endTime        String
+    slotNumber     Int
+    isBooked       Boolean         @default(false)
     providerId     String
     provider       ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
-    scheduleDate   DateTime
-    isBooked       Boolean         @default(false)
     serviceRequest ServiceRequest?
+    createdAt      DateTime        @default(now())
+    updatedAt      DateTime        @updatedAt
 
+    @@unique([providerId, scheduleDate, startTime])
     @@index([providerId, scheduleDate])
     @@map("service_schedules")
 }
