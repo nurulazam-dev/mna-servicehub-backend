@@ -2,6 +2,8 @@ import { prisma } from "../../lib/prisma";
 import AppError from "../../errorHelpers/AppError";
 import status from "http-status";
 import { ICreateServiceRequestPayload } from "./serviceRequest.interface";
+import { UserRole } from "../../../generated/prisma/enums";
+import { IRequestUser } from "../../interfaces/requestUser.interface";
 
 const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
   const isServiceExist = await prisma.service.findUnique({
@@ -106,8 +108,55 @@ const getMyServiceRequestByServiceProvider = async (providerId: string) => {
   return result;
 };
 
+const getServiceRequestById = async (id: string, user: IRequestUser) => {
+  const result = await prisma.serviceRequest.findUnique({
+    where: { id },
+    include: {
+      service: true,
+      customer: {
+        select: { name: true, email: true, phone: true, address: true },
+      },
+      provider: {
+        select: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
+      },
+      schedule: true,
+      costBreakdown: true,
+      payment: true,
+    },
+  });
+
+  if (!result) {
+    throw new AppError(status.NOT_FOUND, "Service request not found!");
+  }
+
+  if (user.role === UserRole.CUSTOMER && result.customerId !== user.userId) {
+    throw new AppError(
+      status.FORBIDDEN,
+      "You are not authorized to view this request!",
+    );
+  }
+
+  if (
+    user.role === UserRole.SERVICE_PROVIDER &&
+    result.providerId !== user.userId
+  ) {
+    throw new AppError(status.FORBIDDEN, "This job is not assigned to you!");
+  }
+
+  return result;
+};
+
 export const ServiceRequestServices = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
   getMyServiceRequestByServiceProvider,
+  getServiceRequestById,
 };

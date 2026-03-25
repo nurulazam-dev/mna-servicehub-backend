@@ -4,6 +4,8 @@
 
 3. getMyServiceRequestByServiceProvider (Service-Provider can see her all own service request,which are appended her)
 
+<!-- incomplete -->
+
 4. getServiceRequestById (logged-in customer can view her own request for service. all request can view by Id => admin, manager, service_provider)
 
 5. getAllServiceRequest (admin or manager can view all service request)

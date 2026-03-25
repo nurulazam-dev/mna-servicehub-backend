@@ -4,6 +4,7 @@ import { ServiceRequestServices } from "./serviceRequest.service";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import status from "http-status";
+import { IRequestUser } from "../../interfaces/requestUser.interface";
 
 const createServiceRequest = catchAsync(async (req: Request, res: Response) => {
   const customerId = (req.user as any).id;
@@ -61,8 +62,30 @@ const getMyServiceRequestByServiceProvider = catchAsync(
   },
 );
 
+const getServiceRequestById = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    // const user = req.user as { userId: string; role: string };
+    const user = req.user as IRequestUser;
+
+    const result = await ServiceRequestServices.getServiceRequestById(
+      id as string,
+      user,
+    );
+
+    sendResponse(res, {
+      httpStatusCode: status.OK,
+      success: true,
+      message: "Service request details retrieved successfully",
+      data: result,
+    });
+  },
+);
+
 export const ServiceRequestController = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
   getMyServiceRequestByServiceProvider,
+  getServiceRequestById,
 };
