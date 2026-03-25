@@ -20,6 +20,38 @@ MNA ServiceHub acts as a centralized digital platform that enables all local ser
 
 ---
 
+# 📋 Backend Tech Stack:
+
+| Package Name                  | Purpose / Reason for Use                                                    |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| **express**                   | Core web framework for building REST APIs, handling routing and middleware. |
+| **typescript**                | Adds static typing to JavaScript, improves code safety and maintainability. |
+| **tsx**                       | Runs TypeScript files directly in development mode without precompiling.    |
+| **@prisma/client**            | Type-safe ORM client for interacting with PostgreSQL.                       |
+| **prisma**                    | ORM CLI for migrations, generating client, and schema management.           |
+| **@prisma/adapter-pg**        | PostgreSQL adapter for Prisma, ensures proper type-safe queries.            |
+| **pg**                        | PostgreSQL driver for Node.js.                                              |
+| **better-auth**               | Authentication framework to manage login and session securely.              |
+| **jsonwebtoken**              | Implements JWT for token-based authentication.                              |
+| **cookie-parser**             | Parses cookies for authentication/session handling.                         |
+| **cors**                      | Enables Cross-Origin Resource Sharing for API access.                       |
+| **dotenv**                    | Loads environment variables from `.env` files.                              |
+| **http-status**               | Standardizes HTTP status codes for responses.                               |
+| **zod**                       | Schema-based validation for request payloads.                               |
+| **multer**                    | Handles multipart/form-data file uploads.                                   |
+| **cloudinary**                | Cloud-based file/image storage service.                                     |
+| **multer-storage-cloudinary** | Integrates multer with Cloudinary for direct uploads.                       |
+| **nodemailer**                | Sends transactional emails like verification, notifications, and invoices.  |
+| **pdfkit**                    | Dynamically generates PDFs for invoices or reports.                         |
+| **stripe**                    | Online payment gateway for processing transactions securely.                |
+| **uuid**                      | Generates unique identifiers for records like IDs and tokens.               |
+| **date-fns**                  | Utility library for date manipulation and formatting.                       |
+| **ms**                        | Converts time units for token expiration and timeouts.                      |
+| **qs**                        | Parses and serializes query strings in complex URL queries.                 |
+| **ejs**                       | Templating engine for generating HTML emails or views.                      |
+
+---
+
 # 📋 Service-Request Module Documentation:
 
 ## 🧩 1. Functional Requirements
