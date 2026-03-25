@@ -54,8 +54,20 @@ const getScheduleByDate = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getServiceSchedules = catchAsync(async (req: Request, res: Response) => {
+  const result = await ServiceScheduleServices.getServiceSchedules();
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "All service schedules retrieved successfully",
+    data: result,
+  });
+});
+
 export const ServiceScheduleController = {
   createServiceSchedule,
   getMySchedules,
   getScheduleByDate,
+  getServiceSchedules,
 };

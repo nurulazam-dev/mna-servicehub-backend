@@ -26,4 +26,10 @@ router.get(
   ServiceScheduleController.getScheduleByDate,
 );
 
+router.get(
+  "/",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  ServiceScheduleController.getServiceSchedules,
+);
+
 export const ServiceScheduleRoutes = router;

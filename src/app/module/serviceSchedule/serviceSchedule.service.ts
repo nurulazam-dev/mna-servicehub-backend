@@ -111,8 +111,41 @@ const getScheduleByDate = async (user: IRequestUser, date: string) => {
   return result;
 };
 
+const getServiceSchedules = async () => {
+  const result = await prisma.serviceSchedule.findMany({
+    include: {
+      provider: {
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
+      },
+      serviceRequest: {
+        select: {
+          id: true,
+          status: true,
+          service: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+    orderBy: {
+      scheduleDate: "desc",
+    },
+  });
+
+  return result;
+};
+
 export const ServiceScheduleServices = {
   createServiceSchedule,
   getMySchedules,
   getScheduleByDate,
+  getServiceSchedules,
 };
