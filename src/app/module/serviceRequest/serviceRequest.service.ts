@@ -355,6 +355,8 @@ const updateServiceRequestByManagement = async (
         throw new AppError(status.BAD_REQUEST, "Rejection reason is required!");
       }
       updatedData.rejectionReason = payload.rejectionReason;
+      updatedData.providerId = null;
+      updatedData.scheduleId = null;
     } else if (payload.status === "ACCEPTED") {
       if (!payload.providerId || !payload.scheduleId) {
         throw new AppError(
@@ -364,6 +366,7 @@ const updateServiceRequestByManagement = async (
       }
       updatedData.providerId = payload.providerId;
       updatedData.scheduleId = payload.scheduleId;
+      updatedData.rejectionReason = null;
     }
 
     const updatedRequest = await tx.serviceRequest.update({
@@ -372,13 +375,7 @@ const updateServiceRequestByManagement = async (
       include: {
         provider: {
           include: {
-            user: {
-              select: {
-                name: true,
-                email: true,
-                phone: true,
-              },
-            },
+            user: { select: { name: true, email: true, phone: true } },
           },
         },
         service: { select: { name: true } },

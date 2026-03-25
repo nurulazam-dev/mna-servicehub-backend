@@ -2,15 +2,15 @@ import { Router } from "express";
 import { checkAuth } from "../../middleware/checkAuth";
 import { UserRole } from "../../../generated/prisma/enums";
 import { ServiceRequestController } from "./serviceRequest.controller";
-// import { validateRequest } from "../../middleware/validateRequest.ts";
-// import { ServiceRequestValidation } from "./serviceRequest.validation";
+import { validateRequest } from "../../middleware/validateRequest.ts";
+import { ServiceRequestValidation } from "./serviceRequest.validation";
 
 const router = Router();
 
 router.post(
   "/apply",
   checkAuth(UserRole.CUSTOMER),
-  // validateRequest(ServiceRequestValidation.createServiceRequestZodSchema),
+  validateRequest(ServiceRequestValidation.createServiceRequestZodSchema),
   ServiceRequestController.createServiceRequest,
 );
 
@@ -52,12 +52,16 @@ router.patch(
 router.patch(
   "/update-status-cost/:id",
   checkAuth(UserRole.SERVICE_PROVIDER),
+  validateRequest(ServiceRequestValidation.updateServiceCostZodSchema),
   ServiceRequestController.updateServiceRequestByServiceProvider,
 );
 
 router.patch(
   "/update-service-request/:id",
   checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  validateRequest(
+    ServiceRequestValidation.updateServiceRequestByManagementZodSchema,
+  ),
   ServiceRequestController.updateServiceRequestByManagement,
 );
 
