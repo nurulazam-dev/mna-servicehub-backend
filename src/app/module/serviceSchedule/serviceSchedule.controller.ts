@@ -65,9 +65,27 @@ const getServiceSchedules = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getScheduleById = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IRequestUser;
+  const { id } = req.params;
+
+  const result = await ServiceScheduleServices.getScheduleById(
+    user,
+    id as string,
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Service schedule details retrieved successfully",
+    data: result,
+  });
+});
+
 export const ServiceScheduleController = {
   createServiceSchedule,
   getMySchedules,
   getScheduleByDate,
   getServiceSchedules,
+  getScheduleById,
 };

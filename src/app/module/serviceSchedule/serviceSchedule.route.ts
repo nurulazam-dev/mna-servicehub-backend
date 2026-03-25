@@ -32,4 +32,10 @@ router.get(
   ServiceScheduleController.getServiceSchedules,
 );
 
+router.get(
+  "/:id",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER, UserRole.SERVICE_PROVIDER),
+  ServiceScheduleController.getScheduleById,
+);
+
 export const ServiceScheduleRoutes = router;

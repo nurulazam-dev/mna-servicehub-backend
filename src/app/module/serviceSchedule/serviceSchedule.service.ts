@@ -143,9 +143,47 @@ const getServiceSchedules = async () => {
   return result;
 };
 
+const getScheduleById = async (user: IRequestUser, id: string) => {
+  const result = await prisma.serviceSchedule.findUnique({
+    where: { id },
+    include: {
+      provider: {
+        include: {
+          user: {
+            select: { name: true, email: true, phone: true },
+          },
+        },
+      },
+      serviceRequest: {
+        include: {
+          service: { select: { name: true } },
+          customer: { select: { name: true, email: true } },
+        },
+      },
+    },
+  });
+
+  if (!result) {
+    throw new AppError(status.NOT_FOUND, "Service schedule not found!");
+  }
+
+  if (
+    user.role === UserRole.SERVICE_PROVIDER &&
+    result.providerId !== user.userId
+  ) {
+    throw new AppError(
+      status.FORBIDDEN,
+      "You do not have permission to view this schedule!",
+    );
+  }
+
+  return result;
+};
+
 export const ServiceScheduleServices = {
   createServiceSchedule,
   getMySchedules,
   getScheduleByDate,
   getServiceSchedules,
+  getScheduleById,
 };
