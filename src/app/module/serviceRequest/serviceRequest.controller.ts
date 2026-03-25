@@ -98,10 +98,31 @@ const getAllServiceRequest = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const cancelServiceRequestByCustomer = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const user = req.user as IRequestUser;
+
+    const result = await ServiceRequestServices.cancelServiceRequestByCustomer(
+      id as string,
+      user.userId,
+    );
+
+    sendResponse(res, {
+      httpStatusCode: status.OK,
+      success: true,
+      message: "Service request cancelled successfully",
+      data: result,
+    });
+  },
+);
+
 export const ServiceRequestController = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
   getMyServiceRequestByServiceProvider,
   getServiceRequestById,
   getAllServiceRequest,
+  cancelServiceRequestByCustomer,
 };

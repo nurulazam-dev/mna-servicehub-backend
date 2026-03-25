@@ -43,4 +43,10 @@ router.get(
   ServiceRequestController.getAllServiceRequest,
 );
 
+router.patch(
+  "/cancel/:id",
+  checkAuth(UserRole.CUSTOMER),
+  ServiceRequestController.cancelServiceRequestByCustomer,
+);
+
 export const ServiceRequestRoutes = router;

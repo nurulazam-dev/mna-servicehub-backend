@@ -6,7 +6,10 @@ import {
   ICreateServiceRequestPayload,
   IServiceRequestFilterRequest,
 } from "./serviceRequest.interface";
-import { UserRole } from "../../../generated/prisma/enums";
+import {
+  ServiceRequestStatus,
+  UserRole,
+} from "../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 
 const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
@@ -227,10 +230,53 @@ const getAllServiceRequest = async (filters: IServiceRequestFilterRequest) => {
   };
 };
 
+const cancelServiceRequestByCustomer = async (
+  requestId: string,
+  userId: string,
+) => {
+  const isRequestExist = await prisma.serviceRequest.findUnique({
+    where: {
+      id: requestId,
+      isDeleted: false,
+    },
+  });
+
+  if (!isRequestExist) {
+    throw new AppError(
+      status.NOT_FOUND,
+      "Service request not found or already deleted!",
+    );
+  }
+
+  if (isRequestExist.customerId !== userId) {
+    throw new AppError(
+      status.FORBIDDEN,
+      "You are not authorized to cancel this request!",
+    );
+  }
+
+  if (isRequestExist.status !== ServiceRequestStatus.PENDING) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      `Cannot cancel a request that is already ${isRequestExist.status.toLowerCase()}!`,
+    );
+  }
+
+  const result = await prisma.serviceRequest.update({
+    where: { id: requestId },
+    data: {
+      isDeleted: true,
+    },
+  });
+
+  return result;
+};
+
 export const ServiceRequestServices = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
   getMyServiceRequestByServiceProvider,
   getServiceRequestById,
   getAllServiceRequest,
+  cancelServiceRequestByCustomer,
 };
