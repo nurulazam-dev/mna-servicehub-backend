@@ -36,7 +36,26 @@ const getMySchedules = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getScheduleByDate = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IRequestUser;
+
+  const { date } = req.query;
+
+  const result = await ServiceScheduleServices.getScheduleByDate(
+    user,
+    date as string,
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: `Schedules retrieved for ${date} successfully`,
+    data: result,
+  });
+});
+
 export const ServiceScheduleController = {
   createServiceSchedule,
   getMySchedules,
+  getScheduleByDate,
 };

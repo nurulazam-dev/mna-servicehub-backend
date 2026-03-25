@@ -20,4 +20,10 @@ router.get(
   ServiceScheduleController.getMySchedules,
 );
 
+router.get(
+  "/schedule-by-date",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER, UserRole.SERVICE_PROVIDER),
+  ServiceScheduleController.getScheduleByDate,
+);
+
 export const ServiceScheduleRoutes = router;

@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import status from "http-status";
 import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
 import { ICreateServiceSchedulePayload } from "./serviceSchedule.interface";
 import { addMinutes, format, parse } from "date-fns";
+import { UserRole } from "../../../generated/prisma/enums";
+import { IRequestUser } from "../../interfaces/requestUser.interface";
 
 const createServiceSchedule = async (
   providerId: string,
@@ -75,7 +78,41 @@ const getMySchedules = async (providerId: string) => {
   return result;
 };
 
+const getScheduleByDate = async (user: IRequestUser, date: string) => {
+  const targetDate = new Date(date);
+
+  const whereConditions: any = {
+    scheduleDate: targetDate,
+  };
+
+  if (user.role === UserRole.SERVICE_PROVIDER) {
+    whereConditions.providerId = user.userId;
+  }
+
+  const result = await prisma.serviceSchedule.findMany({
+    where: whereConditions,
+    include: {
+      provider: {
+        include: {
+          user: {
+            select: { name: true, email: true, phone: true },
+          },
+        },
+      },
+      serviceRequest: {
+        select: { id: true, status: true },
+      },
+    },
+    orderBy: {
+      startTime: "asc",
+    },
+  });
+
+  return result;
+};
+
 export const ServiceScheduleServices = {
   createServiceSchedule,
   getMySchedules,
+  getScheduleByDate,
 };
