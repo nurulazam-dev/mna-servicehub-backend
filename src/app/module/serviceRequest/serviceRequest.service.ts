@@ -5,6 +5,7 @@ import status from "http-status";
 import {
   ICreateServiceRequestPayload,
   IServiceRequestFilterRequest,
+  IUpdateServiceCostPayload,
 } from "./serviceRequest.interface";
 import {
   ServiceRequestStatus,
@@ -272,6 +273,65 @@ const cancelServiceRequestByCustomer = async (
   return result;
 };
 
+const updateServiceRequestByServiceProvider = async (
+  requestId: string,
+  providerId: string,
+  payload: IUpdateServiceCostPayload,
+) => {
+  const isRequestExist = await prisma.serviceRequest.findUnique({
+    where: { id: requestId },
+    include: { payment: true },
+  });
+
+  if (!isRequestExist || isRequestExist.isDeleted) {
+    throw new AppError(status.NOT_FOUND, "Service request not found!");
+  }
+
+  if (isRequestExist.providerId !== providerId) {
+    throw new AppError(status.FORBIDDEN, "This job is not assigned to you!");
+  }
+
+  if (isRequestExist.payment && isRequestExist.payment.status === "succeeded") {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Payment already completed. You cannot modify costs or status anymore!",
+    );
+  }
+
+  const totalAmount =
+    Number(payload.serviceCharge) +
+    Number(payload.productCost) +
+    Number(payload.additionalCost);
+
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.serviceRequest.update({
+      where: { id: requestId },
+      data: { status: ServiceRequestStatus.COMPLETED },
+    });
+
+    const costData = await tx.costBreakdown.upsert({
+      where: { requestId: requestId },
+      update: {
+        serviceCharge: payload.serviceCharge,
+        productCost: payload.productCost,
+        additionalCost: payload.additionalCost,
+        totalAmount: totalAmount,
+      },
+      create: {
+        requestId: requestId,
+        serviceCharge: payload.serviceCharge,
+        productCost: payload.productCost,
+        additionalCost: payload.additionalCost,
+        totalAmount: totalAmount,
+      },
+    });
+
+    return costData;
+  });
+
+  return result;
+};
+
 export const ServiceRequestServices = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
@@ -279,4 +339,5 @@ export const ServiceRequestServices = {
   getServiceRequestById,
   getAllServiceRequest,
   cancelServiceRequestByCustomer,
+  updateServiceRequestByServiceProvider,
 };

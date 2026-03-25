@@ -49,4 +49,10 @@ router.patch(
   ServiceRequestController.cancelServiceRequestByCustomer,
 );
 
+router.patch(
+  "/update-status-cost/:id",
+  checkAuth(UserRole.SERVICE_PROVIDER),
+  ServiceRequestController.updateServiceRequestByServiceProvider,
+);
+
 export const ServiceRequestRoutes = router;

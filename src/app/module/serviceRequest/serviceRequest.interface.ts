@@ -20,3 +20,9 @@ export interface IServiceRequestFilterRequest {
   page?: number;
   limit?: number;
 }
+
+export interface IUpdateServiceCostPayload {
+  serviceCharge: number;
+  productCost: number;
+  additionalCost: number;
+}

@@ -118,6 +118,28 @@ const cancelServiceRequestByCustomer = catchAsync(
   },
 );
 
+const updateServiceRequestByServiceProvider = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const user = req.user as IRequestUser;
+
+    const result =
+      await ServiceRequestServices.updateServiceRequestByServiceProvider(
+        id as string,
+        user.userId,
+        req.body,
+      );
+
+    sendResponse(res, {
+      httpStatusCode: status.OK,
+      success: true,
+      message: "Service costs added and status updated to COMPLETED",
+      data: result,
+    });
+  },
+);
+
 export const ServiceRequestController = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
@@ -125,4 +147,5 @@ export const ServiceRequestController = {
   getServiceRequestById,
   getAllServiceRequest,
   cancelServiceRequestByCustomer,
+  updateServiceRequestByServiceProvider,
 };
