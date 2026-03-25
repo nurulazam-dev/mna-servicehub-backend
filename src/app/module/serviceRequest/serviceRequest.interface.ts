@@ -1,11 +1,3 @@
-/* export interface ICustomerServiceRequestPayload {
-  customerId: string;
-  serviceIds: string[];
-  providerId?: string | null;
-  status?: "PENDING" | "ACCEPTED" | "REJECTED" | "COMPLETED" | "CANCELLED";
-  rejectionReason?: string | null;
-} */
-
 export interface ICreateServiceRequestPayload {
   customerId: string;
   serviceId: string;
@@ -25,4 +17,11 @@ export interface IUpdateServiceCostPayload {
   serviceCharge: number;
   productCost: number;
   additionalCost: number;
+}
+
+export interface IUpdateServiceByManagement {
+  status: "ACCEPTED" | "REJECTED";
+  providerId?: string;
+  scheduleId?: string;
+  rejectionReason?: string;
 }

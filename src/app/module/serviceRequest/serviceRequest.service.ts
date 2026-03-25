@@ -5,6 +5,7 @@ import status from "http-status";
 import {
   ICreateServiceRequestPayload,
   IServiceRequestFilterRequest,
+  IUpdateServiceByManagement,
   IUpdateServiceCostPayload,
 } from "./serviceRequest.interface";
 import {
@@ -12,6 +13,7 @@ import {
   UserRole,
 } from "../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
+import { sendEmail } from "../../utils/email";
 
 const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
   const isServiceExist = await prisma.service.findUnique({
@@ -332,6 +334,111 @@ const updateServiceRequestByServiceProvider = async (
   return result;
 };
 
+const updateServiceRequestByManagement = async (
+  requestId: string,
+  payload: IUpdateServiceByManagement,
+) => {
+  const isRequestExist = await prisma.serviceRequest.findUnique({
+    where: { id: requestId },
+    include: { customer: true, service: true },
+  });
+
+  if (!isRequestExist || isRequestExist.isDeleted) {
+    throw new AppError(status.NOT_FOUND, "Service request not found!");
+  }
+
+  const result = await prisma.$transaction(async (tx) => {
+    const updatedData: any = { status: payload.status };
+
+    if (payload.status === "REJECTED") {
+      if (!payload.rejectionReason) {
+        throw new AppError(status.BAD_REQUEST, "Rejection reason is required!");
+      }
+      updatedData.rejectionReason = payload.rejectionReason;
+    } else if (payload.status === "ACCEPTED") {
+      if (!payload.providerId || !payload.scheduleId) {
+        throw new AppError(
+          status.BAD_REQUEST,
+          "Provider and Schedule are required to accept!",
+        );
+      }
+      updatedData.providerId = payload.providerId;
+      updatedData.scheduleId = payload.scheduleId;
+    }
+
+    const updatedRequest = await tx.serviceRequest.update({
+      where: { id: requestId },
+      data: updatedData,
+      include: {
+        provider: {
+          include: {
+            user: {
+              select: {
+                name: true,
+                email: true,
+                phone: true,
+              },
+            },
+          },
+        },
+        service: { select: { name: true } },
+        schedule: true,
+      },
+    });
+
+    if (payload.status === "ACCEPTED" && updatedRequest.provider) {
+      try {
+        const requestWithSchedule = updatedRequest as any;
+
+        const scheduleInfo = requestWithSchedule.schedule
+          ? `${requestWithSchedule.schedule.startDate} at ${requestWithSchedule.schedule.startTime}`
+          : "Pending Selection";
+
+        const requestDate = new Date(isRequestExist.createdAt).toLocaleString(
+          "en-GB",
+          {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          },
+        );
+
+        await sendEmail({
+          to: isRequestExist.customer.email,
+          subject: "Service Request Accepted - MNA ServiceHub",
+          templateName: "serviceAssignment",
+          templateData: {
+            name: isRequestExist.customer.name,
+            customerEmail: isRequestExist.customer.email,
+            customerPhone: isRequestExist.customer.phone,
+            activePhone: isRequestExist.activePhone,
+            customerAddress: isRequestExist.customer.address,
+            serviceAddress: isRequestExist.serviceAddress,
+            serviceName: updatedRequest.service.name,
+            requestTime: requestDate,
+            requestId: requestId,
+            providerName: updatedRequest.provider.user.name,
+            providerPhone: updatedRequest.provider.user.phone,
+            providerEmail: updatedRequest.provider.user.email,
+            schedule: scheduleInfo,
+          },
+        });
+      } catch (error) {
+        console.error(
+          `Failed to send confirmation email for Request: ${requestId}`,
+          error,
+        );
+      }
+    }
+
+    return updatedRequest;
+  });
+
+  return result;
+};
+
 export const ServiceRequestServices = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
@@ -340,4 +447,5 @@ export const ServiceRequestServices = {
   getAllServiceRequest,
   cancelServiceRequestByCustomer,
   updateServiceRequestByServiceProvider,
+  updateServiceRequestByManagement,
 };

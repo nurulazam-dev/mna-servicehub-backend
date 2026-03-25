@@ -55,4 +55,10 @@ router.patch(
   ServiceRequestController.updateServiceRequestByServiceProvider,
 );
 
+router.patch(
+  "/update-service-request/:id",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  ServiceRequestController.updateServiceRequestByManagement,
+);
+
 export const ServiceRequestRoutes = router;

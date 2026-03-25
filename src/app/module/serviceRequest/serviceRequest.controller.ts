@@ -140,6 +140,26 @@ const updateServiceRequestByServiceProvider = catchAsync(
   },
 );
 
+const updateServiceRequestByManagement = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const payload = req.body;
+
+    const result =
+      await ServiceRequestServices.updateServiceRequestByManagement(
+        id as string,
+        payload,
+      );
+
+    sendResponse(res, {
+      httpStatusCode: status.OK,
+      success: true,
+      message: `Service request ${payload.status.toLowerCase()} successfully`,
+      data: result,
+    });
+  },
+);
+
 export const ServiceRequestController = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
@@ -148,4 +168,5 @@ export const ServiceRequestController = {
   getAllServiceRequest,
   cancelServiceRequestByCustomer,
   updateServiceRequestByServiceProvider,
+  updateServiceRequestByManagement,
 };
