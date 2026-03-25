@@ -20,4 +20,10 @@ router.get(
   ServiceRequestController.getMyServiceRequestByCustomer,
 );
 
+router.get(
+  "/my-service-requests-sp",
+  checkAuth(UserRole.SERVICE_PROVIDER),
+  ServiceRequestController.getMyServiceRequestByServiceProvider,
+);
+
 export const ServiceRequestRoutes = router;

@@ -74,7 +74,40 @@ const getMyServiceRequestByCustomer = async (customerId: string) => {
   return result;
 };
 
+const getMyServiceRequestByServiceProvider = async (providerId: string) => {
+  const result = await prisma.serviceRequest.findMany({
+    where: {
+      providerId: providerId,
+    },
+    include: {
+      service: {
+        select: {
+          name: true,
+          description: true,
+        },
+      },
+      customer: {
+        select: {
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+          isDeleted: true,
+        },
+      },
+      schedule: true,
+      costBreakdown: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return result;
+};
+
 export const ServiceRequestServices = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
+  getMyServiceRequestByServiceProvider,
 };

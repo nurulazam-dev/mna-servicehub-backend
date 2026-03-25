@@ -43,7 +43,26 @@ const getMyServiceRequestByCustomer = catchAsync(
   },
 );
 
+const getMyServiceRequestByServiceProvider = catchAsync(
+  async (req: Request, res: Response) => {
+    const providerId = (req.user as any).id;
+
+    const result =
+      await ServiceRequestServices.getMyServiceRequestByServiceProvider(
+        providerId,
+      );
+
+    sendResponse(res, {
+      httpStatusCode: status.OK,
+      success: true,
+      message: "Provider assigned service requests retrieved successfully",
+      data: result,
+    });
+  },
+);
+
 export const ServiceRequestController = {
   createServiceRequest,
   getMyServiceRequestByCustomer,
+  getMyServiceRequestByServiceProvider,
 };
