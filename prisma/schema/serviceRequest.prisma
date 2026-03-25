@@ -4,6 +4,9 @@ model ServiceRequest {
     customer        User                 @relation("CustomerServiceRequests", fields: [customerId], references: [id], onDelete: Cascade)
     providerId      String?
     provider        ServiceProvider?     @relation("ServiceProviderJobs", fields: [providerId], references: [id], onDelete: Cascade)
+    // services        Service[]
+    serviceId       String
+    service         Service              @relation(fields: [serviceId], references: [id])
     scheduleId      String?              @unique
     schedule        ServiceSchedule?     @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
     status          ServiceRequestStatus @default(PENDING)
@@ -13,7 +16,6 @@ model ServiceRequest {
     costBreakdown   CostBreakdown?
     payment         Payment?
     review          Review?
-    services        Service[]
 
     @@index([customerId])
     @@index([providerId])

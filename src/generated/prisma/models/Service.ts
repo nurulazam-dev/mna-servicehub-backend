@@ -263,7 +263,7 @@ export type ServiceCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  serviceRequests?: Prisma.ServiceRequestCreateNestedManyWithoutServicesInput
+  serviceRequests?: Prisma.ServiceRequestCreateNestedManyWithoutServiceInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutServicesInput
 }
 
@@ -275,7 +275,7 @@ export type ServiceUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  serviceRequests?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutServicesInput
+  serviceRequests?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutServiceInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServicesInput
 }
 
@@ -287,7 +287,7 @@ export type ServiceUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceRequests?: Prisma.ServiceRequestUpdateManyWithoutServicesNestedInput
+  serviceRequests?: Prisma.ServiceRequestUpdateManyWithoutServiceNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutServicesNestedInput
 }
 
@@ -299,7 +299,7 @@ export type ServiceUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceRequests?: Prisma.ServiceRequestUncheckedUpdateManyWithoutServicesNestedInput
+  serviceRequests?: Prisma.ServiceRequestUncheckedUpdateManyWithoutServiceNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServicesNestedInput
 }
 
@@ -373,6 +373,11 @@ export type ServiceMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type ServiceScalarRelationFilter = {
+  is?: Prisma.ServiceWhereInput
+  isNot?: Prisma.ServiceWhereInput
+}
+
 export type ServiceCreateNestedManyWithoutReviewsInput = {
   create?: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput> | Prisma.ServiceCreateWithoutReviewsInput[] | Prisma.ServiceUncheckedCreateWithoutReviewsInput[]
   connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutReviewsInput | Prisma.ServiceCreateOrConnectWithoutReviewsInput[]
@@ -411,42 +416,18 @@ export type ServiceUncheckedUpdateManyWithoutReviewsNestedInput = {
   deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
 }
 
-export type ServiceCreateNestedManyWithoutServiceRequestsInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutServiceRequestsInput, Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput> | Prisma.ServiceCreateWithoutServiceRequestsInput[] | Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput | Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+export type ServiceCreateNestedOneWithoutServiceRequestsInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutServiceRequestsInput, Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput>
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput
+  connect?: Prisma.ServiceWhereUniqueInput
 }
 
-export type ServiceUncheckedCreateNestedManyWithoutServiceRequestsInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutServiceRequestsInput, Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput> | Prisma.ServiceCreateWithoutServiceRequestsInput[] | Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput | Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-}
-
-export type ServiceUpdateManyWithoutServiceRequestsNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutServiceRequestsInput, Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput> | Prisma.ServiceCreateWithoutServiceRequestsInput[] | Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput | Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput[]
-  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutServiceRequestsInput | Prisma.ServiceUpsertWithWhereUniqueWithoutServiceRequestsInput[]
-  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutServiceRequestsInput | Prisma.ServiceUpdateWithWhereUniqueWithoutServiceRequestsInput[]
-  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutServiceRequestsInput | Prisma.ServiceUpdateManyWithWhereWithoutServiceRequestsInput[]
-  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-}
-
-export type ServiceUncheckedUpdateManyWithoutServiceRequestsNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutServiceRequestsInput, Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput> | Prisma.ServiceCreateWithoutServiceRequestsInput[] | Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput | Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput[]
-  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutServiceRequestsInput | Prisma.ServiceUpsertWithWhereUniqueWithoutServiceRequestsInput[]
-  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutServiceRequestsInput | Prisma.ServiceUpdateWithWhereUniqueWithoutServiceRequestsInput[]
-  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutServiceRequestsInput | Prisma.ServiceUpdateManyWithWhereWithoutServiceRequestsInput[]
-  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
+export type ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutServiceRequestsInput, Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput>
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutServiceRequestsInput
+  upsert?: Prisma.ServiceUpsertWithoutServiceRequestsInput
+  connect?: Prisma.ServiceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceUpdateToOneWithWhereWithoutServiceRequestsInput, Prisma.ServiceUpdateWithoutServiceRequestsInput>, Prisma.ServiceUncheckedUpdateWithoutServiceRequestsInput>
 }
 
 export type ServiceCreateWithoutReviewsInput = {
@@ -457,7 +438,7 @@ export type ServiceCreateWithoutReviewsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  serviceRequests?: Prisma.ServiceRequestCreateNestedManyWithoutServicesInput
+  serviceRequests?: Prisma.ServiceRequestCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUncheckedCreateWithoutReviewsInput = {
@@ -468,7 +449,7 @@ export type ServiceUncheckedCreateWithoutReviewsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  serviceRequests?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutServicesInput
+  serviceRequests?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceCreateOrConnectWithoutReviewsInput = {
@@ -532,52 +513,15 @@ export type ServiceCreateOrConnectWithoutServiceRequestsInput = {
   create: Prisma.XOR<Prisma.ServiceCreateWithoutServiceRequestsInput, Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput>
 }
 
-export type ServiceUpsertWithWhereUniqueWithoutServiceRequestsInput = {
-  where: Prisma.ServiceWhereUniqueInput
+export type ServiceUpsertWithoutServiceRequestsInput = {
   update: Prisma.XOR<Prisma.ServiceUpdateWithoutServiceRequestsInput, Prisma.ServiceUncheckedUpdateWithoutServiceRequestsInput>
   create: Prisma.XOR<Prisma.ServiceCreateWithoutServiceRequestsInput, Prisma.ServiceUncheckedCreateWithoutServiceRequestsInput>
+  where?: Prisma.ServiceWhereInput
 }
 
-export type ServiceUpdateWithWhereUniqueWithoutServiceRequestsInput = {
-  where: Prisma.ServiceWhereUniqueInput
+export type ServiceUpdateToOneWithWhereWithoutServiceRequestsInput = {
+  where?: Prisma.ServiceWhereInput
   data: Prisma.XOR<Prisma.ServiceUpdateWithoutServiceRequestsInput, Prisma.ServiceUncheckedUpdateWithoutServiceRequestsInput>
-}
-
-export type ServiceUpdateManyWithWhereWithoutServiceRequestsInput = {
-  where: Prisma.ServiceScalarWhereInput
-  data: Prisma.XOR<Prisma.ServiceUpdateManyMutationInput, Prisma.ServiceUncheckedUpdateManyWithoutServiceRequestsInput>
-}
-
-export type ServiceUpdateWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceRequests?: Prisma.ServiceRequestUpdateManyWithoutServicesNestedInput
-}
-
-export type ServiceUncheckedUpdateWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceRequests?: Prisma.ServiceRequestUncheckedUpdateManyWithoutServicesNestedInput
-}
-
-export type ServiceUncheckedUpdateManyWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ServiceUpdateWithoutServiceRequestsInput = {
@@ -602,7 +546,29 @@ export type ServiceUncheckedUpdateWithoutServiceRequestsInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServicesNestedInput
 }
 
-export type ServiceUncheckedUpdateManyWithoutServiceRequestsInput = {
+export type ServiceUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  serviceRequests?: Prisma.ServiceRequestUpdateManyWithoutServiceNestedInput
+}
+
+export type ServiceUncheckedUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  serviceRequests?: Prisma.ServiceRequestUncheckedUpdateManyWithoutServiceNestedInput
+}
+
+export type ServiceUncheckedUpdateManyWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string

@@ -1585,6 +1585,7 @@ export const ServiceRequestScalarFieldEnum = {
   id: 'id',
   customerId: 'customerId',
   providerId: 'providerId',
+  serviceId: 'serviceId',
   scheduleId: 'scheduleId',
   status: 'status',
   rejectionReason: 'rejectionReason',
