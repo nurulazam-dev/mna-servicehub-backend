@@ -22,7 +22,7 @@ MNA ServiceHub acts as a centralized digital platform that enables all local ser
 
 # 📋 Backend Tech Stack:
 
-| Package Name                  | Purpose / Reason for Use                                                    |
+| Package Name                  | Purpose                                                                     |
 | ----------------------------- | --------------------------------------------------------------------------- |
 | **express**                   | Core web framework for building REST APIs, handling routing and middleware. |
 | **typescript**                | Adds static typing to JavaScript, improves code safety and maintainability. |
