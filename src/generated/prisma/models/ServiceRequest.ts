@@ -30,6 +30,9 @@ export type ServiceRequestMinAggregateOutputType = {
   providerId: string | null
   serviceId: string | null
   scheduleId: string | null
+  serviceDescription: string | null
+  serviceAddress: string | null
+  activePhone: string | null
   status: $Enums.ServiceRequestStatus | null
   rejectionReason: string | null
   createdAt: Date | null
@@ -42,6 +45,9 @@ export type ServiceRequestMaxAggregateOutputType = {
   providerId: string | null
   serviceId: string | null
   scheduleId: string | null
+  serviceDescription: string | null
+  serviceAddress: string | null
+  activePhone: string | null
   status: $Enums.ServiceRequestStatus | null
   rejectionReason: string | null
   createdAt: Date | null
@@ -54,6 +60,9 @@ export type ServiceRequestCountAggregateOutputType = {
   providerId: number
   serviceId: number
   scheduleId: number
+  serviceDescription: number
+  serviceAddress: number
+  activePhone: number
   status: number
   rejectionReason: number
   createdAt: number
@@ -68,6 +77,9 @@ export type ServiceRequestMinAggregateInputType = {
   providerId?: true
   serviceId?: true
   scheduleId?: true
+  serviceDescription?: true
+  serviceAddress?: true
+  activePhone?: true
   status?: true
   rejectionReason?: true
   createdAt?: true
@@ -80,6 +92,9 @@ export type ServiceRequestMaxAggregateInputType = {
   providerId?: true
   serviceId?: true
   scheduleId?: true
+  serviceDescription?: true
+  serviceAddress?: true
+  activePhone?: true
   status?: true
   rejectionReason?: true
   createdAt?: true
@@ -92,6 +107,9 @@ export type ServiceRequestCountAggregateInputType = {
   providerId?: true
   serviceId?: true
   scheduleId?: true
+  serviceDescription?: true
+  serviceAddress?: true
+  activePhone?: true
   status?: true
   rejectionReason?: true
   createdAt?: true
@@ -177,6 +195,9 @@ export type ServiceRequestGroupByOutputType = {
   providerId: string | null
   serviceId: string
   scheduleId: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status: $Enums.ServiceRequestStatus
   rejectionReason: string | null
   createdAt: Date
@@ -210,6 +231,9 @@ export type ServiceRequestWhereInput = {
   providerId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   serviceId?: Prisma.StringFilter<"ServiceRequest"> | string
   scheduleId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  serviceDescription?: Prisma.StringFilter<"ServiceRequest"> | string
+  serviceAddress?: Prisma.StringFilter<"ServiceRequest"> | string
+  activePhone?: Prisma.StringFilter<"ServiceRequest"> | string
   status?: Prisma.EnumServiceRequestStatusFilter<"ServiceRequest"> | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
@@ -229,6 +253,9 @@ export type ServiceRequestOrderByWithRelationInput = {
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -251,6 +278,9 @@ export type ServiceRequestWhereUniqueInput = Prisma.AtLeast<{
   customerId?: Prisma.StringFilter<"ServiceRequest"> | string
   providerId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   serviceId?: Prisma.StringFilter<"ServiceRequest"> | string
+  serviceDescription?: Prisma.StringFilter<"ServiceRequest"> | string
+  serviceAddress?: Prisma.StringFilter<"ServiceRequest"> | string
+  activePhone?: Prisma.StringFilter<"ServiceRequest"> | string
   status?: Prisma.EnumServiceRequestStatusFilter<"ServiceRequest"> | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
@@ -270,6 +300,9 @@ export type ServiceRequestOrderByWithAggregationInput = {
   providerId?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -288,6 +321,9 @@ export type ServiceRequestScalarWhereWithAggregatesInput = {
   providerId?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
   serviceId?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
   scheduleId?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
+  serviceDescription?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
+  serviceAddress?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
+  activePhone?: Prisma.StringWithAggregatesFilter<"ServiceRequest"> | string
   status?: Prisma.EnumServiceRequestStatusWithAggregatesFilter<"ServiceRequest"> | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceRequest"> | Date | string
@@ -296,6 +332,9 @@ export type ServiceRequestScalarWhereWithAggregatesInput = {
 
 export type ServiceRequestCreateInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -315,6 +354,9 @@ export type ServiceRequestUncheckedCreateInput = {
   providerId?: string | null
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -326,6 +368,9 @@ export type ServiceRequestUncheckedCreateInput = {
 
 export type ServiceRequestUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -345,6 +390,9 @@ export type ServiceRequestUncheckedUpdateInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,6 +408,9 @@ export type ServiceRequestCreateManyInput = {
   providerId?: string | null
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -368,6 +419,9 @@ export type ServiceRequestCreateManyInput = {
 
 export type ServiceRequestUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -380,6 +434,9 @@ export type ServiceRequestUncheckedUpdateManyInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -407,6 +464,9 @@ export type ServiceRequestCountOrderByAggregateInput = {
   providerId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -419,6 +479,9 @@ export type ServiceRequestMaxOrderByAggregateInput = {
   providerId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -431,6 +494,9 @@ export type ServiceRequestMinOrderByAggregateInput = {
   providerId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   scheduleId?: Prisma.SortOrder
+  serviceDescription?: Prisma.SortOrder
+  serviceAddress?: Prisma.SortOrder
+  activePhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -648,6 +714,9 @@ export type ServiceRequestUncheckedUpdateOneWithoutScheduleNestedInput = {
 
 export type ServiceRequestCreateWithoutCustomerInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -665,6 +734,9 @@ export type ServiceRequestUncheckedCreateWithoutCustomerInput = {
   providerId?: string | null
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -709,6 +781,9 @@ export type ServiceRequestScalarWhereInput = {
   providerId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   serviceId?: Prisma.StringFilter<"ServiceRequest"> | string
   scheduleId?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  serviceDescription?: Prisma.StringFilter<"ServiceRequest"> | string
+  serviceAddress?: Prisma.StringFilter<"ServiceRequest"> | string
+  activePhone?: Prisma.StringFilter<"ServiceRequest"> | string
   status?: Prisma.EnumServiceRequestStatusFilter<"ServiceRequest"> | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
@@ -717,6 +792,9 @@ export type ServiceRequestScalarWhereInput = {
 
 export type ServiceRequestCreateWithoutCostBreakdownInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -735,6 +813,9 @@ export type ServiceRequestUncheckedCreateWithoutCostBreakdownInput = {
   providerId?: string | null
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -761,6 +842,9 @@ export type ServiceRequestUpdateToOneWithWhereWithoutCostBreakdownInput = {
 
 export type ServiceRequestUpdateWithoutCostBreakdownInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -779,6 +863,9 @@ export type ServiceRequestUncheckedUpdateWithoutCostBreakdownInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -789,6 +876,9 @@ export type ServiceRequestUncheckedUpdateWithoutCostBreakdownInput = {
 
 export type ServiceRequestCreateWithoutPaymentInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -807,6 +897,9 @@ export type ServiceRequestUncheckedCreateWithoutPaymentInput = {
   providerId?: string | null
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -833,6 +926,9 @@ export type ServiceRequestUpdateToOneWithWhereWithoutPaymentInput = {
 
 export type ServiceRequestUpdateWithoutPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -851,6 +947,9 @@ export type ServiceRequestUncheckedUpdateWithoutPaymentInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -861,6 +960,9 @@ export type ServiceRequestUncheckedUpdateWithoutPaymentInput = {
 
 export type ServiceRequestCreateWithoutReviewInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -879,6 +981,9 @@ export type ServiceRequestUncheckedCreateWithoutReviewInput = {
   providerId?: string | null
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -905,6 +1010,9 @@ export type ServiceRequestUpdateToOneWithWhereWithoutReviewInput = {
 
 export type ServiceRequestUpdateWithoutReviewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -923,6 +1031,9 @@ export type ServiceRequestUncheckedUpdateWithoutReviewInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -933,6 +1044,9 @@ export type ServiceRequestUncheckedUpdateWithoutReviewInput = {
 
 export type ServiceRequestCreateWithoutServiceInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -950,6 +1064,9 @@ export type ServiceRequestUncheckedCreateWithoutServiceInput = {
   customerId: string
   providerId?: string | null
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -987,6 +1104,9 @@ export type ServiceRequestUpdateManyWithWhereWithoutServiceInput = {
 
 export type ServiceRequestCreateWithoutProviderInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -1004,6 +1124,9 @@ export type ServiceRequestUncheckedCreateWithoutProviderInput = {
   customerId: string
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -1041,6 +1164,9 @@ export type ServiceRequestUpdateManyWithWhereWithoutProviderInput = {
 
 export type ServiceRequestCreateWithoutScheduleInput = {
   id?: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -1058,6 +1184,9 @@ export type ServiceRequestUncheckedCreateWithoutScheduleInput = {
   customerId: string
   providerId?: string | null
   serviceId: string
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -1085,6 +1214,9 @@ export type ServiceRequestUpdateToOneWithWhereWithoutScheduleInput = {
 
 export type ServiceRequestUpdateWithoutScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1102,6 +1234,9 @@ export type ServiceRequestUncheckedUpdateWithoutScheduleInput = {
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1116,6 +1251,9 @@ export type ServiceRequestCreateManyCustomerInput = {
   providerId?: string | null
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -1124,6 +1262,9 @@ export type ServiceRequestCreateManyCustomerInput = {
 
 export type ServiceRequestUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1141,6 +1282,9 @@ export type ServiceRequestUncheckedUpdateWithoutCustomerInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1155,6 +1299,9 @@ export type ServiceRequestUncheckedUpdateManyWithoutCustomerInput = {
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1166,6 +1313,9 @@ export type ServiceRequestCreateManyServiceInput = {
   customerId: string
   providerId?: string | null
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -1174,6 +1324,9 @@ export type ServiceRequestCreateManyServiceInput = {
 
 export type ServiceRequestUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1191,6 +1344,9 @@ export type ServiceRequestUncheckedUpdateWithoutServiceInput = {
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1205,6 +1361,9 @@ export type ServiceRequestUncheckedUpdateManyWithoutServiceInput = {
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1216,6 +1375,9 @@ export type ServiceRequestCreateManyProviderInput = {
   customerId: string
   serviceId: string
   scheduleId?: string | null
+  serviceDescription: string
+  serviceAddress: string
+  activePhone: string
   status?: $Enums.ServiceRequestStatus
   rejectionReason?: string | null
   createdAt?: Date | string
@@ -1224,6 +1386,9 @@ export type ServiceRequestCreateManyProviderInput = {
 
 export type ServiceRequestUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1241,6 +1406,9 @@ export type ServiceRequestUncheckedUpdateWithoutProviderInput = {
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1255,6 +1423,9 @@ export type ServiceRequestUncheckedUpdateManyWithoutProviderInput = {
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  activePhone?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumServiceRequestStatusFieldUpdateOperationsInput | $Enums.ServiceRequestStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1269,6 +1440,9 @@ export type ServiceRequestSelect<ExtArgs extends runtime.Types.Extensions.Intern
   providerId?: boolean
   serviceId?: boolean
   scheduleId?: boolean
+  serviceDescription?: boolean
+  serviceAddress?: boolean
+  activePhone?: boolean
   status?: boolean
   rejectionReason?: boolean
   createdAt?: boolean
@@ -1288,6 +1462,9 @@ export type ServiceRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   providerId?: boolean
   serviceId?: boolean
   scheduleId?: boolean
+  serviceDescription?: boolean
+  serviceAddress?: boolean
+  activePhone?: boolean
   status?: boolean
   rejectionReason?: boolean
   createdAt?: boolean
@@ -1304,6 +1481,9 @@ export type ServiceRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   providerId?: boolean
   serviceId?: boolean
   scheduleId?: boolean
+  serviceDescription?: boolean
+  serviceAddress?: boolean
+  activePhone?: boolean
   status?: boolean
   rejectionReason?: boolean
   createdAt?: boolean
@@ -1320,13 +1500,16 @@ export type ServiceRequestSelectScalar = {
   providerId?: boolean
   serviceId?: boolean
   scheduleId?: boolean
+  serviceDescription?: boolean
+  serviceAddress?: boolean
+  activePhone?: boolean
   status?: boolean
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServiceRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "providerId" | "serviceId" | "scheduleId" | "status" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceRequest"]>
+export type ServiceRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "providerId" | "serviceId" | "scheduleId" | "serviceDescription" | "serviceAddress" | "activePhone" | "status" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceRequest"]>
 export type ServiceRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
@@ -1366,6 +1549,9 @@ export type $ServiceRequestPayload<ExtArgs extends runtime.Types.Extensions.Inte
     providerId: string | null
     serviceId: string
     scheduleId: string | null
+    serviceDescription: string
+    serviceAddress: string
+    activePhone: string
     status: $Enums.ServiceRequestStatus
     rejectionReason: string | null
     createdAt: Date
@@ -1805,6 +1991,9 @@ export interface ServiceRequestFieldRefs {
   readonly providerId: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly serviceId: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly scheduleId: Prisma.FieldRef<"ServiceRequest", 'String'>
+  readonly serviceDescription: Prisma.FieldRef<"ServiceRequest", 'String'>
+  readonly serviceAddress: Prisma.FieldRef<"ServiceRequest", 'String'>
+  readonly activePhone: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly status: Prisma.FieldRef<"ServiceRequest", 'ServiceRequestStatus'>
   readonly rejectionReason: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly createdAt: Prisma.FieldRef<"ServiceRequest", 'DateTime'>
