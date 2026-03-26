@@ -288,9 +288,19 @@ const cancelServiceRequestByCustomer = async (
 
 const updateServiceRequestByServiceProvider = async (
   requestId: string,
-  providerId: string,
+  userId: string,
   payload: IUpdateServiceCostPayload,
 ) => {
+  const provider = await prisma.serviceProvider.findUnique({
+    where: { userId },
+  });
+
+  if (!provider) {
+    throw new AppError(status.NOT_FOUND, "Service provider profile not found!");
+  }
+
+  const providerId = provider.id;
+
   const isRequestExist = await prisma.serviceRequest.findUnique({
     where: { id: requestId },
     include: { payment: true },
@@ -424,7 +434,7 @@ const updateServiceRequestByManagement = async (
             providerName: updatedRequest.provider.user.name,
             providerPhone: updatedRequest.provider.user.phone,
             providerEmail: updatedRequest.provider.user.email,
-            schedule: scheduleInfo, // এটি এখন "26 Mar, 2026 at 10:00 AM" এভাবে দেখাবে
+            schedule: scheduleInfo,
           },
         });
       } catch (error) {
