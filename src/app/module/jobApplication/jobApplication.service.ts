@@ -1,8 +1,14 @@
 import { prisma } from "../../lib/prisma";
-import { IJobApplicationPayload } from "./jobApplication.interface";
+import {
+  IJobApplicationPayload,
+  IUpdateJobApplicationPayload,
+} from "./jobApplication.interface";
 import status from "http-status";
 import AppError from "../../errorHelpers/AppError";
-import { UserRole } from "../../../generated/prisma/enums";
+import {
+  JobApplicationStatus,
+  UserRole,
+} from "../../../generated/prisma/enums";
 
 const applyToJob = async (payload: IJobApplicationPayload) => {
   if (payload.userId && payload.jobPostId) {
@@ -83,17 +89,69 @@ const getAllApplicationsForAdmin = async () => {
 
 const updateApplication = async (
   id: string,
-  payload: Partial<IJobApplicationPayload>,
+  payload: IUpdateJobApplicationPayload,
 ) => {
-  const { ...updateData } = payload;
-
-  return await prisma.jobApplication.update({
+  const isApplicationExist = await prisma.jobApplication.findUnique({
     where: { id },
-    data: updateData,
-    include: {
-      user: { select: { email: true, name: true } },
-      jobPost: { select: { title: true } },
-    },
+    include: { user: true, jobPost: true },
+  });
+
+  if (!isApplicationExist) {
+    throw new AppError(status.NOT_FOUND, "Job application not found!");
+  }
+
+  return await prisma.$transaction(async (tx) => {
+    const updatedApplication = await tx.jobApplication.update({
+      where: { id },
+      data: payload,
+      include: {
+        user: {
+          select: {
+            email: true,
+            name: true,
+            id: true,
+            phone: true,
+            address: true,
+            isDeleted: true,
+            emailVerified: true,
+          },
+        },
+        jobPost: {
+          select: {
+            title: true,
+            serviceType: true,
+            salaryRange: true,
+            deadline: true,
+            isActive: true,
+            location: true,
+            requirements: true,
+          },
+        },
+      },
+    });
+
+    if (payload.status === JobApplicationStatus.ACCEPTED) {
+      const isAlreadyProvider = await tx.serviceProvider.findUnique({
+        where: { userId: updatedApplication.userId },
+      });
+
+      if (!isAlreadyProvider) {
+        await tx.serviceProvider.create({
+          data: {
+            userId: updatedApplication.userId,
+            serviceType:
+              updatedApplication.jobPost?.serviceType ?? "General Service",
+          },
+        });
+
+        await tx.user.update({
+          where: { id: updatedApplication.userId },
+          data: { role: UserRole.SERVICE_PROVIDER },
+        });
+      }
+    }
+
+    return updatedApplication;
   });
 };
 

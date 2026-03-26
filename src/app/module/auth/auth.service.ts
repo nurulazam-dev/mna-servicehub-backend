@@ -113,6 +113,13 @@ const registerJobCandidate = async (payload: IRegisterJobCandidatePayload) => {
           status: UserStatus.ACTIVE,
         },
       });
+
+      /* 
+*important*: when registerJobHolder, then will work something like this:
+1. when 1st time register, he is create account in user table
+2. then, also create account in service_providers table. his status will be false. 
+*/
+
       const application = await tx.jobApplication.create({
         data: {
           userId: updatedUser.id,
