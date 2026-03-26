@@ -8,12 +8,25 @@ import { UserRole } from "../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 
 const createServiceSchedule = async (
-  providerId: string,
+  userId: string,
   payload: ICreateServiceSchedulePayload,
 ) => {
   const { scheduleDate, startTime } = payload;
 
   const targetDate = new Date(scheduleDate);
+
+  const provider = await prisma.serviceProvider.findUnique({
+    where: { userId },
+  });
+
+  if (!provider) {
+    throw new AppError(
+      status.NOT_FOUND,
+      "Service Provider profile not found! Please complete your registration.",
+    );
+  }
+
+  const providerId = provider.id;
 
   const isExist = await prisma.serviceSchedule.findFirst({
     where: { providerId, scheduleDate: targetDate },
@@ -52,10 +65,18 @@ const createServiceSchedule = async (
   return result;
 };
 
-const getMySchedules = async (providerId: string) => {
+const getMySchedules = async (userId: string) => {
+  const provider = await prisma.serviceProvider.findUnique({
+    where: { userId },
+  });
+
+  if (!provider) {
+    return [];
+  }
+
   const result = await prisma.serviceSchedule.findMany({
     where: {
-      providerId: providerId,
+      providerId: provider.id,
     },
 
     orderBy: {

@@ -10,7 +10,7 @@ import {
   ILoginUserPayload,
   IRegisterCustomerPayload,
   IRegisterJobCandidatePayload,
-  IUpdateApplicationStatusPayload,
+  // IUpdateApplicationStatusPayload,
 } from "./auth.interface";
 import { jwtUtils } from "../../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
@@ -114,12 +114,6 @@ const registerJobCandidate = async (payload: IRegisterJobCandidatePayload) => {
         },
       });
 
-      /* 
-*important*: when registerJobHolder, then will work something like this:
-1. when 1st time register, he is create account in user table
-2. then, also create account in service_providers table. his status will be false. 
-*/
-
       const application = await tx.jobApplication.create({
         data: {
           userId: updatedUser.id,
@@ -157,7 +151,7 @@ const registerJobCandidate = async (payload: IRegisterJobCandidatePayload) => {
   }
 };
 
-const updateApplicationStatus = async (
+/* const updateApplicationStatus = async (
   applicationId: string,
   payload: IUpdateApplicationStatusPayload,
 ) => {
@@ -181,18 +175,11 @@ const updateApplicationStatus = async (
           status: "ACTIVE",
         },
       });
-      /* =================================================
-      congratulation email send for selected service_provider
-     ================================================= */
-    } else {
-      /* =================================================
-             add rejected feedback and send email
-      ================================================= */
     }
 
     return application;
   });
-};
+}; */
 
 const loginUser = async (payload: ILoginUserPayload) => {
   const { email, password } = payload;
@@ -523,7 +510,7 @@ const googleLoginSuccess = async (session: Record<string, any>) => {
 export const AuthService = {
   registerCustomer,
   registerJobCandidate,
-  updateApplicationStatus,
+  // updateApplicationStatus,
   loginUser,
   logoutUser,
   getMe,
