@@ -171,7 +171,7 @@ const getScheduleById = async (user: IRequestUser, id: string) => {
       provider: {
         include: {
           user: {
-            select: { name: true, email: true, phone: true },
+            select: { id: true, name: true, email: true, phone: true },
           },
         },
       },
@@ -190,7 +190,7 @@ const getScheduleById = async (user: IRequestUser, id: string) => {
 
   if (
     user.role === UserRole.SERVICE_PROVIDER &&
-    result.providerId !== user.userId
+    result.provider.userId !== user.userId
   ) {
     throw new AppError(
       status.FORBIDDEN,
