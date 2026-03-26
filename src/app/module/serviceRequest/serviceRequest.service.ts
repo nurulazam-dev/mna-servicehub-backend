@@ -17,6 +17,10 @@ import { sendEmail } from "../../utils/email";
 import { format } from "date-fns";
 
 const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
+  if (!payload.customerId) {
+    throw new AppError(status.BAD_REQUEST, "Customer information is missing!");
+  }
+
   const isServiceExist = await prisma.service.findUnique({
     where: {
       id: payload.serviceId,
@@ -42,10 +46,16 @@ const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
     },
     include: {
       service: {
-        select: { name: true, description: true },
+        select: { id: true, name: true, description: true },
       },
       customer: {
-        select: { name: true, email: true, phone: true, address: true },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+        },
       },
     },
   });
