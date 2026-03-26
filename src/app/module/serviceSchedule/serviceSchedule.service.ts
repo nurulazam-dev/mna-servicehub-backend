@@ -6,6 +6,7 @@ import { ICreateServiceSchedulePayload } from "./serviceSchedule.interface";
 import { addMinutes, format, parse } from "date-fns";
 import { UserRole } from "../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
+import { startOfDay, endOfDay } from "date-fns";
 
 const createServiceSchedule = async (
   userId: string,
@@ -101,13 +102,26 @@ const getMySchedules = async (userId: string) => {
 
 const getScheduleByDate = async (user: IRequestUser, date: string) => {
   const targetDate = new Date(date);
+  const startDate = startOfDay(targetDate);
+  const endDate = endOfDay(targetDate);
 
   const whereConditions: any = {
-    scheduleDate: targetDate,
+    scheduleDate: {
+      gte: startDate,
+      lte: endDate,
+    },
   };
 
   if (user.role === UserRole.SERVICE_PROVIDER) {
-    whereConditions.providerId = user.userId;
+    const provider = await prisma.serviceProvider.findUnique({
+      where: { userId: user.userId },
+    });
+
+    if (!provider) {
+      return [];
+    }
+
+    whereConditions.providerId = provider.id;
   }
 
   const result = await prisma.serviceSchedule.findMany({
@@ -116,12 +130,12 @@ const getScheduleByDate = async (user: IRequestUser, date: string) => {
       provider: {
         include: {
           user: {
-            select: { name: true, email: true, phone: true },
+            select: { id: true, name: true, email: true, phone: true },
           },
         },
       },
       serviceRequest: {
-        select: { id: true, status: true },
+        select: { id: true, status: true, service: { select: { name: true } } },
       },
     },
     orderBy: {
