@@ -12,5 +12,5 @@ model JobApplication {
     @@unique([userId, jobPostId])
     @@index([jobPostId])
     @@index([status])
-    @@map("jobApplications")
+    @@map("job_applications")
 }

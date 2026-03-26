@@ -1,0 +1,91 @@
+import { Request, Response } from "express";
+import { ServiceScheduleServices } from "./serviceSchedule.service";
+import { catchAsync } from "../../shared/catchAsync";
+import { sendResponse } from "../../shared/sendResponse";
+import status from "http-status";
+import { IRequestUser } from "../../interfaces/requestUser.interface";
+
+const createServiceSchedule = catchAsync(
+  async (req: Request, res: Response) => {
+    const user = req.user as IRequestUser;
+
+    const result = await ServiceScheduleServices.createServiceSchedule(
+      user.userId,
+      req.body,
+    );
+
+    sendResponse(res, {
+      httpStatusCode: status.CREATED,
+      success: true,
+      message: "3 Service slots created successfully",
+      data: result,
+    });
+  },
+);
+
+const getMySchedules = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IRequestUser;
+
+  const result = await ServiceScheduleServices.getMySchedules(user.userId);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Provider schedules retrieved successfully",
+    data: result,
+  });
+});
+
+const getScheduleByDate = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IRequestUser;
+
+  const { date } = req.query;
+
+  const result = await ServiceScheduleServices.getScheduleByDate(
+    user,
+    date as string,
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: `Schedules retrieved for ${date} successfully`,
+    data: result,
+  });
+});
+
+const getServiceSchedules = catchAsync(async (req: Request, res: Response) => {
+  const result = await ServiceScheduleServices.getServiceSchedules();
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "All service schedules retrieved successfully",
+    data: result,
+  });
+});
+
+const getScheduleById = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IRequestUser;
+  const { id } = req.params;
+
+  const result = await ServiceScheduleServices.getScheduleById(
+    user,
+    id as string,
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Service schedule details retrieved successfully",
+    data: result,
+  });
+});
+
+export const ServiceScheduleController = {
+  createServiceSchedule,
+  getMySchedules,
+  getScheduleByDate,
+  getServiceSchedules,
+  getScheduleById,
+};

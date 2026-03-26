@@ -14,6 +14,7 @@ import {
 } from "../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { sendEmail } from "../../utils/email";
+import { format } from "date-fns";
 
 const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
   const isServiceExist = await prisma.service.findUnique({
@@ -388,18 +389,12 @@ const updateServiceRequestByManagement = async (
         const requestWithSchedule = updatedRequest as any;
 
         const scheduleInfo = requestWithSchedule.schedule
-          ? `${requestWithSchedule.schedule.startDate} at ${requestWithSchedule.schedule.startTime}`
+          ? `${format(new Date(requestWithSchedule.schedule.scheduleDate), "dd MMM, yyyy")} at ${requestWithSchedule.schedule.startTime}`
           : "Pending Selection";
 
-        const requestDate = new Date(isRequestExist.createdAt).toLocaleString(
-          "en-GB",
-          {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          },
+        const requestDate = format(
+          new Date(isRequestExist.createdAt),
+          "dd MMM, yyyy 'at' hh:mm a",
         );
 
         await sendEmail({
@@ -419,7 +414,7 @@ const updateServiceRequestByManagement = async (
             providerName: updatedRequest.provider.user.name,
             providerPhone: updatedRequest.provider.user.phone,
             providerEmail: updatedRequest.provider.user.email,
-            schedule: scheduleInfo,
+            schedule: scheduleInfo, // এটি এখন "26 Mar, 2026 at 10:00 AM" এভাবে দেখাবে
           },
         });
       } catch (error) {
