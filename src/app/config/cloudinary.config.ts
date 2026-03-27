@@ -45,8 +45,8 @@ export const uploadFileToCloudinary = async (
       .upload_stream(
         {
           resource_type: "auto",
-          public_id: `mna-healthcare/${folder}/${uniqueName}`,
-          folder: `mna-healthcare/${folder}`,
+          public_id: `mna-servicehub/${folder}/${uniqueName}`,
+          folder: `mna-servicehub/${folder}`,
         },
         (error, result) => {
           if (error) {
