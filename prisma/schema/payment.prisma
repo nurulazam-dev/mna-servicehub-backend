@@ -6,7 +6,7 @@ model Payment {
     stripeCustomerId   String?
     invoiceUrl         String?        @db.Text
     paymentGatewayData Json?
-    status             String         @default("succeeded")
+    status             PaymentStatus  @default(PENDING)
     createdAt          DateTime       @default(now())
     updatedAt          DateTime       @updatedAt
     requestId          String         @unique

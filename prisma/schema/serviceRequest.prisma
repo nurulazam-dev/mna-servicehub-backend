@@ -19,6 +19,7 @@ model ServiceRequest {
     updatedAt          DateTime             @updatedAt
     costBreakdown      CostBreakdown?
     payment            Payment?
+    paymentStatus      PaymentStatus        @default(UNPAID)
     review             Review?
 
     @@index([customerId])
