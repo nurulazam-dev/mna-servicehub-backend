@@ -25,3 +25,10 @@ enum JobApplicationStatus {
     ACCEPTED
     REJECTED
 }
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    UNPAID
+    FAILED
+}
