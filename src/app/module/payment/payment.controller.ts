@@ -63,9 +63,22 @@ const getMyPaidPayments = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getSinglePayment = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await PaymentService.getSinglePayment(id as string);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Payment details fetched successfully",
+    data: result,
+  });
+});
+
 export const PaymentController = {
   createPayment,
   handleStripeWebhookEvent,
   getAllPayments,
   getMyPaidPayments,
+  getSinglePayment,
 };

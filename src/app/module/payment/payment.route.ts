@@ -23,4 +23,10 @@ router.get(
   PaymentController.getMyPaidPayments,
 );
 
+router.get(
+  "/:id",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  PaymentController.getSinglePayment,
+);
+
 export const PaymentRoutes = router;

@@ -330,9 +330,36 @@ const getMyPaidPayments = async (customerId: string, query: any) => {
   };
 };
 
+const getSinglePayment = async (paymentId: string) => {
+  const result = await prisma.payment.findUnique({
+    where: { id: paymentId },
+    include: {
+      serviceRequest: {
+        include: {
+          customer: {
+            select: { name: true, email: true, image: true },
+          },
+          provider: {
+            include: { user: { select: { name: true, email: true } } },
+          },
+          service: true,
+          costBreakdown: true,
+        },
+      },
+    },
+  });
+
+  if (!result) {
+    throw new AppError(status.NOT_FOUND, "Payment details not found!");
+  }
+
+  return result;
+};
+
 export const PaymentService = {
   createPayment,
   handlerStripeWebhookEvent,
   getAllPayments,
   getMyPaidPayments,
+  getSinglePayment,
 };
