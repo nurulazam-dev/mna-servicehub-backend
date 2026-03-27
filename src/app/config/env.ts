@@ -28,10 +28,10 @@ interface EnvConfig {
   //   CLOUDINARY_API_KEY: string;
   //   CLOUDINARY_API_SECRET: string;
   // };
-  // STRIPE: {
-  //   STRIPE_SECRET_KEY: string;
-  //   STRIPE_WEBHOOK_SECRET: string;
-  // };
+  STRIPE: {
+    STRIPE_SECRET_KEY: string;
+    STRIPE_WEBHOOK_SECRET: string;
+  };
   ADMIN_EMAIL: string;
   ADMIN_PASSWORD: string;
 }
@@ -59,8 +59,8 @@ const loadEnvVariables = (): EnvConfig => {
     // "CLOUDINARY_CLOUD_NAME",
     // "CLOUDINARY_API_KEY",
     // "CLOUDINARY_API_SECRET",
-    // "STRIPE_SECRET_KEY",
-    // "STRIPE_WEBHOOK_SECRET",
+    "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET",
     "ADMIN_EMAIL",
     "ADMIN_PASSWORD",
   ];
@@ -99,10 +99,10 @@ const loadEnvVariables = (): EnvConfig => {
     //   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
     //   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
     // },
-    // STRIPE: {
-    //   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
-    //   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
-    // },
+    STRIPE: {
+      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+      STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+    },
     ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
   };
