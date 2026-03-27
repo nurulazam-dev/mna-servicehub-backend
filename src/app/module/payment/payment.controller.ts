@@ -49,8 +49,23 @@ const getAllPayments = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMyPaidPayments = catchAsync(async (req: Request, res: Response) => {
+  const customerId = (req.user as any).userId;
+
+  const result = await PaymentService.getMyPaidPayments(customerId, req.query);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Your paid payments fetched successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const PaymentController = {
   createPayment,
   handleStripeWebhookEvent,
   getAllPayments,
+  getMyPaidPayments,
 };

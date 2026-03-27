@@ -289,8 +289,50 @@ const getAllPayments = async (query: any) => {
   };
 };
 
+const getMyPaidPayments = async (customerId: string, query: any) => {
+  const { page = 1, limit = 10 } = query;
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const whereConditions: any = {
+    status: PaymentStatus.PAID,
+    serviceRequest: {
+      customerId: customerId,
+    },
+  };
+
+  const result = await prisma.payment.findMany({
+    where: whereConditions,
+    skip,
+    take: Number(limit),
+    orderBy: { updatedAt: "desc" },
+    include: {
+      serviceRequest: {
+        include: {
+          service: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+  });
+
+  const total = await prisma.payment.count({ where: whereConditions });
+  const totalPages = Math.ceil(total / Number(limit));
+
+  return {
+    meta: {
+      page: Number(page),
+      limit: Number(limit),
+      total,
+      totalPages,
+    },
+    data: result,
+  };
+};
+
 export const PaymentService = {
   createPayment,
   handlerStripeWebhookEvent,
   getAllPayments,
+  getMyPaidPayments,
 };
