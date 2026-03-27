@@ -38,6 +38,7 @@ export type ServiceRequestMinAggregateOutputType = {
   rejectionReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  paymentStatus: $Enums.PaymentStatus | null
 }
 
 export type ServiceRequestMaxAggregateOutputType = {
@@ -54,6 +55,7 @@ export type ServiceRequestMaxAggregateOutputType = {
   rejectionReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  paymentStatus: $Enums.PaymentStatus | null
 }
 
 export type ServiceRequestCountAggregateOutputType = {
@@ -70,6 +72,7 @@ export type ServiceRequestCountAggregateOutputType = {
   rejectionReason: number
   createdAt: number
   updatedAt: number
+  paymentStatus: number
   _all: number
 }
 
@@ -88,6 +91,7 @@ export type ServiceRequestMinAggregateInputType = {
   rejectionReason?: true
   createdAt?: true
   updatedAt?: true
+  paymentStatus?: true
 }
 
 export type ServiceRequestMaxAggregateInputType = {
@@ -104,6 +108,7 @@ export type ServiceRequestMaxAggregateInputType = {
   rejectionReason?: true
   createdAt?: true
   updatedAt?: true
+  paymentStatus?: true
 }
 
 export type ServiceRequestCountAggregateInputType = {
@@ -120,6 +125,7 @@ export type ServiceRequestCountAggregateInputType = {
   rejectionReason?: true
   createdAt?: true
   updatedAt?: true
+  paymentStatus?: true
   _all?: true
 }
 
@@ -209,6 +215,7 @@ export type ServiceRequestGroupByOutputType = {
   rejectionReason: string | null
   createdAt: Date
   updatedAt: Date
+  paymentStatus: $Enums.PaymentStatus
   _count: ServiceRequestCountAggregateOutputType | null
   _min: ServiceRequestMinAggregateOutputType | null
   _max: ServiceRequestMaxAggregateOutputType | null
@@ -246,6 +253,7 @@ export type ServiceRequestWhereInput = {
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFilter<"ServiceRequest"> | $Enums.PaymentStatus
   customer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   provider?: Prisma.XOR<Prisma.ServiceProviderNullableScalarRelationFilter, Prisma.ServiceProviderWhereInput> | null
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
@@ -269,6 +277,7 @@ export type ServiceRequestOrderByWithRelationInput = {
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
   customer?: Prisma.UserOrderByWithRelationInput
   provider?: Prisma.ServiceProviderOrderByWithRelationInput
   service?: Prisma.ServiceOrderByWithRelationInput
@@ -295,6 +304,7 @@ export type ServiceRequestWhereUniqueInput = Prisma.AtLeast<{
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFilter<"ServiceRequest"> | $Enums.PaymentStatus
   customer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   provider?: Prisma.XOR<Prisma.ServiceProviderNullableScalarRelationFilter, Prisma.ServiceProviderWhereInput> | null
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
@@ -318,6 +328,7 @@ export type ServiceRequestOrderByWithAggregationInput = {
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
   _count?: Prisma.ServiceRequestCountOrderByAggregateInput
   _max?: Prisma.ServiceRequestMaxOrderByAggregateInput
   _min?: Prisma.ServiceRequestMinOrderByAggregateInput
@@ -340,6 +351,7 @@ export type ServiceRequestScalarWhereWithAggregatesInput = {
   rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceRequest"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceRequest"> | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusWithAggregatesFilter<"ServiceRequest"> | $Enums.PaymentStatus
 }
 
 export type ServiceRequestCreateInput = {
@@ -352,6 +364,7 @@ export type ServiceRequestCreateInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
   service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
@@ -375,6 +388,7 @@ export type ServiceRequestUncheckedCreateInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
@@ -390,6 +404,7 @@ export type ServiceRequestUpdateInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
@@ -413,6 +428,7 @@ export type ServiceRequestUncheckedUpdateInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
@@ -432,6 +448,7 @@ export type ServiceRequestCreateManyInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
 }
 
 export type ServiceRequestUpdateManyMutationInput = {
@@ -444,6 +461,7 @@ export type ServiceRequestUpdateManyMutationInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
 }
 
 export type ServiceRequestUncheckedUpdateManyInput = {
@@ -460,6 +478,7 @@ export type ServiceRequestUncheckedUpdateManyInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
 }
 
 export type ServiceRequestListRelationFilter = {
@@ -491,6 +510,7 @@ export type ServiceRequestCountOrderByAggregateInput = {
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
 }
 
 export type ServiceRequestMaxOrderByAggregateInput = {
@@ -507,6 +527,7 @@ export type ServiceRequestMaxOrderByAggregateInput = {
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
 }
 
 export type ServiceRequestMinOrderByAggregateInput = {
@@ -523,6 +544,7 @@ export type ServiceRequestMinOrderByAggregateInput = {
   rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
 }
 
 export type ServiceRequestNullableScalarRelationFilter = {
@@ -744,6 +766,7 @@ export type ServiceRequestCreateWithoutCustomerInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
   service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
@@ -765,6 +788,7 @@ export type ServiceRequestUncheckedCreateWithoutCustomerInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
@@ -813,6 +837,7 @@ export type ServiceRequestScalarWhereInput = {
   rejectionReason?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFilter<"ServiceRequest"> | $Enums.PaymentStatus
 }
 
 export type ServiceRequestCreateWithoutCostBreakdownInput = {
@@ -825,6 +850,7 @@ export type ServiceRequestCreateWithoutCostBreakdownInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
   service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
@@ -847,6 +873,7 @@ export type ServiceRequestUncheckedCreateWithoutCostBreakdownInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
 }
@@ -877,6 +904,7 @@ export type ServiceRequestUpdateWithoutCostBreakdownInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
@@ -899,6 +927,7 @@ export type ServiceRequestUncheckedUpdateWithoutCostBreakdownInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
 }
@@ -913,6 +942,7 @@ export type ServiceRequestCreateWithoutPaymentInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
   service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
@@ -935,6 +965,7 @@ export type ServiceRequestUncheckedCreateWithoutPaymentInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
 }
@@ -965,6 +996,7 @@ export type ServiceRequestUpdateWithoutPaymentInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
@@ -987,6 +1019,7 @@ export type ServiceRequestUncheckedUpdateWithoutPaymentInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
 }
@@ -1001,6 +1034,7 @@ export type ServiceRequestCreateWithoutReviewInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
   service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
@@ -1023,6 +1057,7 @@ export type ServiceRequestUncheckedCreateWithoutReviewInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
 }
@@ -1053,6 +1088,7 @@ export type ServiceRequestUpdateWithoutReviewInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
@@ -1075,6 +1111,7 @@ export type ServiceRequestUncheckedUpdateWithoutReviewInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
 }
@@ -1089,6 +1126,7 @@ export type ServiceRequestCreateWithoutServiceInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
@@ -1110,6 +1148,7 @@ export type ServiceRequestUncheckedCreateWithoutServiceInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
@@ -1151,6 +1190,7 @@ export type ServiceRequestCreateWithoutProviderInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
   schedule?: Prisma.ServiceScheduleCreateNestedOneWithoutServiceRequestInput
@@ -1172,6 +1212,7 @@ export type ServiceRequestUncheckedCreateWithoutProviderInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
@@ -1213,6 +1254,7 @@ export type ServiceRequestCreateWithoutScheduleInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   customer: Prisma.UserCreateNestedOneWithoutServiceRequestsInput
   provider?: Prisma.ServiceProviderCreateNestedOneWithoutAssignedJobsInput
   service: Prisma.ServiceCreateNestedOneWithoutServiceRequestsInput
@@ -1234,6 +1276,7 @@ export type ServiceRequestUncheckedCreateWithoutScheduleInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedCreateNestedOneWithoutServiceRequestInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutServiceRequestInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutServiceRequestInput
@@ -1265,6 +1308,7 @@ export type ServiceRequestUpdateWithoutScheduleInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
@@ -1286,6 +1330,7 @@ export type ServiceRequestUncheckedUpdateWithoutScheduleInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
@@ -1304,6 +1349,7 @@ export type ServiceRequestCreateManyCustomerInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
 }
 
 export type ServiceRequestUpdateWithoutCustomerInput = {
@@ -1316,6 +1362,7 @@ export type ServiceRequestUpdateWithoutCustomerInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
@@ -1337,6 +1384,7 @@ export type ServiceRequestUncheckedUpdateWithoutCustomerInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
@@ -1355,6 +1403,7 @@ export type ServiceRequestUncheckedUpdateManyWithoutCustomerInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
 }
 
 export type ServiceRequestCreateManyServiceInput = {
@@ -1370,6 +1419,7 @@ export type ServiceRequestCreateManyServiceInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
 }
 
 export type ServiceRequestUpdateWithoutServiceInput = {
@@ -1382,6 +1432,7 @@ export type ServiceRequestUpdateWithoutServiceInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   provider?: Prisma.ServiceProviderUpdateOneWithoutAssignedJobsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
@@ -1403,6 +1454,7 @@ export type ServiceRequestUncheckedUpdateWithoutServiceInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
@@ -1421,6 +1473,7 @@ export type ServiceRequestUncheckedUpdateManyWithoutServiceInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
 }
 
 export type ServiceRequestCreateManyProviderInput = {
@@ -1436,6 +1489,7 @@ export type ServiceRequestCreateManyProviderInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  paymentStatus?: $Enums.PaymentStatus
 }
 
 export type ServiceRequestUpdateWithoutProviderInput = {
@@ -1448,6 +1502,7 @@ export type ServiceRequestUpdateWithoutProviderInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   customer?: Prisma.UserUpdateOneRequiredWithoutServiceRequestsNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutServiceRequestsNestedInput
   schedule?: Prisma.ServiceScheduleUpdateOneWithoutServiceRequestNestedInput
@@ -1469,6 +1524,7 @@ export type ServiceRequestUncheckedUpdateWithoutProviderInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   costBreakdown?: Prisma.CostBreakdownUncheckedUpdateOneWithoutServiceRequestNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutServiceRequestNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutServiceRequestNestedInput
@@ -1487,6 +1543,7 @@ export type ServiceRequestUncheckedUpdateManyWithoutProviderInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
 }
 
 
@@ -1505,6 +1562,7 @@ export type ServiceRequestSelect<ExtArgs extends runtime.Types.Extensions.Intern
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  paymentStatus?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
@@ -1528,6 +1586,7 @@ export type ServiceRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  paymentStatus?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
@@ -1548,6 +1607,7 @@ export type ServiceRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  paymentStatus?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
@@ -1568,9 +1628,10 @@ export type ServiceRequestSelectScalar = {
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  paymentStatus?: boolean
 }
 
-export type ServiceRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "providerId" | "serviceId" | "scheduleId" | "serviceDescription" | "serviceAddress" | "activePhone" | "status" | "isDeleted" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceRequest"]>
+export type ServiceRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "providerId" | "serviceId" | "scheduleId" | "serviceDescription" | "serviceAddress" | "activePhone" | "status" | "isDeleted" | "rejectionReason" | "createdAt" | "updatedAt" | "paymentStatus", ExtArgs["result"]["serviceRequest"]>
 export type ServiceRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   provider?: boolean | Prisma.ServiceRequest$providerArgs<ExtArgs>
@@ -1618,6 +1679,7 @@ export type $ServiceRequestPayload<ExtArgs extends runtime.Types.Extensions.Inte
     rejectionReason: string | null
     createdAt: Date
     updatedAt: Date
+    paymentStatus: $Enums.PaymentStatus
   }, ExtArgs["result"]["serviceRequest"]>
   composites: {}
 }
@@ -2061,6 +2123,7 @@ export interface ServiceRequestFieldRefs {
   readonly rejectionReason: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly createdAt: Prisma.FieldRef<"ServiceRequest", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ServiceRequest", 'DateTime'>
+  readonly paymentStatus: Prisma.FieldRef<"ServiceRequest", 'PaymentStatus'>
 }
     
 
