@@ -88,128 +88,9 @@ const createPayment = async (payload: ICreatePaymentPayload) => {
   return result;
 };
 
-/* const handlerStripeWebhookEvent = async (event: Stripe.Event) => {
-  const existingPayment = await prisma.payment.findFirst({
-    where: { stripeEventId: event.id },
-  });
-
-  if (existingPayment) {
-    return { message: `Event ${event.id} already processed.` };
-  }
-
-  switch (event.type) {
-    case "checkout.session.completed": {
-      const session = event.data.object as any;
-      const requestId = session.metadata?.requestId;
-      const paymentId = session.metadata?.paymentId;
-
-      if (!requestId || !paymentId) {
-        return { message: "Missing metadata" };
-      }
-
-      const serviceRequest = await prisma.serviceRequest.findUnique({
-        where: { id: requestId },
-        include: {
-          customer: true,
-          provider: { include: { user: true } },
-          service: true,
-          costBreakdown: true,
-          schedule: true,
-        },
-      });
-
-      if (!serviceRequest) return { message: "Request not found" };
-
-      let pdfBuffer: Buffer | null = null;
-
-      const result = await prisma.$transaction(async (tx) => {
-        const updatedPayment = await tx.payment.update({
-          where: { id: paymentId },
-          data: {
-            status: PaymentStatus.PAID,
-            paymentGatewayData: session,
-            stripeEventId: event.id,
-          },
-        });
-
-        await tx.serviceRequest.update({
-          where: { id: requestId },
-          data: {
-            paymentStatus: PaymentStatus.PAID,
-          },
-        });
-
-        let invoiceUrl: string | null = null;
-
-        if (session.payment_status === "paid" && serviceRequest.costBreakdown) {
-          try {
-            pdfBuffer = await generateInvoicePdf({
-              invoiceId: paymentId,
-              customerName: serviceRequest.customer.name,
-              customerEmail: serviceRequest.customer.email,
-              serviceName: serviceRequest.service.name,
-              providerName: serviceRequest.provider?.user.name || "N/A",
-              amount: Number(serviceRequest.costBreakdown.totalAmount),
-              transactionId: updatedPayment.transactionId,
-              paymentDate: new Date().toISOString(),
-              serviceCharge: Number(serviceRequest.costBreakdown.serviceCharge),
-              productCost: Number(serviceRequest.costBreakdown.productCost),
-              additionalCost: Number(
-                serviceRequest.costBreakdown.additionalCost,
-              ),
-            });
-
-            const cloudinaryResponse = await uploadFileToCloudinary(
-              pdfBuffer,
-              `service-hub/invoices/inv-${paymentId}.pdf`,
-            );
-            invoiceUrl = cloudinaryResponse?.secure_url || null;
-
-            await tx.payment.update({
-              where: { id: paymentId },
-              data: { invoiceUrl },
-            });
-          } catch (err) {
-            console.error("PDF/Cloudinary Error:", err);
-          }
-        }
-        return { invoiceUrl };
-      });
-
-      if (session.payment_status === "paid" && result.invoiceUrl) {
-        try {
-          await sendEmail({
-            to: serviceRequest.customer.email,
-            subject: `Payment Successful - Invoice for ${serviceRequest.service.name}`,
-            templateName: "serviceInvoice",
-            templateData: {
-              name: serviceRequest.customer.name,
-              serviceName: serviceRequest.service.name,
-              totalAmount: serviceRequest.costBreakdown?.totalAmount,
-              invoiceUrl: result.invoiceUrl,
-            },
-            attachments: [
-              {
-                filename: `Invoice-${requestId.slice(0, 6)}.pdf`,
-                content: pdfBuffer || Buffer.from(""),
-                contentType: "application/pdf",
-              },
-            ],
-          });
-        } catch (emailErr) {
-          console.error("Email Error:", emailErr);
-        }
-      }
-      break;
-    }
-  }
-  return { success: true };
-}; */
-
 const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
   let event: Stripe.Event;
 
-  // ১. স্ট্রাইপ সিগনেচার ভেরিফাই করা (সিকিউরিটির জন্য মাস্ট)
   try {
     event = stripe.webhooks.constructEvent(
       payload,
@@ -217,11 +98,10 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
       envVars.STRIPE.STRIPE_WEBHOOK_SECRET as string,
     );
   } catch (err: any) {
-    console.error(`❌ Webhook Signature Verification Failed: ${err.message}`);
+    console.error(`Webhook Signature Verification Failed: ${err.message}`);
     throw new AppError(status.BAD_REQUEST, `Webhook Error: ${err.message}`);
   }
 
-  // ২. ডুপ্লিকেট ইভেন্ট চেক
   const existingPayment = await prisma.payment.findFirst({
     where: { stripeEventId: event.id },
   });
@@ -230,7 +110,6 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
     return { message: `Event ${event.id} already processed.` };
   }
 
-  // ৩. ইভেন্ট টাইপ অনুযায়ী অ্যাকশন
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as any;
@@ -256,7 +135,6 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
 
       let pdfBuffer: Buffer | null = null;
 
-      // ৪. ডাটাবেস আপডেট ট্রানজেকশন
       const result = await prisma.$transaction(async (tx) => {
         const updatedPayment = await tx.payment.update({
           where: { id: paymentId },
@@ -277,7 +155,6 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
 
         let invoiceUrl: string | null = null;
 
-        // ৫. পেমেন্ট সাকসেস হলে ইনভয়েস জেনারেট ও আপলোড
         if (session.payment_status === "paid" && serviceRequest.costBreakdown) {
           try {
             pdfBuffer = await generateInvoicePdf({
@@ -298,7 +175,7 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
 
             const cloudinaryResponse = await uploadFileToCloudinary(
               pdfBuffer,
-              `service-hub/invoices/inv-${paymentId}.pdf`,
+              `mna-service-hub/invoices/inv-${paymentId}.pdf`,
             );
 
             invoiceUrl = cloudinaryResponse?.secure_url || null;
@@ -310,13 +187,12 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
               });
             }
           } catch (err) {
-            console.error("⚠️ PDF/Cloudinary Processing Failed:", err);
+            console.error("PDF/Cloudinary Processing Failed:", err);
           }
         }
         return { invoiceUrl };
       });
 
-      // ৬. কাস্টমারকে ইনভয়েসসহ কনফার্মেশন ইমেইল পাঠানো
       if (session.payment_status === "paid") {
         try {
           await sendEmail({
@@ -340,13 +216,12 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
               : [],
           });
         } catch (emailErr) {
-          console.error("⚠️ Email Dispatch Failed:", emailErr);
+          console.error("Email Dispatch Failed:", emailErr);
         }
       }
       break;
     }
 
-    // পেমেন্ট ফেইল করলে স্ট্যাটাস আপডেট করার লজিক এখানে দিতে পারেন
     case "checkout.session.async_payment_failed":
     case "payment_intent.payment_failed": {
       const session = event.data.object as any;

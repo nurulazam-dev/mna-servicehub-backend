@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Successful - MNA ServiceHub</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f7;
+      }
+      .email-wrapper {
+        width: 100%;
+        padding: 20px;
+      }
+      .email-content {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e1e4e8;
+      }
+      .header {
+        background-color: #004aad;
+        color: #ffffff;
+        padding: 30px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .body-content {
+        padding: 30px;
+      }
+      .body-content h2 {
+        color: #004aad;
+        margin-top: 0;
+      }
+      .details-box {
+        background-color: #f9fafb;
+        border: 1px solid #edf2f7;
+        padding: 20px;
+        border-radius: 6px;
+        margin: 20px 0;
+      }
+      .details-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+      }
+      .details-row:last-child {
+        border-bottom: none;
+      }
+      .label {
+        font-weight: bold;
+        color: #4a5568;
+      }
+      .value {
+        color: #2d3748;
+      }
+      .footer {
+        background-color: #f7fafc;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #718096;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #004aad;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-wrapper">
+      <div class="email-content">
+        <div class="header">
+          <h1>MNA ServiceHub</h1>
+          <p>Payment Confirmation</p>
+        </div>
+
+        <div class="body-content">
+          <h2>Hello, <%= name %>!</h2>
+          <p>
+            Great news! Your payment for the service
+            <strong>"<%= serviceName %>"</strong> has been successfully
+            processed.
+          </p>
+
+          <div class="details-box">
+            <div class="details-row">
+              <span class="label">Service:</span>
+              <span class="value"><%= serviceName %></span>
+            </div>
+            <div class="details-row">
+              <span class="label">Total Amount:</span>
+              <span class="value"><%= totalAmount %> BDT</span>
+            </div>
+            <div class="details-row">
+              <span class="label">Status:</span>
+              <span class="value" style="color: #38a169; font-weight: bold"
+                >PAID</span
+              >
+            </div>
+          </div>
+
+          <p>
+            We have attached the detailed PDF invoice to this email for your
+            records. You can also view or download it using the button below:
+          </p>
+
+          <div style="text-align: center">
+            <a href="<%= invoiceUrl %>" class="button">View Online Invoice</a>
+          </div>
+
+          <p style="margin-top: 30px">
+            Thank you for choosing <strong>MNA ServiceHub</strong>. If you have
+            any questions, feel free to contact our support team.
+          </p>
+        </div>
+
+        <div class="footer">
+          <p>&copy; 2026 MNA ServiceHub. All rights reserved.</p>
+          <p>
+            This is an automated message, please do not reply directly to this
+            email.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
