@@ -137,7 +137,64 @@ const getAllReviews = async (query: any) => {
   };
 };
 
+const deleteReviewById = async (reviewId: string) => {
+  const review = await prisma.review.findUnique({
+    where: { id: reviewId },
+  });
+
+  if (!review) {
+    throw new AppError(status.NOT_FOUND, "Review not found!");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.review.delete({
+      where: { id: reviewId },
+    });
+
+    const serviceReviews = await tx.review.findMany({
+      where: { serviceId: review.serviceId },
+    });
+
+    const totalServiceReviews = serviceReviews.length;
+    const avgServiceRating =
+      totalServiceReviews > 0
+        ? serviceReviews.reduce((sum, r) => sum + r.rating, 0) /
+          totalServiceReviews
+        : 0.0;
+
+    await tx.service.update({
+      where: { id: review.serviceId },
+      data: {
+        averageRating: avgServiceRating,
+        totalReviews: totalServiceReviews,
+      },
+    });
+
+    const providerReviews = await tx.review.findMany({
+      where: { providerId: review.providerId },
+    });
+
+    const totalProviderReviews = providerReviews.length;
+    const avgProviderRating =
+      totalProviderReviews > 0
+        ? providerReviews.reduce((sum, r) => sum + r.rating, 0) /
+          totalProviderReviews
+        : 0.0;
+
+    await tx.serviceProvider.update({
+      where: { id: review.providerId },
+      data: {
+        averageRating: avgProviderRating,
+        totalReviews: totalProviderReviews,
+      },
+    });
+  });
+
+  return { message: "Review deleted and ratings recalculated successfully" };
+};
+
 export const ReviewService = {
   giveReview,
   getAllReviews,
+  deleteReviewById,
 };
