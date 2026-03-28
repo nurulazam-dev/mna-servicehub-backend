@@ -22,7 +22,6 @@ const registerStaff = async (payload: IRegisterStaffPayload) => {
 
   const result = await prisma.user.create({
     data: {
-      id: `user_${Date.now()}`,
       name: payload.name,
       email: payload.email,
       phone: payload.phone,
@@ -32,7 +31,6 @@ const registerStaff = async (payload: IRegisterStaffPayload) => {
       emailVerified: true,
       accounts: {
         create: {
-          id: `acc_${Date.now()}`,
           accountId: payload.email,
           providerId: "credential",
           password: hashedPassword,
