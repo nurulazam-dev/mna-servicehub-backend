@@ -193,8 +193,58 @@ const deleteReviewById = async (reviewId: string) => {
   return { message: "Review deleted and ratings recalculated successfully" };
 };
 
+const getMyReviews = async (customerId: string, query: any) => {
+  const { page = 1, limit = 10 } = query;
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const whereConditions = {
+    customerId: customerId,
+  };
+
+  const result = await prisma.review.findMany({
+    where: whereConditions,
+    skip,
+    take: Number(limit),
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      service: {
+        select: {
+          name: true,
+          imageUrl: true,
+        },
+      },
+      serviceProvider: {
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const total = await prisma.review.count({ where: whereConditions });
+  const totalPages = Math.ceil(total / Number(limit));
+
+  return {
+    meta: {
+      page: Number(page),
+      limit: Number(limit),
+      total,
+      totalPages,
+    },
+    data: result,
+  };
+};
+
 export const ReviewService = {
   giveReview,
   getAllReviews,
   deleteReviewById,
+  getMyReviews,
 };

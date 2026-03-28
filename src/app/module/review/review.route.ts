@@ -22,4 +22,10 @@ router.delete(
   ReviewController.deleteReviewById,
 );
 
+router.get(
+  "/my-reviews",
+  checkAuth(UserRole.CUSTOMER),
+  ReviewController.getMyReviews,
+);
+
 export const ReviewRoutes = router;
