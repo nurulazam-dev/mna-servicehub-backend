@@ -6,6 +6,7 @@ import { JobApplicationRoutes } from "../module/jobApplication/jobApplication.ro
 import { ServiceRequestRoutes } from "../module/serviceRequest/serviceRequest.route";
 import { ServiceScheduleRoutes } from "../module/serviceSchedule/serviceSchedule.route";
 import { PaymentRoutes } from "../module/payment/payment.route";
+import { ReviewRoutes } from "../module/review/review.route";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/job-applications", JobApplicationRoutes);
 router.use("/service-requests", ServiceRequestRoutes);
 router.use("/service-schedules", ServiceScheduleRoutes);
 router.use("/payments", PaymentRoutes);
+router.use("/reviews", ReviewRoutes);
 
 export const IndexRoutes = router;
