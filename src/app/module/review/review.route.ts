@@ -34,4 +34,6 @@ router.get(
   ReviewController.getMyReviewsBySP,
 );
 
+router.get("/service/:serviceId", ReviewController.getReviewsByService);
+
 export const ReviewRoutes = router;

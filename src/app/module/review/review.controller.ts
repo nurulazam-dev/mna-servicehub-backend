@@ -71,10 +71,28 @@ const getMyReviewsBySP = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getReviewsByService = catchAsync(async (req: Request, res: Response) => {
+  const { serviceId } = req.params;
+
+  const result = await ReviewService.getReviewsByService(
+    serviceId as string,
+    req.query,
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Reviews for this service fetched successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const ReviewController = {
   giveReview,
   getAllReviews,
   deleteReviewById,
   getMyReviews,
   getMyReviewsBySP,
+  getReviewsByService,
 };
