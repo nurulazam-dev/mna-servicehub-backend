@@ -9,6 +9,7 @@ import path from "path";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./app/lib/auth";
 import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
+import { PaymentController } from "./app/module/payment/payment.controller";
 
 const app: Application = express();
 
@@ -27,8 +28,16 @@ app.use(
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "stripe-signature"],
   }),
+);
+
+app.use(cookieParser());
+
+app.post(
+  "/api/v1/payments/webhook",
+  express.raw({ type: "application/json" }),
+  PaymentController.handleStripeWebhookEvent,
 );
 
 app.use("/api/auth", toNodeHandler(auth));
@@ -36,7 +45,6 @@ app.use("/api/auth", toNodeHandler(auth));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
-app.use(cookieParser());
 
 app.use("/api/v1", IndexRoutes);
 

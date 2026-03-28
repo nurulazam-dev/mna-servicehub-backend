@@ -8,7 +8,7 @@ import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { IServiceRequestFilterRequest } from "./serviceRequest.interface";
 
 const createServiceRequest = catchAsync(async (req: Request, res: Response) => {
-  const customerId = (req.user as any).id;
+  const customerId = req.user.userId;
 
   const { serviceId, serviceDescription, serviceAddress, activePhone } =
     req.body;

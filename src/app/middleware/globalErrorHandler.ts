@@ -7,6 +7,7 @@ import z from "zod";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 import { handleZodError } from "../errorHelpers/handleZodError";
 import AppError from "../errorHelpers/AppError";
+import { deleteUploadedFilesFromGlobalErrorHandler } from "../utils/deleteUploadedFilesFromGlobalErrorHandler";
 import { Prisma } from "../../generated/prisma/client";
 import {
   handlePrismaClientKnownRequestError,
@@ -26,12 +27,13 @@ export const globalErrorHandler = async (
     console.log("Err from GlobalErrorHandler :", err);
   }
 
+  await deleteUploadedFilesFromGlobalErrorHandler(req);
+
   let errorSources: TErrorSources[] = [];
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
   let message: string = "Internal server error";
   let stack: string | undefined = undefined;
 
-  // Create the `handlePrismaErrors` for handle prisma errors
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     const simplifiedError = handlePrismaClientKnownRequestError(err);
     statusCode = simplifiedError.statusCode as number;

@@ -260,7 +260,8 @@ export const ServiceRequestScalarFieldEnum = {
   isDeleted: 'isDeleted',
   rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  paymentStatus: 'paymentStatus'
 } as const
 
 export type ServiceRequestScalarFieldEnum = (typeof ServiceRequestScalarFieldEnum)[keyof typeof ServiceRequestScalarFieldEnum]

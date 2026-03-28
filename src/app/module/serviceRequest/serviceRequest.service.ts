@@ -17,6 +17,10 @@ import { sendEmail } from "../../utils/email";
 import { format } from "date-fns";
 
 const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
+  if (!payload.customerId) {
+    throw new AppError(status.BAD_REQUEST, "Customer information is missing!");
+  }
+
   const isServiceExist = await prisma.service.findUnique({
     where: {
       id: payload.serviceId,
@@ -42,10 +46,16 @@ const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
     },
     include: {
       service: {
-        select: { name: true, description: true },
+        select: { id: true, name: true, description: true },
       },
       customer: {
-        select: { name: true, email: true, phone: true, address: true },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+        },
       },
     },
   });
@@ -278,9 +288,19 @@ const cancelServiceRequestByCustomer = async (
 
 const updateServiceRequestByServiceProvider = async (
   requestId: string,
-  providerId: string,
+  userId: string,
   payload: IUpdateServiceCostPayload,
 ) => {
+  const provider = await prisma.serviceProvider.findUnique({
+    where: { userId },
+  });
+
+  if (!provider) {
+    throw new AppError(status.NOT_FOUND, "Service provider profile not found!");
+  }
+
+  const providerId = provider.id;
+
   const isRequestExist = await prisma.serviceRequest.findUnique({
     where: { id: requestId },
     include: { payment: true },
@@ -414,7 +434,7 @@ const updateServiceRequestByManagement = async (
             providerName: updatedRequest.provider.user.name,
             providerPhone: updatedRequest.provider.user.phone,
             providerEmail: updatedRequest.provider.user.email,
-            schedule: scheduleInfo, // এটি এখন "26 Mar, 2026 at 10:00 AM" এভাবে দেখাবে
+            schedule: scheduleInfo,
           },
         });
       } catch (error) {
