@@ -7,9 +7,10 @@ model ServiceProvider {
     isActive      Boolean           @default(true)
     experience    Int               @default(0)
     designation   String?
-    averageRating Float             @default(0.0)
     schedules     ServiceSchedule[]
     assignedJobs  ServiceRequest[]  @relation("ServiceProviderJobs")
+    averageRating Float             @default(0.0)
+    totalReviews  Int               @default(0)
     reviews       Review[]
 
     @@index([serviceType])
