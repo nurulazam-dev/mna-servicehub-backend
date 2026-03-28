@@ -12,10 +12,11 @@ export interface IRegisterStaffPayload {
   } 
  */
 
+export type IRegisterStaffRole = "ADMIN" | "MANAGER";
+
 export interface IRegisterStaffPayload {
   name: string;
   email: string;
   phone: string;
-  // role: UserRole.ADMIN | UserRole.MANAGER;
-  role: "ADMIN" | "MANAGER";
+  role: IRegisterStaffRole;
 }

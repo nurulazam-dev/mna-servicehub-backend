@@ -1,4 +1,5 @@
 import z from "zod";
+import { UserRole } from "../../../generated/prisma/enums";
 
 export const registerStaffZodSchema = z.object({
   name: z
@@ -11,7 +12,11 @@ export const registerStaffZodSchema = z.object({
   phone: z
     .string("Contact number is required")
     .min(11, "Contact number must be at least 11 characters")
-    .max(14, "Contact number must be at most 30 characters"),
+    .max(14, "Contact number must be at most 14 characters"),
+
+  role: z.enum([UserRole.ADMIN, UserRole.MANAGER], {
+    error: "Role is required (ADMIN or MANAGER)",
+  }),
 
   // address: z
   //   .string("Address is required")
