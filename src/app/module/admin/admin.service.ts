@@ -1,64 +1,49 @@
-import { prisma } from "../../lib/prisma";
-import AppError from "../../errorHelpers/AppError";
-import status from "http-status";
-import { generateTemporaryPassword, sendEmail } from "../../utils/emailHelpers";
-import { IAppendSPPayload, IRegisterStaffPayload } from "./admin.interface";
-import {
-  JobApplicationStatus,
-  UserRole,
-  UserStatus,
-} from "../../../generated/prisma/enums";
-
-const appendSPToRequest = async (payload: IAppendSPPayload) => {
+/* const appendSPToRequest = async (payload: IAppendSPPayload) => {
   return await prisma.$transaction(async (tx) => {
+    const existRequest = await tx.serviceRequest.findUnique({
+      where: { id: payload.serviceRequestId },
+    });
+
+    if (!existRequest) {
+      throw new AppError(status.NOT_FOUND, "Service Request not found!");
+    }
+
     const updatedSR = await tx.serviceRequest.update({
       where: { id: payload.serviceRequestId },
       data: {
-        status: "ACCEPTED",
-        serviceProviderId: payload.serviceProviderId,
+        status: ServiceRequestStatus.ACCEPTED,
+        providerId: payload.serviceProviderId,
       },
     });
 
-    const schedule = await tx.sPSchedule.create({
+    const schedule = await tx.serviceSchedule.create({
       data: {
-        serviceProviderId: payload.serviceProviderId,
+        providerId: payload.serviceProviderId,
         serviceRequestId: payload.serviceRequestId,
-        date: payload.scheduledDate,
+        date: new Date(payload.scheduledDate),
         startTime: payload.startTime,
         endTime: payload.endTime,
       },
     });
 
-    // sendEmail(updatedSR.customerEmail, "Service Assigned", "Your service is assigned to...");
-
     return { updatedSR, schedule };
   });
-};
+}; */
 
-const registerStaff = async (payload: IRegisterStaffPayload) => {
-  const tempPassword = generateTemporaryPassword();
-
-  const result = await prisma.user.create({
-    data: {
-      ...payload,
-      password: tempPassword,
-      status: UserStatus.ACTIVE,
-      needPasswordChange: true,
-    },
-  });
-
-  // await sendEmail(payload.email, "Your Staff Account", `Pass: ${tempPassword}`);
-  return result;
-};
-
-const acceptCandidateAsSP = async (applicationId: string) => {
+/* const acceptCandidateAsSP = async (applicationId: string) => {
   return await prisma.$transaction(async (tx) => {
     const application = await tx.jobApplication.findUnique({
       where: { id: applicationId },
-      include: { user: true },
+      include: { user: true, jobPost: true },
     });
 
-    if (!application) throw new AppError(status.NOT_FOUND, "Not found");
+    if (!application) {
+      throw new AppError(status.NOT_FOUND, "Job Application not found!");
+    }
+
+    if (application.status === JobApplicationStatus.ACCEPTED) {
+      throw new AppError(status.BAD_REQUEST, "Candidate is already accepted!");
+    }
 
     await tx.jobApplication.update({
       where: { id: applicationId },
@@ -70,18 +55,21 @@ const acceptCandidateAsSP = async (applicationId: string) => {
       data: { role: UserRole.SERVICE_PROVIDER },
     });
 
-    return await tx.serviceProvider.create({
+    const spProfile = await tx.serviceProvider.create({
       data: {
         userId: application.userId,
-        name: application.user.name,
-        email: application.user.email,
+        serviceType: application.jobPost?.serviceType || "General Service",
+        experience: 0,
+        bio: `Professional service provider specializing in ${application.jobPost?.serviceType || "General Service"}.`,
+        isActive: true,
       },
     });
+
+    return spProfile;
   });
-};
+}; */
 
 export const AdminServices = {
-  appendSPToRequest,
-  registerStaff,
-  acceptCandidateAsSP,
+  // appendSPToRequest,
+  // acceptCandidateAsSP,
 };

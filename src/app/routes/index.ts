@@ -7,10 +7,12 @@ import { ServiceRequestRoutes } from "../module/serviceRequest/serviceRequest.ro
 import { ServiceScheduleRoutes } from "../module/serviceSchedule/serviceSchedule.route";
 import { PaymentRoutes } from "../module/payment/payment.route";
 import { ReviewRoutes } from "../module/review/review.route";
+import { UserRoutes } from "../module/user/user.route";
 
 const router = Router();
 
 router.use("/auth", AuthRoutes);
+router.use("/users", UserRoutes);
 router.use("/services", ServiceRoutes);
 router.use("/job-posts", JobPostRoutes);
 router.use("/job-applications", JobApplicationRoutes);
