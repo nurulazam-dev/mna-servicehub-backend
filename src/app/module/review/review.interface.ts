@@ -1,5 +1,6 @@
 export interface ICreateReviewPayload {
-  appointmentId: string;
+  requestId: string;
   rating: number;
   comment: string;
+  customerId: string;
 }
