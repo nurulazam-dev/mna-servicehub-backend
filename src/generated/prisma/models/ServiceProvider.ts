@@ -29,11 +29,13 @@ export type AggregateServiceProvider = {
 export type ServiceProviderAvgAggregateOutputType = {
   experience: number | null
   averageRating: number | null
+  totalReviews: number | null
 }
 
 export type ServiceProviderSumAggregateOutputType = {
   experience: number | null
   averageRating: number | null
+  totalReviews: number | null
 }
 
 export type ServiceProviderMinAggregateOutputType = {
@@ -45,6 +47,7 @@ export type ServiceProviderMinAggregateOutputType = {
   experience: number | null
   designation: string | null
   averageRating: number | null
+  totalReviews: number | null
 }
 
 export type ServiceProviderMaxAggregateOutputType = {
@@ -56,6 +59,7 @@ export type ServiceProviderMaxAggregateOutputType = {
   experience: number | null
   designation: string | null
   averageRating: number | null
+  totalReviews: number | null
 }
 
 export type ServiceProviderCountAggregateOutputType = {
@@ -67,6 +71,7 @@ export type ServiceProviderCountAggregateOutputType = {
   experience: number
   designation: number
   averageRating: number
+  totalReviews: number
   _all: number
 }
 
@@ -74,11 +79,13 @@ export type ServiceProviderCountAggregateOutputType = {
 export type ServiceProviderAvgAggregateInputType = {
   experience?: true
   averageRating?: true
+  totalReviews?: true
 }
 
 export type ServiceProviderSumAggregateInputType = {
   experience?: true
   averageRating?: true
+  totalReviews?: true
 }
 
 export type ServiceProviderMinAggregateInputType = {
@@ -90,6 +97,7 @@ export type ServiceProviderMinAggregateInputType = {
   experience?: true
   designation?: true
   averageRating?: true
+  totalReviews?: true
 }
 
 export type ServiceProviderMaxAggregateInputType = {
@@ -101,6 +109,7 @@ export type ServiceProviderMaxAggregateInputType = {
   experience?: true
   designation?: true
   averageRating?: true
+  totalReviews?: true
 }
 
 export type ServiceProviderCountAggregateInputType = {
@@ -112,6 +121,7 @@ export type ServiceProviderCountAggregateInputType = {
   experience?: true
   designation?: true
   averageRating?: true
+  totalReviews?: true
   _all?: true
 }
 
@@ -210,6 +220,7 @@ export type ServiceProviderGroupByOutputType = {
   experience: number
   designation: string | null
   averageRating: number
+  totalReviews: number
   _count: ServiceProviderCountAggregateOutputType | null
   _avg: ServiceProviderAvgAggregateOutputType | null
   _sum: ServiceProviderSumAggregateOutputType | null
@@ -244,6 +255,7 @@ export type ServiceProviderWhereInput = {
   experience?: Prisma.IntFilter<"ServiceProvider"> | number
   designation?: Prisma.StringNullableFilter<"ServiceProvider"> | string | null
   averageRating?: Prisma.FloatFilter<"ServiceProvider"> | number
+  totalReviews?: Prisma.IntFilter<"ServiceProvider"> | number
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   schedules?: Prisma.ServiceScheduleListRelationFilter
   assignedJobs?: Prisma.ServiceRequestListRelationFilter
@@ -259,6 +271,7 @@ export type ServiceProviderOrderByWithRelationInput = {
   experience?: Prisma.SortOrder
   designation?: Prisma.SortOrderInput | Prisma.SortOrder
   averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   schedules?: Prisma.ServiceScheduleOrderByRelationAggregateInput
   assignedJobs?: Prisma.ServiceRequestOrderByRelationAggregateInput
@@ -277,6 +290,7 @@ export type ServiceProviderWhereUniqueInput = Prisma.AtLeast<{
   experience?: Prisma.IntFilter<"ServiceProvider"> | number
   designation?: Prisma.StringNullableFilter<"ServiceProvider"> | string | null
   averageRating?: Prisma.FloatFilter<"ServiceProvider"> | number
+  totalReviews?: Prisma.IntFilter<"ServiceProvider"> | number
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   schedules?: Prisma.ServiceScheduleListRelationFilter
   assignedJobs?: Prisma.ServiceRequestListRelationFilter
@@ -292,6 +306,7 @@ export type ServiceProviderOrderByWithAggregationInput = {
   experience?: Prisma.SortOrder
   designation?: Prisma.SortOrderInput | Prisma.SortOrder
   averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
   _count?: Prisma.ServiceProviderCountOrderByAggregateInput
   _avg?: Prisma.ServiceProviderAvgOrderByAggregateInput
   _max?: Prisma.ServiceProviderMaxOrderByAggregateInput
@@ -311,6 +326,7 @@ export type ServiceProviderScalarWhereWithAggregatesInput = {
   experience?: Prisma.IntWithAggregatesFilter<"ServiceProvider"> | number
   designation?: Prisma.StringNullableWithAggregatesFilter<"ServiceProvider"> | string | null
   averageRating?: Prisma.FloatWithAggregatesFilter<"ServiceProvider"> | number
+  totalReviews?: Prisma.IntWithAggregatesFilter<"ServiceProvider"> | number
 }
 
 export type ServiceProviderCreateInput = {
@@ -321,6 +337,7 @@ export type ServiceProviderCreateInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   user: Prisma.UserCreateNestedOneWithoutServiceProviderInput
   schedules?: Prisma.ServiceScheduleCreateNestedManyWithoutProviderInput
   assignedJobs?: Prisma.ServiceRequestCreateNestedManyWithoutProviderInput
@@ -336,6 +353,7 @@ export type ServiceProviderUncheckedCreateInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   schedules?: Prisma.ServiceScheduleUncheckedCreateNestedManyWithoutProviderInput
   assignedJobs?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutProviderInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServiceProviderInput
@@ -349,6 +367,7 @@ export type ServiceProviderUpdateInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   user?: Prisma.UserUpdateOneRequiredWithoutServiceProviderNestedInput
   schedules?: Prisma.ServiceScheduleUpdateManyWithoutProviderNestedInput
   assignedJobs?: Prisma.ServiceRequestUpdateManyWithoutProviderNestedInput
@@ -364,6 +383,7 @@ export type ServiceProviderUncheckedUpdateInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   schedules?: Prisma.ServiceScheduleUncheckedUpdateManyWithoutProviderNestedInput
   assignedJobs?: Prisma.ServiceRequestUncheckedUpdateManyWithoutProviderNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServiceProviderNestedInput
@@ -378,6 +398,7 @@ export type ServiceProviderCreateManyInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
 }
 
 export type ServiceProviderUpdateManyMutationInput = {
@@ -388,6 +409,7 @@ export type ServiceProviderUpdateManyMutationInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ServiceProviderUncheckedUpdateManyInput = {
@@ -399,6 +421,7 @@ export type ServiceProviderUncheckedUpdateManyInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type ServiceProviderNullableScalarRelationFilter = {
@@ -420,11 +443,13 @@ export type ServiceProviderCountOrderByAggregateInput = {
   experience?: Prisma.SortOrder
   designation?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
 }
 
 export type ServiceProviderAvgOrderByAggregateInput = {
   experience?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
 }
 
 export type ServiceProviderMaxOrderByAggregateInput = {
@@ -436,6 +461,7 @@ export type ServiceProviderMaxOrderByAggregateInput = {
   experience?: Prisma.SortOrder
   designation?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
 }
 
 export type ServiceProviderMinOrderByAggregateInput = {
@@ -447,11 +473,13 @@ export type ServiceProviderMinOrderByAggregateInput = {
   experience?: Prisma.SortOrder
   designation?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
 }
 
 export type ServiceProviderSumOrderByAggregateInput = {
   experience?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
 }
 
 export type ServiceProviderCreateNestedOneWithoutUserInput = {
@@ -500,14 +528,6 @@ export type ServiceProviderUpdateOneRequiredWithoutReviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceProviderUpdateToOneWithWhereWithoutReviewsInput, Prisma.ServiceProviderUpdateWithoutReviewsInput>, Prisma.ServiceProviderUncheckedUpdateWithoutReviewsInput>
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ServiceProviderCreateNestedOneWithoutAssignedJobsInput = {
   create?: Prisma.XOR<Prisma.ServiceProviderCreateWithoutAssignedJobsInput, Prisma.ServiceProviderUncheckedCreateWithoutAssignedJobsInput>
   connectOrCreate?: Prisma.ServiceProviderCreateOrConnectWithoutAssignedJobsInput
@@ -546,6 +566,7 @@ export type ServiceProviderCreateWithoutUserInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   schedules?: Prisma.ServiceScheduleCreateNestedManyWithoutProviderInput
   assignedJobs?: Prisma.ServiceRequestCreateNestedManyWithoutProviderInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutServiceProviderInput
@@ -559,6 +580,7 @@ export type ServiceProviderUncheckedCreateWithoutUserInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   schedules?: Prisma.ServiceScheduleUncheckedCreateNestedManyWithoutProviderInput
   assignedJobs?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutProviderInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServiceProviderInput
@@ -588,6 +610,7 @@ export type ServiceProviderUpdateWithoutUserInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   schedules?: Prisma.ServiceScheduleUpdateManyWithoutProviderNestedInput
   assignedJobs?: Prisma.ServiceRequestUpdateManyWithoutProviderNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutServiceProviderNestedInput
@@ -601,6 +624,7 @@ export type ServiceProviderUncheckedUpdateWithoutUserInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   schedules?: Prisma.ServiceScheduleUncheckedUpdateManyWithoutProviderNestedInput
   assignedJobs?: Prisma.ServiceRequestUncheckedUpdateManyWithoutProviderNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServiceProviderNestedInput
@@ -614,6 +638,7 @@ export type ServiceProviderCreateWithoutReviewsInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   user: Prisma.UserCreateNestedOneWithoutServiceProviderInput
   schedules?: Prisma.ServiceScheduleCreateNestedManyWithoutProviderInput
   assignedJobs?: Prisma.ServiceRequestCreateNestedManyWithoutProviderInput
@@ -628,6 +653,7 @@ export type ServiceProviderUncheckedCreateWithoutReviewsInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   schedules?: Prisma.ServiceScheduleUncheckedCreateNestedManyWithoutProviderInput
   assignedJobs?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutProviderInput
 }
@@ -656,6 +682,7 @@ export type ServiceProviderUpdateWithoutReviewsInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   user?: Prisma.UserUpdateOneRequiredWithoutServiceProviderNestedInput
   schedules?: Prisma.ServiceScheduleUpdateManyWithoutProviderNestedInput
   assignedJobs?: Prisma.ServiceRequestUpdateManyWithoutProviderNestedInput
@@ -670,6 +697,7 @@ export type ServiceProviderUncheckedUpdateWithoutReviewsInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   schedules?: Prisma.ServiceScheduleUncheckedUpdateManyWithoutProviderNestedInput
   assignedJobs?: Prisma.ServiceRequestUncheckedUpdateManyWithoutProviderNestedInput
 }
@@ -682,6 +710,7 @@ export type ServiceProviderCreateWithoutAssignedJobsInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   user: Prisma.UserCreateNestedOneWithoutServiceProviderInput
   schedules?: Prisma.ServiceScheduleCreateNestedManyWithoutProviderInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutServiceProviderInput
@@ -696,6 +725,7 @@ export type ServiceProviderUncheckedCreateWithoutAssignedJobsInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   schedules?: Prisma.ServiceScheduleUncheckedCreateNestedManyWithoutProviderInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServiceProviderInput
 }
@@ -724,6 +754,7 @@ export type ServiceProviderUpdateWithoutAssignedJobsInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   user?: Prisma.UserUpdateOneRequiredWithoutServiceProviderNestedInput
   schedules?: Prisma.ServiceScheduleUpdateManyWithoutProviderNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutServiceProviderNestedInput
@@ -738,6 +769,7 @@ export type ServiceProviderUncheckedUpdateWithoutAssignedJobsInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   schedules?: Prisma.ServiceScheduleUncheckedUpdateManyWithoutProviderNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServiceProviderNestedInput
 }
@@ -750,6 +782,7 @@ export type ServiceProviderCreateWithoutSchedulesInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   user: Prisma.UserCreateNestedOneWithoutServiceProviderInput
   assignedJobs?: Prisma.ServiceRequestCreateNestedManyWithoutProviderInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutServiceProviderInput
@@ -764,6 +797,7 @@ export type ServiceProviderUncheckedCreateWithoutSchedulesInput = {
   experience?: number
   designation?: string | null
   averageRating?: number
+  totalReviews?: number
   assignedJobs?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutProviderInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServiceProviderInput
 }
@@ -792,6 +826,7 @@ export type ServiceProviderUpdateWithoutSchedulesInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   user?: Prisma.UserUpdateOneRequiredWithoutServiceProviderNestedInput
   assignedJobs?: Prisma.ServiceRequestUpdateManyWithoutProviderNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutServiceProviderNestedInput
@@ -806,6 +841,7 @@ export type ServiceProviderUncheckedUpdateWithoutSchedulesInput = {
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   assignedJobs?: Prisma.ServiceRequestUncheckedUpdateManyWithoutProviderNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServiceProviderNestedInput
 }
@@ -868,6 +904,7 @@ export type ServiceProviderSelect<ExtArgs extends runtime.Types.Extensions.Inter
   experience?: boolean
   designation?: boolean
   averageRating?: boolean
+  totalReviews?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   schedules?: boolean | Prisma.ServiceProvider$schedulesArgs<ExtArgs>
   assignedJobs?: boolean | Prisma.ServiceProvider$assignedJobsArgs<ExtArgs>
@@ -884,6 +921,7 @@ export type ServiceProviderSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   experience?: boolean
   designation?: boolean
   averageRating?: boolean
+  totalReviews?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceProvider"]>
 
@@ -896,6 +934,7 @@ export type ServiceProviderSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   experience?: boolean
   designation?: boolean
   averageRating?: boolean
+  totalReviews?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceProvider"]>
 
@@ -908,9 +947,10 @@ export type ServiceProviderSelectScalar = {
   experience?: boolean
   designation?: boolean
   averageRating?: boolean
+  totalReviews?: boolean
 }
 
-export type ServiceProviderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "serviceType" | "bio" | "isActive" | "experience" | "designation" | "averageRating", ExtArgs["result"]["serviceProvider"]>
+export type ServiceProviderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "serviceType" | "bio" | "isActive" | "experience" | "designation" | "averageRating" | "totalReviews", ExtArgs["result"]["serviceProvider"]>
 export type ServiceProviderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   schedules?: boolean | Prisma.ServiceProvider$schedulesArgs<ExtArgs>
@@ -942,6 +982,7 @@ export type $ServiceProviderPayload<ExtArgs extends runtime.Types.Extensions.Int
     experience: number
     designation: string | null
     averageRating: number
+    totalReviews: number
   }, ExtArgs["result"]["serviceProvider"]>
   composites: {}
 }
@@ -1377,6 +1418,7 @@ export interface ServiceProviderFieldRefs {
   readonly experience: Prisma.FieldRef<"ServiceProvider", 'Int'>
   readonly designation: Prisma.FieldRef<"ServiceProvider", 'String'>
   readonly averageRating: Prisma.FieldRef<"ServiceProvider", 'Float'>
+  readonly totalReviews: Prisma.FieldRef<"ServiceProvider", 'Int'>
 }
     
 

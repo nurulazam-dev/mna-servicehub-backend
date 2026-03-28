@@ -20,8 +20,20 @@ export type ServiceModel = runtime.Types.Result.DefaultSelection<Prisma.$Service
 
 export type AggregateService = {
   _count: ServiceCountAggregateOutputType | null
+  _avg: ServiceAvgAggregateOutputType | null
+  _sum: ServiceSumAggregateOutputType | null
   _min: ServiceMinAggregateOutputType | null
   _max: ServiceMaxAggregateOutputType | null
+}
+
+export type ServiceAvgAggregateOutputType = {
+  averageRating: number | null
+  totalReviews: number | null
+}
+
+export type ServiceSumAggregateOutputType = {
+  averageRating: number | null
+  totalReviews: number | null
 }
 
 export type ServiceMinAggregateOutputType = {
@@ -29,7 +41,10 @@ export type ServiceMinAggregateOutputType = {
   name: string | null
   description: string | null
   imageUrl: string | null
+  averageRating: number | null
+  totalReviews: number | null
   isActive: boolean | null
+  isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -39,7 +54,10 @@ export type ServiceMaxAggregateOutputType = {
   name: string | null
   description: string | null
   imageUrl: string | null
+  averageRating: number | null
+  totalReviews: number | null
   isActive: boolean | null
+  isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -49,19 +67,35 @@ export type ServiceCountAggregateOutputType = {
   name: number
   description: number
   imageUrl: number
+  averageRating: number
+  totalReviews: number
   isActive: number
+  isDeleted: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
+export type ServiceAvgAggregateInputType = {
+  averageRating?: true
+  totalReviews?: true
+}
+
+export type ServiceSumAggregateInputType = {
+  averageRating?: true
+  totalReviews?: true
+}
+
 export type ServiceMinAggregateInputType = {
   id?: true
   name?: true
   description?: true
   imageUrl?: true
+  averageRating?: true
+  totalReviews?: true
   isActive?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -71,7 +105,10 @@ export type ServiceMaxAggregateInputType = {
   name?: true
   description?: true
   imageUrl?: true
+  averageRating?: true
+  totalReviews?: true
   isActive?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -81,7 +118,10 @@ export type ServiceCountAggregateInputType = {
   name?: true
   description?: true
   imageUrl?: true
+  averageRating?: true
+  totalReviews?: true
   isActive?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -125,6 +165,18 @@ export type ServiceAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ServiceAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ServiceSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ServiceMinAggregateInputType
@@ -155,6 +207,8 @@ export type ServiceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: ServiceCountAggregateInputType | true
+  _avg?: ServiceAvgAggregateInputType
+  _sum?: ServiceSumAggregateInputType
   _min?: ServiceMinAggregateInputType
   _max?: ServiceMaxAggregateInputType
 }
@@ -164,10 +218,15 @@ export type ServiceGroupByOutputType = {
   name: string
   description: string
   imageUrl: string | null
+  averageRating: number
+  totalReviews: number
   isActive: boolean
+  isDeleted: boolean
   createdAt: Date
   updatedAt: Date
   _count: ServiceCountAggregateOutputType | null
+  _avg: ServiceAvgAggregateOutputType | null
+  _sum: ServiceSumAggregateOutputType | null
   _min: ServiceMinAggregateOutputType | null
   _max: ServiceMaxAggregateOutputType | null
 }
@@ -195,7 +254,10 @@ export type ServiceWhereInput = {
   name?: Prisma.StringFilter<"Service"> | string
   description?: Prisma.StringFilter<"Service"> | string
   imageUrl?: Prisma.StringNullableFilter<"Service"> | string | null
+  averageRating?: Prisma.FloatFilter<"Service"> | number
+  totalReviews?: Prisma.IntFilter<"Service"> | number
   isActive?: Prisma.BoolFilter<"Service"> | boolean
+  isDeleted?: Prisma.BoolFilter<"Service"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   serviceRequests?: Prisma.ServiceRequestListRelationFilter
@@ -207,7 +269,10 @@ export type ServiceOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   serviceRequests?: Prisma.ServiceRequestOrderByRelationAggregateInput
@@ -222,7 +287,10 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   description?: Prisma.StringFilter<"Service"> | string
   imageUrl?: Prisma.StringNullableFilter<"Service"> | string | null
+  averageRating?: Prisma.FloatFilter<"Service"> | number
+  totalReviews?: Prisma.IntFilter<"Service"> | number
   isActive?: Prisma.BoolFilter<"Service"> | boolean
+  isDeleted?: Prisma.BoolFilter<"Service"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   serviceRequests?: Prisma.ServiceRequestListRelationFilter
@@ -234,12 +302,17 @@ export type ServiceOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ServiceCountOrderByAggregateInput
+  _avg?: Prisma.ServiceAvgOrderByAggregateInput
   _max?: Prisma.ServiceMaxOrderByAggregateInput
   _min?: Prisma.ServiceMinOrderByAggregateInput
+  _sum?: Prisma.ServiceSumOrderByAggregateInput
 }
 
 export type ServiceScalarWhereWithAggregatesInput = {
@@ -250,7 +323,10 @@ export type ServiceScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Service"> | string
   description?: Prisma.StringWithAggregatesFilter<"Service"> | string
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
+  averageRating?: Prisma.FloatWithAggregatesFilter<"Service"> | number
+  totalReviews?: Prisma.IntWithAggregatesFilter<"Service"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Service"> | boolean
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"Service"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Service"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Service"> | Date | string
 }
@@ -260,11 +336,14 @@ export type ServiceCreateInput = {
   name: string
   description: string
   imageUrl?: string | null
+  averageRating?: number
+  totalReviews?: number
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   serviceRequests?: Prisma.ServiceRequestCreateNestedManyWithoutServiceInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutServicesInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUncheckedCreateInput = {
@@ -272,11 +351,14 @@ export type ServiceUncheckedCreateInput = {
   name: string
   description: string
   imageUrl?: string | null
+  averageRating?: number
+  totalReviews?: number
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   serviceRequests?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutServiceInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServicesInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUpdateInput = {
@@ -284,11 +366,14 @@ export type ServiceUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceRequests?: Prisma.ServiceRequestUpdateManyWithoutServiceNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutServicesNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceUncheckedUpdateInput = {
@@ -296,11 +381,14 @@ export type ServiceUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceRequests?: Prisma.ServiceRequestUncheckedUpdateManyWithoutServiceNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServicesNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceCreateManyInput = {
@@ -308,7 +396,10 @@ export type ServiceCreateManyInput = {
   name: string
   description: string
   imageUrl?: string | null
+  averageRating?: number
+  totalReviews?: number
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -318,7 +409,10 @@ export type ServiceUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -328,19 +422,17 @@ export type ServiceUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ServiceListRelationFilter = {
-  every?: Prisma.ServiceWhereInput
-  some?: Prisma.ServiceWhereInput
-  none?: Prisma.ServiceWhereInput
-}
-
-export type ServiceOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type ServiceScalarRelationFilter = {
+  is?: Prisma.ServiceWhereInput
+  isNot?: Prisma.ServiceWhereInput
 }
 
 export type ServiceCountOrderByAggregateInput = {
@@ -348,9 +440,17 @@ export type ServiceCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ServiceAvgOrderByAggregateInput = {
+  averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
 }
 
 export type ServiceMaxOrderByAggregateInput = {
@@ -358,7 +458,10 @@ export type ServiceMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -368,52 +471,39 @@ export type ServiceMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type ServiceScalarRelationFilter = {
-  is?: Prisma.ServiceWhereInput
-  isNot?: Prisma.ServiceWhereInput
+export type ServiceSumOrderByAggregateInput = {
+  averageRating?: Prisma.SortOrder
+  totalReviews?: Prisma.SortOrder
 }
 
-export type ServiceCreateNestedManyWithoutReviewsInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput> | Prisma.ServiceCreateWithoutReviewsInput[] | Prisma.ServiceUncheckedCreateWithoutReviewsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutReviewsInput | Prisma.ServiceCreateOrConnectWithoutReviewsInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+export type ServiceCreateNestedOneWithoutReviewsInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutReviewsInput
+  connect?: Prisma.ServiceWhereUniqueInput
 }
 
-export type ServiceUncheckedCreateNestedManyWithoutReviewsInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput> | Prisma.ServiceCreateWithoutReviewsInput[] | Prisma.ServiceUncheckedCreateWithoutReviewsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutReviewsInput | Prisma.ServiceCreateOrConnectWithoutReviewsInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+export type ServiceUpdateOneRequiredWithoutReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutReviewsInput
+  upsert?: Prisma.ServiceUpsertWithoutReviewsInput
+  connect?: Prisma.ServiceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceUpdateToOneWithWhereWithoutReviewsInput, Prisma.ServiceUpdateWithoutReviewsInput>, Prisma.ServiceUncheckedUpdateWithoutReviewsInput>
 }
 
-export type ServiceUpdateManyWithoutReviewsNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput> | Prisma.ServiceCreateWithoutReviewsInput[] | Prisma.ServiceUncheckedCreateWithoutReviewsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutReviewsInput | Prisma.ServiceCreateOrConnectWithoutReviewsInput[]
-  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutReviewsInput | Prisma.ServiceUpsertWithWhereUniqueWithoutReviewsInput[]
-  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutReviewsInput | Prisma.ServiceUpdateWithWhereUniqueWithoutReviewsInput[]
-  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutReviewsInput | Prisma.ServiceUpdateManyWithWhereWithoutReviewsInput[]
-  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-}
-
-export type ServiceUncheckedUpdateManyWithoutReviewsNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput> | Prisma.ServiceCreateWithoutReviewsInput[] | Prisma.ServiceUncheckedCreateWithoutReviewsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutReviewsInput | Prisma.ServiceCreateOrConnectWithoutReviewsInput[]
-  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutReviewsInput | Prisma.ServiceUpsertWithWhereUniqueWithoutReviewsInput[]
-  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutReviewsInput | Prisma.ServiceUpdateWithWhereUniqueWithoutReviewsInput[]
-  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutReviewsInput | Prisma.ServiceUpdateManyWithWhereWithoutReviewsInput[]
-  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type ServiceCreateNestedOneWithoutServiceRequestsInput = {
@@ -435,7 +525,10 @@ export type ServiceCreateWithoutReviewsInput = {
   name: string
   description: string
   imageUrl?: string | null
+  averageRating?: number
+  totalReviews?: number
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   serviceRequests?: Prisma.ServiceRequestCreateNestedManyWithoutServiceInput
@@ -446,7 +539,10 @@ export type ServiceUncheckedCreateWithoutReviewsInput = {
   name: string
   description: string
   imageUrl?: string | null
+  averageRating?: number
+  totalReviews?: number
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   serviceRequests?: Prisma.ServiceRequestUncheckedCreateNestedManyWithoutServiceInput
@@ -457,33 +553,43 @@ export type ServiceCreateOrConnectWithoutReviewsInput = {
   create: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput>
 }
 
-export type ServiceUpsertWithWhereUniqueWithoutReviewsInput = {
-  where: Prisma.ServiceWhereUniqueInput
+export type ServiceUpsertWithoutReviewsInput = {
   update: Prisma.XOR<Prisma.ServiceUpdateWithoutReviewsInput, Prisma.ServiceUncheckedUpdateWithoutReviewsInput>
   create: Prisma.XOR<Prisma.ServiceCreateWithoutReviewsInput, Prisma.ServiceUncheckedCreateWithoutReviewsInput>
+  where?: Prisma.ServiceWhereInput
 }
 
-export type ServiceUpdateWithWhereUniqueWithoutReviewsInput = {
-  where: Prisma.ServiceWhereUniqueInput
+export type ServiceUpdateToOneWithWhereWithoutReviewsInput = {
+  where?: Prisma.ServiceWhereInput
   data: Prisma.XOR<Prisma.ServiceUpdateWithoutReviewsInput, Prisma.ServiceUncheckedUpdateWithoutReviewsInput>
 }
 
-export type ServiceUpdateManyWithWhereWithoutReviewsInput = {
-  where: Prisma.ServiceScalarWhereInput
-  data: Prisma.XOR<Prisma.ServiceUpdateManyMutationInput, Prisma.ServiceUncheckedUpdateManyWithoutReviewsInput>
+export type ServiceUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  serviceRequests?: Prisma.ServiceRequestUpdateManyWithoutServiceNestedInput
 }
 
-export type ServiceScalarWhereInput = {
-  AND?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-  OR?: Prisma.ServiceScalarWhereInput[]
-  NOT?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-  id?: Prisma.StringFilter<"Service"> | string
-  name?: Prisma.StringFilter<"Service"> | string
-  description?: Prisma.StringFilter<"Service"> | string
-  imageUrl?: Prisma.StringNullableFilter<"Service"> | string | null
-  isActive?: Prisma.BoolFilter<"Service"> | boolean
-  createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Service"> | Date | string
+export type ServiceUncheckedUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  serviceRequests?: Prisma.ServiceRequestUncheckedUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceCreateWithoutServiceRequestsInput = {
@@ -491,10 +597,13 @@ export type ServiceCreateWithoutServiceRequestsInput = {
   name: string
   description: string
   imageUrl?: string | null
+  averageRating?: number
+  totalReviews?: number
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  reviews?: Prisma.ReviewCreateNestedManyWithoutServicesInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUncheckedCreateWithoutServiceRequestsInput = {
@@ -502,10 +611,13 @@ export type ServiceUncheckedCreateWithoutServiceRequestsInput = {
   name: string
   description: string
   imageUrl?: string | null
+  averageRating?: number
+  totalReviews?: number
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServicesInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceCreateOrConnectWithoutServiceRequestsInput = {
@@ -529,10 +641,13 @@ export type ServiceUpdateWithoutServiceRequestsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reviews?: Prisma.ReviewUpdateManyWithoutServicesNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceUncheckedUpdateWithoutServiceRequestsInput = {
@@ -540,42 +655,13 @@ export type ServiceUncheckedUpdateWithoutServiceRequestsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServicesNestedInput
-}
-
-export type ServiceUpdateWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceRequests?: Prisma.ServiceRequestUpdateManyWithoutServiceNestedInput
-}
-
-export type ServiceUncheckedUpdateWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceRequests?: Prisma.ServiceRequestUncheckedUpdateManyWithoutServiceNestedInput
-}
-
-export type ServiceUncheckedUpdateManyWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutServiceNestedInput
 }
 
 
@@ -623,7 +709,10 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name?: boolean
   description?: boolean
   imageUrl?: boolean
+  averageRating?: boolean
+  totalReviews?: boolean
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   serviceRequests?: boolean | Prisma.Service$serviceRequestsArgs<ExtArgs>
@@ -636,7 +725,10 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   description?: boolean
   imageUrl?: boolean
+  averageRating?: boolean
+  totalReviews?: boolean
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["service"]>
@@ -646,7 +738,10 @@ export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   description?: boolean
   imageUrl?: boolean
+  averageRating?: boolean
+  totalReviews?: boolean
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["service"]>
@@ -656,12 +751,15 @@ export type ServiceSelectScalar = {
   name?: boolean
   description?: boolean
   imageUrl?: boolean
+  averageRating?: boolean
+  totalReviews?: boolean
   isActive?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "averageRating" | "totalReviews" | "isActive" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   serviceRequests?: boolean | Prisma.Service$serviceRequestsArgs<ExtArgs>
   reviews?: boolean | Prisma.Service$reviewsArgs<ExtArgs>
@@ -681,7 +779,10 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     name: string
     description: string
     imageUrl: string | null
+    averageRating: number
+    totalReviews: number
     isActive: boolean
+    isDeleted: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["service"]>
@@ -1113,7 +1214,10 @@ export interface ServiceFieldRefs {
   readonly name: Prisma.FieldRef<"Service", 'String'>
   readonly description: Prisma.FieldRef<"Service", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Service", 'String'>
+  readonly averageRating: Prisma.FieldRef<"Service", 'Float'>
+  readonly totalReviews: Prisma.FieldRef<"Service", 'Int'>
   readonly isActive: Prisma.FieldRef<"Service", 'Boolean'>
+  readonly isDeleted: Prisma.FieldRef<"Service", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Service", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Service", 'DateTime'>
 }
