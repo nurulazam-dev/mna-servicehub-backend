@@ -9,7 +9,7 @@ model Review {
     customerId      String
     customer        User            @relation("CustomerReviews", fields: [customerId], references: [id], onDelete: Cascade)
     rating          Int
-    comment         String?         @db.Text
+    comment         String          @db.Text
     createdAt       DateTime        @default(now())
 
     @@index([requestId])
