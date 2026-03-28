@@ -702,3 +702,410 @@ PATCH /update-service-request/{id}
 - One service request cannot contain multiple services
 
 ---
+
+# 💳 Payment Module Documentation:
+
+## 🔹 Base URL
+
+```
+/api/v1/payments
+```
+
+---
+
+# 📌 Module Overview
+
+The Payment module handles **secure payment processing using Stripe**, invoice generation, and payment tracking.
+
+It ensures:
+
+- Payment only after service completion
+- Stripe-based checkout flow
+- Automatic invoice generation (PDF)
+- Email delivery with invoice
+- Full payment tracking system
+
+---
+
+# ⚙️ Payment Workflow
+
+```
+Customer → Create Payment → Stripe Checkout → Webhook → Payment Success → Invoice Generated → Email Sent
+```
+
+---
+
+# ⚠️ Core Business Rules
+
+- ❌ Payment allowed only when:
+  - Service Request status = `COMPLETED`
+
+- ❌ Cannot pay:
+  - If cost not calculated
+  - If already paid
+
+- ✅ After successful payment:
+  - Status → `PAID`
+  - Invoice generated (PDF)
+  - Uploaded to Cloudinary
+  - Email sent to customer
+
+---
+
+# 1️⃣ Create Payment (Stripe Checkout)
+
+```yaml
+POST → /payments/create-payment
+```
+
+### 🔐 Access:
+
+- Customer only
+
+---
+
+### 📝 Request Body
+
+```json
+{
+  "requestId": "uuid"
+}
+```
+
+---
+
+### ⚙️ Backend Logic
+
+- Validate:
+  - Service Request exists
+  - Status = COMPLETED
+  - Cost breakdown exists
+  - Not already paid
+
+- Create / update payment record
+
+- Generate Stripe Checkout session
+
+---
+
+### ✅ Response
+
+```json
+{
+  "success": true,
+  "message": "Payment session created successfully",
+  "data": {
+    "checkoutUrl": "https://stripe.com/checkout/session/..."
+  }
+}
+```
+
+---
+
+### 🚀 Frontend Action
+
+- Redirect user to `checkoutUrl`
+
+---
+
+# 2️⃣ Stripe Webhook (Internal)
+
+```yaml
+POST → /payments/webhook
+```
+
+### ⚠️ Important:
+
+- Not for frontend use
+- Called by Stripe automatically
+
+---
+
+### 🔐 Security:
+
+- Uses Stripe signature verification
+
+---
+
+### ⚙️ Handles Events:
+
+#### ✅ `checkout.session.completed`
+
+- Update payment:
+  - status → `PAID`
+  - store Stripe data
+
+- Update service request:
+  - paymentStatus → `PAID`
+
+- Generate invoice PDF
+
+- Upload to Cloudinary
+
+- Send email with invoice
+
+---
+
+#### ❌ `payment_failed`
+
+- Update payment status → `FAILED`
+
+---
+
+### ✅ Response
+
+```json
+{
+  "success": true,
+  "message": "Stripe webhook processed successfully"
+}
+```
+
+---
+
+# 3️⃣ Get All Payments
+
+```yaml
+GET → /payments
+```
+
+### 🔐 Access:
+
+- Admin
+- Manager
+
+---
+
+### 🔍 Query Params
+
+```
+?page=1
+&limit=10
+&searchTerm=TXN
+&status=PAID
+```
+
+---
+
+### ✅ Response
+
+```json
+{
+  "success": true,
+  "message": "Payments fetched successfully",
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "total": 100,
+    "totalPages": 10
+  },
+  "data": [
+    {
+      "id": "uuid",
+      "amount": 800,
+      "status": "PAID",
+      "transactionId": "TXN-123456",
+      "serviceRequest": {
+        "customer": {
+          "name": "John",
+          "email": "john@mail.com"
+        },
+        "service": {
+          "name": "AC Repair"
+        }
+      }
+    }
+  ]
+}
+```
+
+---
+
+# 4️⃣ Get My Paid Payments
+
+```yaml
+GET → /payments/my-payments
+```
+
+### 🔐 Access:
+
+- Customer only
+
+---
+
+### 🔍 Query Params
+
+```
+?page=1
+&limit=10
+```
+
+---
+
+### ⚠️ Rules
+
+- Only returns:
+  - Logged-in customer payments
+  - status = `PAID`
+
+---
+
+### ✅ Response
+
+```json
+{
+  "success": true,
+  "message": "Your paid payments fetched successfully",
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "total": 5,
+    "totalPages": 1
+  },
+  "data": [
+    {
+      "id": "uuid",
+      "amount": 800,
+      "status": "PAID",
+      "serviceRequest": {
+        "service": {
+          "name": "AC Repair"
+        }
+      }
+    }
+  ]
+}
+```
+
+---
+
+# 5️⃣ Get Single Payment
+
+```yaml
+GET → /payments/{id}
+```
+
+### 🔐 Access:
+
+- Admin
+- Manager
+
+---
+
+### 📌 Params
+
+```
+id: string (UUID)
+```
+
+---
+
+### ✅ Response
+
+```json
+{
+  "success": true,
+  "message": "Payment details fetched successfully",
+  "data": {
+    "id": "uuid",
+    "amount": 800,
+    "status": "PAID",
+    "transactionId": "TXN-123456",
+    "invoiceUrl": "https://cloudinary.com/invoice.pdf",
+    "serviceRequest": {
+      "customer": {
+        "name": "John",
+        "email": "john@mail.com"
+      },
+      "provider": {
+        "user": {
+          "name": "Provider Name",
+          "email": "sp@mail.com"
+        }
+      },
+      "service": {
+        "name": "AC Repair"
+      },
+      "costBreakdown": {
+        "serviceCharge": 500,
+        "productCost": 200,
+        "additionalCost": 100
+      }
+    }
+  }
+}
+```
+
+---
+
+# 🔐 Authorization Matrix
+
+| Method | Endpoint        | Customer | Manager | Admin |
+| ------ | --------------- | -------- | ------- | ----- |
+| POST   | /create-payment | ✅       | ❌      | ❌    |
+| POST   | /webhook        | ❌       | ❌      | ❌    |
+| GET    | /my-payments    | ✅       | ❌      | ❌    |
+| GET    | /               | ❌       | ✅      | ✅    |
+| GET    | /:id            | ❌       | ✅      | ✅    |
+
+---
+
+# 📦 Payment Data Model (Simplified)
+
+- id
+- requestId
+- amount
+- status → `PENDING | PAID | FAILED`
+- transactionId
+- stripeCustomerId
+- stripeEventId
+- invoiceUrl
+
+---
+
+# 🧠 Implementation Highlights
+
+## ✅ Stripe Integration
+
+- Uses **Stripe Checkout Session**
+- Metadata used for:
+  - requestId
+  - paymentId
+
+---
+
+## ✅ Invoice System
+
+- Generated using **PDFKit**
+- Contains:
+  - Customer info
+  - Service details
+  - Cost breakdown
+  - Total amount
+
+---
+
+## ✅ File Storage
+
+- Invoice uploaded to **Cloudinary**
+- Stored as URL in DB
+
+---
+
+## ✅ Email System
+
+- Sent after successful payment
+- Includes:
+  - Invoice PDF attachment
+  - Invoice URL
+
+---
+
+# ⚠️ Critical Validations
+
+- ❌ Cannot pay before service completion
+- ❌ Cannot pay twice
+- ❌ Cannot process invalid Stripe events
+- ✅ Webhook must be verified using signature
+
+---
