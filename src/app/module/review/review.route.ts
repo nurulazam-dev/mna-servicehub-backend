@@ -28,4 +28,10 @@ router.get(
   ReviewController.getMyReviews,
 );
 
+router.get(
+  "/provider-reviews",
+  checkAuth(UserRole.SERVICE_PROVIDER),
+  ReviewController.getMyReviewsBySP,
+);
+
 export const ReviewRoutes = router;

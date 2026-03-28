@@ -242,9 +242,63 @@ const getMyReviews = async (customerId: string, query: any) => {
   };
 };
 
+const getMyReviewsBySP = async (userId: string, query: any) => {
+  const { page = 1, limit = 10 } = query;
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const provider = await prisma.serviceProvider.findUnique({
+    where: { userId },
+  });
+
+  if (!provider) {
+    throw new AppError(status.NOT_FOUND, "Service provider profile not found!");
+  }
+
+  const whereConditions = {
+    providerId: provider.id,
+  };
+
+  const result = await prisma.review.findMany({
+    where: whereConditions,
+    skip,
+    take: Number(limit),
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      customer: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+      service: {
+        select: {
+          name: true,
+          imageUrl: true,
+        },
+      },
+    },
+  });
+
+  const total = await prisma.review.count({ where: whereConditions });
+  const totalPages = Math.ceil(total / Number(limit));
+
+  return {
+    meta: {
+      page: Number(page),
+      limit: Number(limit),
+      total,
+      totalPages,
+    },
+    data: result,
+  };
+};
+
 export const ReviewService = {
   giveReview,
   getAllReviews,
   deleteReviewById,
   getMyReviews,
+  getMyReviewsBySP,
 };

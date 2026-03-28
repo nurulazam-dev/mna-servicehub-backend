@@ -58,9 +58,23 @@ const getMyReviews = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMyReviewsBySP = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req.user as any).userId;
+  const result = await ReviewService.getMyReviewsBySP(userId, req.query);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Provider reviews fetched successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const ReviewController = {
   giveReview,
   getAllReviews,
   deleteReviewById,
   getMyReviews,
+  getMyReviewsBySP,
 };
