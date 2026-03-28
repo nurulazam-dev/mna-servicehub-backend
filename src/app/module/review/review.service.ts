@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "../../lib/prisma";
 import AppError from "../../errorHelpers/AppError";
 import status from "http-status";
@@ -97,6 +98,46 @@ const giveReview = async (payload: ICreateReviewPayload) => {
   return result;
 };
 
+const getAllReviews = async (query: any) => {
+  const { page = 1, limit = 10 } = query;
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const result = await prisma.review.findMany({
+    skip,
+    take: Number(limit),
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      customer: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+      service: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  const total = await prisma.review.count();
+  const totalPages = Math.ceil(total / Number(limit));
+
+  return {
+    meta: {
+      page: Number(page),
+      limit: Number(limit),
+      total,
+      totalPages,
+    },
+    data: result,
+  };
+};
+
 export const ReviewService = {
   giveReview,
+  getAllReviews,
 };
