@@ -20,5 +20,6 @@ router.use("/service-requests", ServiceRequestRoutes);
 router.use("/service-schedules", ServiceScheduleRoutes);
 router.use("/payments", PaymentRoutes);
 router.use("/reviews", ReviewRoutes);
+// router.use("/stats", StatsRoutes);
 
 export const IndexRoutes = router;
