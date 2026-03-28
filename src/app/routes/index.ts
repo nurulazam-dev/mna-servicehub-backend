@@ -8,6 +8,7 @@ import { ServiceScheduleRoutes } from "../module/serviceSchedule/serviceSchedule
 import { PaymentRoutes } from "../module/payment/payment.route";
 import { ReviewRoutes } from "../module/review/review.route";
 import { UserRoutes } from "../module/user/user.route";
+import { StatsRoutes } from "../module/stats/stats.route";
 
 const router = Router();
 
@@ -20,6 +21,6 @@ router.use("/service-requests", ServiceRequestRoutes);
 router.use("/service-schedules", ServiceScheduleRoutes);
 router.use("/payments", PaymentRoutes);
 router.use("/reviews", ReviewRoutes);
-// router.use("/stats", StatsRoutes);
+router.use("/stats", StatsRoutes);
 
 export const IndexRoutes = router;
