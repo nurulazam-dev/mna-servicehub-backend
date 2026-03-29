@@ -22,7 +22,11 @@ router.get(
 
 router.get(
   "/my-applications",
-  checkAuth(),
+  checkAuth(
+    UserRole.JOB_CANDIDATE,
+    UserRole.SERVICE_PROVIDER,
+    UserRole.CUSTOMER,
+  ),
   JobApplicationController.getMyApplications,
 );
 

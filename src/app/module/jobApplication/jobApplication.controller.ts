@@ -22,7 +22,7 @@ const applyToJob = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyApplications = catchAsync(async (req: Request, res: Response) => {
-  const userId = (req.user as any).id;
+  const userId = (req.user as any).userId;
 
   const result = await JobApplicationServices.getMyApplications(userId);
 

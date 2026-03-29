@@ -11,22 +11,42 @@ import {
 } from "../../../generated/prisma/enums";
 
 const applyToJob = async (payload: IJobApplicationPayload) => {
-  if (payload.userId && payload.jobPostId) {
-    const isAlreadyApplied = await prisma.jobApplication.findUnique({
-      where: {
-        userId_jobPostId: {
-          userId: payload.userId,
-          jobPostId: payload.jobPostId,
-        },
-      },
-    });
+  const jobPost = await prisma.jobPost.findUnique({
+    where: { id: payload.jobPostId as string },
+  });
 
-    if (isAlreadyApplied) {
-      throw new AppError(
-        status.BAD_REQUEST,
-        "You have already applied for this job!",
-      );
-    }
+  if (!jobPost) {
+    throw new AppError(status.NOT_FOUND, "Job post not found!");
+  }
+
+  if (!jobPost.isActive) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "This job post is no longer active!",
+    );
+  }
+
+  if (new Date(jobPost.deadline) < new Date()) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "The deadline for this job has passed!",
+    );
+  }
+
+  const isAlreadyApplied = await prisma.jobApplication.findUnique({
+    where: {
+      userId_jobPostId: {
+        userId: payload.userId,
+        jobPostId: payload.jobPostId as string,
+      },
+    },
+  });
+
+  if (isAlreadyApplied) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "You have already applied for this job!",
+    );
   }
 
   return await prisma.jobApplication.create({
@@ -36,15 +56,24 @@ const applyToJob = async (payload: IJobApplicationPayload) => {
 };
 
 const getMyApplications = async (userId: string) => {
-  return await prisma.jobApplication.findMany({
+  const result = await prisma.jobApplication.findMany({
     where: { userId },
     include: {
       jobPost: {
-        select: { title: true, serviceType: true, location: true },
+        select: {
+          title: true,
+          serviceType: true,
+          description: true,
+          salaryRange: true,
+          location: true,
+          deadline: true,
+        },
       },
     },
     orderBy: { createdAt: "desc" },
   });
+
+  return result;
 };
 
 const getApplicationById = async (id: string, userId: string, role: string) => {
@@ -78,13 +107,15 @@ const getApplicationById = async (id: string, userId: string, role: string) => {
 };
 
 const getAllApplicationsForAdmin = async () => {
-  return await prisma.jobApplication.findMany({
+  const result = await prisma.jobApplication.findMany({
     include: {
       user: { select: { name: true, email: true, phone: true } },
       jobPost: { select: { title: true } },
     },
     orderBy: { createdAt: "desc" },
   });
+
+  return result;
 };
 
 const updateApplication = async (
@@ -141,6 +172,7 @@ const updateApplication = async (
             userId: updatedApplication.userId,
             serviceType:
               updatedApplication.jobPost?.serviceType ?? "General Service",
+            isActive: true,
           },
         });
 
