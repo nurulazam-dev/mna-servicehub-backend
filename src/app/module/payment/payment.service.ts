@@ -2,7 +2,6 @@
 import status from "http-status";
 import Stripe from "stripe";
 import { prisma } from "../../lib/prisma";
-import { ICreatePaymentPayload } from "./payment.interface";
 import { createStripeSession, generateInvoicePdf } from "./payment.utils";
 import AppError from "../../errorHelpers/AppError";
 import {
@@ -14,7 +13,10 @@ import { uploadFileToCloudinary } from "../../config/cloudinary.config";
 import { stripe } from "../../config/stripe.config";
 import { envVars } from "../../config/env";
 
-const createPayment = async (payload: ICreatePaymentPayload) => {
+const createPayment = async (payload: {
+  requestId: string;
+  customerId: string;
+}) => {
   const serviceRequest = await prisma.serviceRequest.findUnique({
     where: { id: payload.requestId },
     include: {
@@ -25,8 +27,21 @@ const createPayment = async (payload: ICreatePaymentPayload) => {
     },
   });
 
-  if (!serviceRequest) {
+  if (!serviceRequest)
     throw new AppError(status.NOT_FOUND, "Service request not found!");
+
+  if (serviceRequest.customerId !== payload.customerId) {
+    throw new AppError(
+      status.FORBIDDEN,
+      "Unauthorized! This is not your service request.",
+    );
+  }
+
+  if (serviceRequest.isDeleted) {
+    throw new AppError(
+      status.GONE,
+      "This service request is no longer available.",
+    );
   }
 
   if (serviceRequest.status !== ServiceRequestStatus.COMPLETED) {
@@ -43,27 +58,31 @@ const createPayment = async (payload: ICreatePaymentPayload) => {
     );
   }
 
-  if (
-    serviceRequest.payment &&
-    serviceRequest.payment.status === PaymentStatus.PAID
-  ) {
+  if (serviceRequest.payment?.status === PaymentStatus.PAID) {
     throw new AppError(
-      status.BAD_REQUEST,
-      "Payment already completed for this service!",
+      status.CONFLICT,
+      "This service has already been paid for.",
     );
   }
 
-  const amount = Number(serviceRequest.costBreakdown.totalAmount);
-  const transactionId = `TXN-${Date.now()}-${payload.requestId.slice(0, 8)}`;
+  // const amount = Number(serviceRequest.costBreakdown?.totalAmount || 0);
+  const amount = Number(serviceRequest.costBreakdown?.totalAmount);
+
+  if (!amount || amount <= 0) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Invalid payment amount calculated!",
+    );
+  }
+
+  const transactionId =
+    serviceRequest.payment?.transactionId ||
+    `TXN-${Date.now()}-${payload.requestId.slice(0, 8)}`;
 
   const result = await prisma.$transaction(async (tx) => {
     const paymentRecord = await tx.payment.upsert({
       where: { requestId: payload.requestId },
-      update: {
-        amount,
-        transactionId,
-        status: PaymentStatus.PENDING,
-      },
+      update: { amount, transactionId, status: PaymentStatus.PENDING },
       create: {
         requestId: payload.requestId,
         amount,
@@ -80,9 +99,7 @@ const createPayment = async (payload: ICreatePaymentPayload) => {
       serviceName: serviceRequest.service.name,
     });
 
-    return {
-      checkoutUrl: session.url,
-    };
+    return { checkoutUrl: session.url };
   });
 
   return result;
@@ -98,141 +115,98 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
       envVars.STRIPE.STRIPE_WEBHOOK_SECRET as string,
     );
   } catch (err: any) {
-    console.error(`Webhook Signature Verification Failed: ${err.message}`);
     throw new AppError(status.BAD_REQUEST, `Webhook Error: ${err.message}`);
   }
 
-  const existingPayment = await prisma.payment.findFirst({
-    where: { stripeEventId: event.id },
-  });
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const { requestId, paymentId } = session.metadata!;
 
-  if (existingPayment) {
-    return { message: `Event ${event.id} already processed.` };
-  }
+    const serviceRequest = await prisma.serviceRequest.findUnique({
+      where: { id: requestId },
+      include: {
+        customer: true,
+        provider: { include: { user: true } },
+        service: true,
+        costBreakdown: true,
+      },
+    });
 
-  switch (event.type) {
-    case "checkout.session.completed": {
-      const session = event.data.object as any;
-      const requestId = session.metadata?.requestId;
-      const paymentId = session.metadata?.paymentId;
+    if (!serviceRequest) return { message: "Request not found" };
 
-      if (!requestId || !paymentId) {
-        return { message: "Missing metadata in Stripe session" };
-      }
+    let finalInvoiceUrl: string | null = null;
+    let pdfBuffer: Buffer | null = null;
 
-      const serviceRequest = await prisma.serviceRequest.findUnique({
-        where: { id: requestId },
-        include: {
-          customer: true,
-          provider: { include: { user: true } },
-          service: true,
-          costBreakdown: true,
-          schedule: true,
-        },
-      });
+    const updatedPayment = await prisma.payment.update({
+      where: { id: paymentId },
+      data: {
+        status: PaymentStatus.PAID,
+        stripeEventId: event.id,
+        stripeCustomerId: session.customer as string,
+        paymentGatewayData: session as any,
+      },
+    });
 
-      if (!serviceRequest) return { message: "Request not found" };
+    await prisma.serviceRequest.update({
+      where: { id: requestId },
+      data: { paymentStatus: PaymentStatus.PAID },
+    });
 
-      let pdfBuffer: Buffer | null = null;
-
-      const result = await prisma.$transaction(async (tx) => {
-        const updatedPayment = await tx.payment.update({
-          where: { id: paymentId },
-          data: {
-            status: PaymentStatus.PAID,
-            paymentGatewayData: session,
-            stripeEventId: event.id,
-            stripeCustomerId: session.customer as string,
-          },
+    if (session.payment_status === "paid" && serviceRequest.costBreakdown) {
+      try {
+        pdfBuffer = await generateInvoicePdf({
+          invoiceId: paymentId,
+          customerName: serviceRequest.customer.name,
+          customerEmail: serviceRequest.customer.email,
+          serviceName: serviceRequest.service.name,
+          providerName: serviceRequest.provider?.user.name || "N/A",
+          amount: Number(serviceRequest.costBreakdown.totalAmount),
+          transactionId: updatedPayment.transactionId,
+          paymentDate: new Date().toISOString(),
+          serviceCharge: Number(serviceRequest.costBreakdown.serviceCharge),
+          productCost: Number(serviceRequest.costBreakdown.productCost),
+          additionalCost: Number(serviceRequest.costBreakdown.additionalCost),
         });
 
-        await tx.serviceRequest.update({
-          where: { id: requestId },
-          data: {
-            paymentStatus: PaymentStatus.PAID,
-          },
-        });
+        const cloudinaryResponse = await uploadFileToCloudinary(
+          pdfBuffer,
+          `mna-service-hub/invoices/inv-${paymentId}.pdf`,
+        );
 
-        let invoiceUrl: string | null = null;
+        finalInvoiceUrl = cloudinaryResponse?.secure_url || null;
 
-        if (session.payment_status === "paid" && serviceRequest.costBreakdown) {
-          try {
-            pdfBuffer = await generateInvoicePdf({
-              invoiceId: paymentId,
-              customerName: serviceRequest.customer.name,
-              customerEmail: serviceRequest.customer.email,
-              serviceName: serviceRequest.service.name,
-              providerName: serviceRequest.provider?.user.name || "N/A",
-              amount: Number(serviceRequest.costBreakdown.totalAmount),
-              transactionId: updatedPayment.transactionId,
-              paymentDate: new Date().toISOString(),
-              serviceCharge: Number(serviceRequest.costBreakdown.serviceCharge),
-              productCost: Number(serviceRequest.costBreakdown.productCost),
-              additionalCost: Number(
-                serviceRequest.costBreakdown.additionalCost,
-              ),
-            });
-
-            const cloudinaryResponse = await uploadFileToCloudinary(
-              pdfBuffer,
-              `mna-service-hub/invoices/inv-${paymentId}.pdf`,
-            );
-
-            invoiceUrl = cloudinaryResponse?.secure_url || null;
-
-            if (invoiceUrl) {
-              await tx.payment.update({
-                where: { id: paymentId },
-                data: { invoiceUrl },
-              });
-            }
-          } catch (err) {
-            console.error("PDF/Cloudinary Processing Failed:", err);
-          }
-        }
-        return { invoiceUrl };
-      });
-
-      if (session.payment_status === "paid") {
-        try {
-          await sendEmail({
-            to: serviceRequest.customer.email,
-            subject: `Payment Successful - Invoice for ${serviceRequest.service.name}`,
-            templateName: "serviceInvoice",
-            templateData: {
-              name: serviceRequest.customer.name,
-              serviceName: serviceRequest.service.name,
-              totalAmount: serviceRequest.costBreakdown?.totalAmount,
-              invoiceUrl: result.invoiceUrl,
-            },
-            attachments: pdfBuffer
-              ? [
-                  {
-                    filename: `Invoice-${requestId.slice(0, 6)}.pdf`,
-                    content: pdfBuffer,
-                    contentType: "application/pdf",
-                  },
-                ]
-              : [],
+        if (finalInvoiceUrl) {
+          await prisma.payment.update({
+            where: { id: paymentId },
+            data: { invoiceUrl: finalInvoiceUrl },
           });
-        } catch (emailErr) {
-          console.error("Email Dispatch Failed:", emailErr);
         }
+      } catch (err) {
+        console.error("PDF/Cloudinary Error:", err);
       }
-      break;
     }
 
-    case "checkout.session.async_payment_failed":
-    case "payment_intent.payment_failed": {
-      const session = event.data.object as any;
-      const paymentId = session.metadata?.paymentId;
-      if (paymentId) {
-        await prisma.payment.update({
-          where: { id: paymentId },
-          data: { status: PaymentStatus.FAILED },
-        });
-      }
-      break;
+    if (session.payment_status === "paid") {
+      await sendEmail({
+        to: serviceRequest.customer.email,
+        subject: `Payment Successful - Invoice for ${serviceRequest.service.name}`,
+        templateName: "serviceInvoice",
+        templateData: {
+          name: serviceRequest.customer.name,
+          serviceName: serviceRequest.service.name,
+          totalAmount: serviceRequest.costBreakdown?.totalAmount,
+          invoiceUrl: finalInvoiceUrl,
+        },
+        attachments: pdfBuffer
+          ? [
+              {
+                filename: `Invoice-${requestId.slice(0, 6)}.pdf`,
+                content: pdfBuffer,
+                contentType: "application/pdf",
+              },
+            ]
+          : [],
+      });
     }
   }
 

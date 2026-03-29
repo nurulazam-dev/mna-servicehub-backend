@@ -9,6 +9,7 @@ import {
   IUpdateServiceCostPayload,
 } from "./serviceRequest.interface";
 import {
+  PaymentStatus,
   ServiceRequestStatus,
   UserRole,
 } from "../../../generated/prisma/enums";
@@ -314,7 +315,10 @@ const updateServiceRequestByServiceProvider = async (
     throw new AppError(status.FORBIDDEN, "This job is not assigned to you!");
   }
 
-  if (isRequestExist.payment && isRequestExist.payment.status === "succeeded") {
+  if (
+    isRequestExist.payment &&
+    isRequestExist.payment.status === PaymentStatus.PAID
+  ) {
     throw new AppError(
       status.BAD_REQUEST,
       "Payment already completed. You cannot modify costs or status anymore!",
