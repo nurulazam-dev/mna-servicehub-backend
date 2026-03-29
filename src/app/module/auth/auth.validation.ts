@@ -1,19 +1,21 @@
 import { z } from "zod";
 
 const nameSchema = z
-  .string()
+  .string("Name is required!")
   .min(2, "Name must be at least 2 characters")
   .max(100, "Name must not exceed 100 characters");
 
-const emailSchema = z.string().email("Invalid email address");
+const emailSchema = z
+  .string("Email is required!")
+  .email("Invalid email address");
 
 const passwordSchema = z
-  .string()
+  .string("Password is required!")
   .min(8, "Password must be at least 8 characters")
   .max(12, "Password must not exceed 12 characters");
 
 const phoneSchema = z
-  .string()
+  .string("Phone number is required!")
   .regex(/^\d{11,13}$/, "Phone must be 11-13 digits");
 
 const registerCustomerZodSchema = z.object({
@@ -30,7 +32,7 @@ const registerJobCandidateZodSchema = z.object({
   phone: phoneSchema,
 
   cvUrl: z
-    .string()
+    .string("CV url is required!")
     .url("CV must be a valid URL")
     .refine(
       (url) => {
