@@ -28,12 +28,14 @@ const handleStripeWebhookEvent = catchAsync(
       signature,
     );
 
-    sendResponse(res, {
+    /* sendResponse(res, {
       httpStatusCode: status.OK,
       success: true,
       message: "Stripe webhook processed successfully",
       data: result,
-    });
+    }); */
+
+    res.status(status.OK).json(result);
   },
 );
 

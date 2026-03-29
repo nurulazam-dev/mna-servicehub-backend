@@ -5,9 +5,7 @@ import { UserService } from "./user.service";
 import { sendResponse } from "../../shared/sendResponse";
 
 const registerStaff = catchAsync(async (req: Request, res: Response) => {
-  const payload = req.body;
-
-  const result = await UserService.registerStaff(payload);
+  const result = await UserService.registerStaff(req.body);
 
   sendResponse(res, {
     httpStatusCode: status.CREATED,

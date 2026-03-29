@@ -352,7 +352,7 @@ export type UserScalarWhereWithAggregatesInput = {
 }
 
 export type UserCreateInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -375,7 +375,7 @@ export type UserCreateInput = {
 }
 
 export type UserUncheckedCreateInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -444,7 +444,7 @@ export type UserUncheckedUpdateInput = {
 }
 
 export type UserCreateManyInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -663,7 +663,7 @@ export type UserUpdateOneRequiredWithoutServiceRequestsNestedInput = {
 }
 
 export type UserCreateWithoutSessionsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -685,7 +685,7 @@ export type UserCreateWithoutSessionsInput = {
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -767,7 +767,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
 }
 
 export type UserCreateWithoutAccountsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -789,7 +789,7 @@ export type UserCreateWithoutAccountsInput = {
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -871,7 +871,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
 }
 
 export type UserCreateWithoutJobApplicationsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -893,7 +893,7 @@ export type UserCreateWithoutJobApplicationsInput = {
 }
 
 export type UserUncheckedCreateWithoutJobApplicationsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -975,7 +975,7 @@ export type UserUncheckedUpdateWithoutJobApplicationsInput = {
 }
 
 export type UserCreateWithoutReviewsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -997,7 +997,7 @@ export type UserCreateWithoutReviewsInput = {
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -1079,7 +1079,7 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
 }
 
 export type UserCreateWithoutServiceProviderInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -1101,7 +1101,7 @@ export type UserCreateWithoutServiceProviderInput = {
 }
 
 export type UserUncheckedCreateWithoutServiceProviderInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -1183,7 +1183,7 @@ export type UserUncheckedUpdateWithoutServiceProviderInput = {
 }
 
 export type UserCreateWithoutServiceRequestsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean
@@ -1205,7 +1205,7 @@ export type UserCreateWithoutServiceRequestsInput = {
 }
 
 export type UserUncheckedCreateWithoutServiceRequestsInput = {
-  id: string
+  id?: string
   name: string
   email: string
   emailVerified?: boolean

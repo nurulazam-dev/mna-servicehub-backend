@@ -1,14 +1,22 @@
+/* 
 export interface IRegisterStaffPayload {
-  password: string;
-  user: {
     name: string;
     email: string;
     phone?: string;
     dateOfBirth?: string;
     joinedDate?: string;
     experience?: string;
-    imgUrl?: string;
+    imageUrl?: string;
     address?: string;
-    designation: string;
-  };
+    designation?: string;
+  } 
+ */
+
+export type IRegisterStaffRole = "ADMIN" | "MANAGER";
+
+export interface IRegisterStaffPayload {
+  name: string;
+  email: string;
+  phone: string;
+  role: IRegisterStaffRole;
 }
