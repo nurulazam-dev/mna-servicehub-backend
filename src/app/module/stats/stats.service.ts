@@ -5,7 +5,7 @@ import {
   UserRole,
   JobApplicationStatus,
   PaymentStatus,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import AppError from "../../errorHelpers/AppError";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { prisma } from "../../lib/prisma";

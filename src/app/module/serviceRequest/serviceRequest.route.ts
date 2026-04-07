@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { ServiceRequestController } from "./serviceRequest.controller";
 import { validateRequest } from "../../middleware/validateRequest.ts";
 import { ServiceRequestValidation } from "./serviceRequest.validation";
@@ -65,4 +65,4 @@ router.patch(
   ServiceRequestController.updateServiceRequestByManagement,
 );
 
-export const ServiceRequestRoutes = router;
+export const ServiceRequestRoutes: Router = router;

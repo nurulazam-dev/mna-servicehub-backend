@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 import { JobPostController } from "./jobPost.controller";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { validateRequest } from "../../middleware/validateRequest.ts";
 import { JobPostValidation } from "./jobPost.validation";
 
@@ -23,4 +23,4 @@ router.patch(
   JobPostController.updateJobPost,
 );
 
-export const JobPostRoutes = router;
+export const JobPostRoutes: Router = router;

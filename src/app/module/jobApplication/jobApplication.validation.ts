@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { JobApplicationStatus } from "../../../generated/prisma/enums";
+import { JobApplicationStatus } from "../../../../generated/prisma/enums";
 
 const createJobApplicationZodSchema = z.object({
   userId: z.string(),
@@ -17,7 +17,7 @@ const createJobApplicationZodSchema = z.object({
     .url("CV must be a valid URL")
     .refine(
       (url) => {
-        const cleanUrl = url.split("?")[0].toLowerCase();
+        const cleanUrl = url.split("?")[0]!.toLowerCase();
         return cleanUrl.endsWith(".pdf");
       },
       {

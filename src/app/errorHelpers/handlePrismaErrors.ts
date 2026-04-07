@@ -1,5 +1,5 @@
 import status from "http-status";
-import { Prisma } from "../../generated/prisma/client";
+import { Prisma } from "../../../generated/prisma/client";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 
 const getStatusCodeFromPrismaError = (errorCode: string): number => {
@@ -198,7 +198,7 @@ export const handlePrismaClientValidationError = (
     "Invalid query parameters provided to the database operation.";
 
   errorSources.push({
-    path: fieldName,
+    path: fieldName ?? "unknown",
     message: mainMessage,
   });
 

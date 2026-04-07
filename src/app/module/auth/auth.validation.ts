@@ -36,7 +36,7 @@ const registerJobCandidateZodSchema = z.object({
     .url("CV must be a valid URL")
     .refine(
       (url) => {
-        const cleanUrl = url.split("?")[0].toLowerCase();
+        const cleanUrl = url.split("?")[0]!.toLowerCase();
         return cleanUrl.endsWith(".pdf");
       },
       {

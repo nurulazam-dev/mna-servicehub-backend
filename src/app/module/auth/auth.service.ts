@@ -18,7 +18,7 @@ import {
   JobApplicationStatus,
   UserRole,
   UserStatus,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 
 const registerCustomer = async (payload: IRegisterCustomerPayload) => {
@@ -119,7 +119,7 @@ const registerJobCandidate = async (payload: IRegisterJobCandidatePayload) => {
           userId: updatedUser.id,
           cvUrl: cvUrl,
           status: JobApplicationStatus.PENDING,
-          jobPostId: undefined,
+          jobPostId: null,
         },
       });
 

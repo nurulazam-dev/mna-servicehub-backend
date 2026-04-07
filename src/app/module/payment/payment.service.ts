@@ -7,7 +7,7 @@ import AppError from "../../errorHelpers/AppError";
 import {
   PaymentStatus,
   ServiceRequestStatus,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import { sendEmail } from "../../utils/email";
 import { uploadFileToCloudinary } from "../../config/cloudinary.config";
 import { stripe } from "../../config/stripe.config";
@@ -120,7 +120,14 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    const { requestId, paymentId } = session.metadata!;
+    const { requestId, paymentId } = session.metadata || {};
+
+    if (!requestId || !paymentId) {
+      throw new AppError(
+        status.BAD_REQUEST,
+        "Invalid webhook session metadata: missing requestId or paymentId.",
+      );
+    }
 
     const serviceRequest = await prisma.serviceRequest.findUnique({
       where: { id: requestId },

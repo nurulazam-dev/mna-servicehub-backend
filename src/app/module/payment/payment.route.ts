@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { PaymentController } from "./payment.controller";
 
 const router = Router();
@@ -29,4 +29,4 @@ router.get(
   PaymentController.getSinglePayment,
 );
 
-export const PaymentRoutes = router;
+export const PaymentRoutes: Router = router;

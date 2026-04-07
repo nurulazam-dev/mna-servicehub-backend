@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { JobApplicationStatus } from "../../../generated/prisma/enums";
+import { JobApplicationStatus } from "../../../../generated/prisma/enums";
 
 export interface IJobApplicationPayload {
   userId: string;

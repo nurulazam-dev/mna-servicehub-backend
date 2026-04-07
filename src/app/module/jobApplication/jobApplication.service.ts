@@ -8,7 +8,7 @@ import AppError from "../../errorHelpers/AppError";
 import {
   JobApplicationStatus,
   UserRole,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 
 const applyToJob = async (payload: IJobApplicationPayload) => {
   const jobPost = await prisma.jobPost.findUnique({

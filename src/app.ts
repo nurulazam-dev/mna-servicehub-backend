@@ -4,6 +4,7 @@ import cors from "cors";
 import { envVars } from "./app/config/env";
 import qs from "qs";
 import { IndexRoutes } from "./app/routes";
+// import { IndexRoutes } from "./app/routes/index.js";
 import { notFound } from "./app/middleware/notFound";
 import path from "path";
 import { toNodeHandler } from "better-auth/node";

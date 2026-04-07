@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 import { JobApplicationController } from "./jobApplication.controller";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { validateRequest } from "../../middleware/validateRequest.ts";
 import { JobApplicationValidation } from "./jobApplication.validation";
 
@@ -47,4 +47,4 @@ router.patch(
   JobApplicationController.updateApplication,
 );
 
-export const JobApplicationRoutes = router;
+export const JobApplicationRoutes: Router = router;

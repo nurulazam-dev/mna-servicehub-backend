@@ -4,7 +4,7 @@ import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
 import { ICreateServiceSchedulePayload } from "./serviceSchedule.interface";
 import { addMinutes, format, parse } from "date-fns";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { startOfDay, endOfDay } from "date-fns";
 
