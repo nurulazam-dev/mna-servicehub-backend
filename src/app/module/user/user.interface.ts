@@ -65,3 +65,7 @@ export interface IAdminUpdateUserPayload {
   emailVerified?: boolean;
   isDeleted?: boolean;
 }
+
+export interface IAdminDeleteUserPayload {
+  isDeleted?: boolean;
+}

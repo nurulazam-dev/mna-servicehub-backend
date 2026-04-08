@@ -63,10 +63,22 @@ const adminUpdateUserById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const adminDeleteUserById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await UserService.adminDeleteUserById(id as string, req.body);
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "User deleted successfully",
+    data: result,
+  });
+});
+
 export const UserController = {
   registerStaff,
   getAllUsers,
   getUserById,
   updateUserById,
   adminUpdateUserById,
+  adminDeleteUserById,
 };

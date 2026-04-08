@@ -6,6 +6,7 @@ import { envVars } from "../../config/env";
 import { sendEmail } from "../../utils/email";
 import { generateTemporaryPassword } from "../../utils/passwordGenerator";
 import {
+  IAdminDeleteUserPayload,
   IAdminUpdateUserPayload,
   IRegisterStaffPayload,
   IUserPayload,
@@ -139,6 +140,19 @@ const adminUpdateUserById = async (
   if (payload.status !== undefined) data.status = payload.status as UserStatus;
   if (payload.emailVerified !== undefined)
     data.emailVerified = payload.emailVerified;
+
+  const result = await prisma.user.update({
+    where: { id },
+    data,
+  });
+  return result;
+};
+
+const adminDeleteUserById = async (
+  id: string,
+  payload: IAdminDeleteUserPayload,
+) => {
+  const data: Prisma.UserUpdateInput = {};
   if (payload.isDeleted !== undefined) data.isDeleted = payload.isDeleted;
 
   const result = await prisma.user.update({
@@ -154,4 +168,5 @@ export const UserService = {
   getUserById,
   updateUserById,
   adminUpdateUserById,
+  adminDeleteUserById,
 };

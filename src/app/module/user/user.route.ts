@@ -15,7 +15,13 @@ router.get(
 
 router.get(
   "/:id",
-  checkAuth(UserRole.ADMIN, UserRole.MANAGER, UserRole.SERVICE_PROVIDER),
+  checkAuth(
+    UserRole.ADMIN,
+    UserRole.MANAGER,
+    UserRole.SERVICE_PROVIDER,
+    UserRole.JOB_CANDIDATE,
+    UserRole.CUSTOMER,
+  ),
   UserController.getUserById,
 );
 
@@ -31,7 +37,13 @@ router.patch(
 );
 
 router.patch(
-  "/admin/:id",
+  "/update/:id",
+  checkAuth(UserRole.ADMIN),
+  UserController.adminUpdateUserById,
+);
+
+router.patch(
+  "/delete/:id",
   checkAuth(UserRole.ADMIN),
   UserController.adminUpdateUserById,
 );
