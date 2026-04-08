@@ -45,7 +45,7 @@ router.patch(
 router.patch(
   "/delete/:id",
   checkAuth(UserRole.ADMIN),
-  UserController.adminUpdateUserById,
+  UserController.adminDeleteUserById,
 );
 
 router.post(

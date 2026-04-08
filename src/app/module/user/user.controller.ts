@@ -65,7 +65,9 @@ const adminUpdateUserById = catchAsync(async (req: Request, res: Response) => {
 
 const adminDeleteUserById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await UserService.adminDeleteUserById(id as string, req.body);
+
+  const result = await UserService.adminDeleteUserById(id as string);
+
   sendResponse(res, {
     httpStatusCode: status.OK,
     success: true,
