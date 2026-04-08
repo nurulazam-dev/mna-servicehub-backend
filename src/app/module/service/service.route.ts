@@ -8,7 +8,9 @@ import { ServiceValidation } from "./service.validation";
 const router = Router();
 
 router.get("/", ServiceController.getAllServices);
+
 router.get("/:id", ServiceController.getSingleService);
+
 router.post(
   "/create-service",
   checkAuth(UserRole.ADMIN),

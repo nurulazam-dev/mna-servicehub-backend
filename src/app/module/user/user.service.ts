@@ -86,9 +86,9 @@ const getAllUsers = async (query: IQueryParams) => {
   const result = await queryBuilder
     .search()
     .filter()
-    .where({
+    /* .where({
       isDeleted: false,
-    })
+    }) */
     .include({
       serviceProvider: true,
       serviceRequests: true,

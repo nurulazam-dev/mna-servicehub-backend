@@ -1,4 +1,7 @@
+import { Prisma, Service } from "../../../../generated/prisma/client";
+import { IQueryParams } from "../../interfaces/query.interface";
 import { prisma } from "../../lib/prisma";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 import { IServiceCreatePayload } from "./service.interface";
 
 const createService = async (payload: IServiceCreatePayload) => {
@@ -8,11 +11,8 @@ const createService = async (payload: IServiceCreatePayload) => {
   return result;
 };
 
-const getAllServices = async () => {
+/* const getAllServices = async () => {
   const result = await prisma.service.findMany({
-    // where: {
-    //   isActive: true,
-    // },
     include: {
       _count: {
         select: {
@@ -25,6 +25,35 @@ const getAllServices = async () => {
       createdAt: "desc",
     },
   });
+  return result;
+}; */
+
+const getAllServices = async (query: IQueryParams) => {
+  const queryBuilder = new QueryBuilder<
+    Service,
+    Prisma.ServiceWhereInput,
+    Prisma.ServiceInclude
+  >(prisma.service, query, {
+    searchableFields: ["name", "description"],
+    filterableFields: ["isActive", "isDeleted"],
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .include({
+      _count: {
+        select: {
+          reviews: true,
+          serviceRequests: true,
+        },
+      },
+    })
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
+
   return result;
 };
 

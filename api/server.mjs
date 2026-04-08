@@ -1649,6 +1649,377 @@ var AuthRoutes = router;
 // src/app/module/service/service.route.ts
 import { Router as Router2 } from "express";
 
+// src/app/utils/QueryBuilder.ts
+var QueryBuilder = class {
+  constructor(model, queryParams, config2 = {}) {
+    this.model = model;
+    this.queryParams = queryParams;
+    this.config = config2;
+    this.query = {
+      where: {},
+      include: {},
+      orderBy: {},
+      skip: 0,
+      take: 10
+    };
+    this.countQuery = {
+      where: {}
+    };
+  }
+  query;
+  countQuery;
+  page = 1;
+  limit = 10;
+  skip = 0;
+  sortBy = "createdAt";
+  sortOrder = "desc";
+  selectFields;
+  search() {
+    const { searchTerm } = this.queryParams;
+    const { searchableFields } = this.config;
+    if (searchTerm && searchableFields && searchableFields.length > 0) {
+      const searchConditions = searchableFields.map(
+        (field) => {
+          if (field.includes(".")) {
+            const parts = field.split(".");
+            if (parts.length === 2) {
+              const [relation, nestedField] = parts;
+              const stringFilter2 = {
+                contains: searchTerm,
+                mode: "insensitive"
+              };
+              return {
+                [relation]: {
+                  [nestedField]: stringFilter2
+                }
+              };
+            } else if (parts.length === 3) {
+              const [relation, nestedRelation, nestedField] = parts;
+              const stringFilter2 = {
+                contains: searchTerm,
+                mode: "insensitive"
+              };
+              return {
+                [relation]: {
+                  some: {
+                    [nestedRelation]: {
+                      [nestedField]: stringFilter2
+                    }
+                  }
+                }
+              };
+            }
+          }
+          const stringFilter = {
+            contains: searchTerm,
+            mode: "insensitive"
+          };
+          return {
+            [field]: stringFilter
+          };
+        }
+      );
+      const whereConditions = this.query.where;
+      whereConditions.OR = searchConditions;
+      const countWhereConditions = this.countQuery.where;
+      countWhereConditions.OR = searchConditions;
+    }
+    return this;
+  }
+  filter() {
+    const { filterableFields } = this.config;
+    const excludedField = [
+      "searchTerm",
+      "page",
+      "limit",
+      "sortBy",
+      "sortOrder",
+      "fields",
+      "include"
+    ];
+    const filterParams = {};
+    Object.keys(this.queryParams).forEach((key) => {
+      if (!excludedField.includes(key)) {
+        filterParams[key] = this.queryParams[key];
+      }
+    });
+    const queryWhere = this.query.where;
+    const countQueryWhere = this.countQuery.where;
+    Object.keys(filterParams).forEach((key) => {
+      const value = filterParams[key];
+      if (value === void 0 || value === "") {
+        return;
+      }
+      const isAllowedField = !filterableFields || filterableFields.length === 0 || filterableFields.includes(key);
+      if (key.includes(".")) {
+        const parts = key.split(".");
+        if (filterableFields && !filterableFields.includes(key)) {
+          return;
+        }
+        if (parts.length === 2) {
+          const [relation, nestedField] = parts;
+          if (!queryWhere[relation]) {
+            queryWhere[relation] = {};
+            countQueryWhere[relation] = {};
+          }
+          const queryRelation = queryWhere[relation];
+          const countRelation = countQueryWhere[relation];
+          queryRelation[nestedField] = this.parseFilterValue(value);
+          countRelation[nestedField] = this.parseFilterValue(value);
+          return;
+        } else if (parts.length === 3) {
+          const [relation, nestedRelation, nestedField] = parts;
+          if (!queryWhere[relation]) {
+            queryWhere[relation] = {
+              some: {}
+            };
+            countQueryWhere[relation] = {
+              some: {}
+            };
+          }
+          const queryRelation = queryWhere[relation];
+          const countRelation = countQueryWhere[relation];
+          if (!queryRelation.some) {
+            queryRelation.some = {};
+          }
+          if (!countRelation.some) {
+            countRelation.some = {};
+          }
+          const querySome = queryRelation.some;
+          const countSome = countRelation.some;
+          if (!querySome[nestedRelation]) {
+            querySome[nestedRelation] = {};
+          }
+          if (!countSome[nestedRelation]) {
+            countSome[nestedRelation] = {};
+          }
+          const queryNestedRelation = querySome[nestedRelation];
+          const countNestedRelation = countSome[nestedRelation];
+          queryNestedRelation[nestedField] = this.parseFilterValue(value);
+          countNestedRelation[nestedField] = this.parseFilterValue(value);
+          return;
+        }
+      }
+      if (!isAllowedField) {
+        return;
+      }
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+        queryWhere[key] = this.parseRangeFilter(
+          value
+        );
+        countQueryWhere[key] = this.parseRangeFilter(
+          value
+        );
+        return;
+      }
+      queryWhere[key] = this.parseFilterValue(value);
+      countQueryWhere[key] = this.parseFilterValue(value);
+    });
+    return this;
+  }
+  paginate() {
+    const page = Number(this.queryParams.page) || 1;
+    const limit = Number(this.queryParams.limit) || 10;
+    this.page = page;
+    this.limit = limit;
+    this.skip = (page - 1) * limit;
+    this.query.skip = this.skip;
+    this.query.take = this.limit;
+    return this;
+  }
+  sort() {
+    const sortBy = this.queryParams.sortBy || "createdAt";
+    const sortOrder = this.queryParams.sortOrder === "asc" ? "asc" : "desc";
+    this.sortBy = sortBy;
+    this.sortOrder = sortOrder;
+    if (sortBy.includes(".")) {
+      const parts = sortBy.split(".");
+      if (parts.length === 2) {
+        const [relation, nestedField] = parts;
+        this.query.orderBy = {
+          [relation]: {
+            [nestedField]: sortOrder
+          }
+        };
+      } else if (parts.length === 3) {
+        const [relation, nestedRelation, nestedField] = parts;
+        this.query.orderBy = {
+          [relation]: {
+            [nestedRelation]: {
+              [nestedField]: sortOrder
+            }
+          }
+        };
+      } else {
+        this.query.orderBy = {
+          [sortBy]: sortOrder
+        };
+      }
+    } else {
+      this.query.orderBy = {
+        [sortBy]: sortOrder
+      };
+    }
+    return this;
+  }
+  fields() {
+    const fieldsParam = this.queryParams.fields;
+    if (fieldsParam && typeof fieldsParam === "string") {
+      const fieldsArray = fieldsParam?.split(",").map((field) => field.trim());
+      this.selectFields = {};
+      fieldsArray?.forEach((field) => {
+        if (this.selectFields) {
+          this.selectFields[field] = true;
+        }
+      });
+      this.query.select = this.selectFields;
+      delete this.query.include;
+    }
+    return this;
+  }
+  include(relation) {
+    if (this.selectFields) {
+      return this;
+    }
+    this.query.include = {
+      ...this.query.include,
+      ...relation
+    };
+    return this;
+  }
+  dynamicInclude(includeConfig, defaultInclude) {
+    if (this.selectFields) {
+      return this;
+    }
+    const result = {};
+    defaultInclude?.forEach((field) => {
+      if (includeConfig[field]) {
+        result[field] = includeConfig[field];
+      }
+    });
+    const includeParam = this.queryParams.include;
+    if (includeParam && typeof includeParam === "string") {
+      const requestedRelations = includeParam.split(",").map((relation) => relation.trim());
+      requestedRelations.forEach((relation) => {
+        if (includeConfig[relation]) {
+          result[relation] = includeConfig[relation];
+        }
+      });
+    }
+    this.query.include = {
+      ...this.query.include,
+      ...result
+    };
+    return this;
+  }
+  where(condition) {
+    this.query.where = this.deepMerge(
+      this.query.where,
+      condition
+    );
+    this.countQuery.where = this.deepMerge(
+      this.countQuery.where,
+      condition
+    );
+    return this;
+  }
+  async execute() {
+    const [total, data] = await Promise.all([
+      this.model.count(
+        this.countQuery
+      ),
+      this.model.findMany(
+        this.query
+      )
+    ]);
+    const totalPages = Math.ceil(total / this.limit);
+    return {
+      data,
+      meta: {
+        page: this.page,
+        limit: this.limit,
+        total,
+        totalPages
+      }
+    };
+  }
+  async count() {
+    return await this.model.count(
+      this.countQuery
+    );
+  }
+  getQuery() {
+    return this.query;
+  }
+  deepMerge(target, source) {
+    const result = { ...target };
+    for (const key in source) {
+      if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
+        if (result[key] && typeof result[key] === "object" && !Array.isArray(result[key])) {
+          result[key] = this.deepMerge(
+            result[key],
+            source[key]
+          );
+        } else {
+          result[key] = source[key];
+        }
+      } else {
+        result[key] = source[key];
+      }
+    }
+    return result;
+  }
+  parseFilterValue(value) {
+    if (value === "true") {
+      return true;
+    }
+    if (value === "false") {
+      return false;
+    }
+    if (typeof value === "string" && !isNaN(Number(value)) && value != "") {
+      return Number(value);
+    }
+    if (Array.isArray(value)) {
+      return { in: value.map((item) => this.parseFilterValue(item)) };
+    }
+    return value;
+  }
+  parseRangeFilter(value) {
+    const rangeQuery = {};
+    Object.keys(value).forEach((operator) => {
+      const operatorValue = value[operator];
+      if (operatorValue === void 0) {
+        return;
+      }
+      const parsedValue = typeof operatorValue === "string" && !isNaN(Number(operatorValue)) ? Number(operatorValue) : operatorValue;
+      switch (operator) {
+        case "lt":
+        case "lte":
+        case "gt":
+        case "gte":
+        case "equals":
+        case "not":
+        case "contains":
+        case "startsWith":
+        case "endsWith":
+          rangeQuery[operator] = parsedValue;
+          break;
+        case "in":
+        case "notIn":
+          if (Array.isArray(operatorValue)) {
+            rangeQuery[operator] = operatorValue;
+          } else {
+            rangeQuery[operator] = [parsedValue];
+          }
+          break;
+        default:
+          break;
+      }
+    });
+    return Object.keys(rangeQuery).length > 0 ? rangeQuery : value;
+  }
+};
+
 // src/app/module/service/service.service.ts
 var createService = async (payload) => {
   const result = await prisma.service.create({
@@ -1656,23 +2027,19 @@ var createService = async (payload) => {
   });
   return result;
 };
-var getAllServices = async () => {
-  const result = await prisma.service.findMany({
-    // where: {
-    //   isActive: true,
-    // },
-    include: {
-      _count: {
-        select: {
-          reviews: true,
-          serviceRequests: true
-        }
-      }
-    },
-    orderBy: {
-      createdAt: "desc"
-    }
+var getAllServices = async (query) => {
+  const queryBuilder = new QueryBuilder(prisma.service, query, {
+    searchableFields: ["name", "description"],
+    filterableFields: ["isActive", "isDeleted"]
   });
+  const result = await queryBuilder.search().filter().include({
+    _count: {
+      select: {
+        reviews: true,
+        serviceRequests: true
+      }
+    }
+  }).paginate().sort().fields().execute();
   return result;
 };
 var getSingleService = async (id) => {
@@ -1719,12 +2086,14 @@ var createService2 = catchAsync(async (req, res) => {
   });
 });
 var getAllServices2 = catchAsync(async (req, res) => {
-  const result = await ServiceServices.getAllServices();
+  const query = req.query;
+  const result = await ServiceServices.getAllServices(query);
   sendResponse(res, {
     httpStatusCode: status5.OK,
     success: true,
     message: "Services fetched successfully",
-    data: result
+    data: result.data,
+    meta: result.meta
   });
 });
 var getSingleService2 = catchAsync(async (req, res) => {
@@ -4125,380 +4494,9 @@ var generateTemporaryPassword = (length = 10) => {
 // src/app/module/user/user.service.ts
 import { hashPassword } from "better-auth/crypto";
 
-// src/app/utils/QueryBuilder.ts
-var QueryBuilder = class {
-  constructor(model, queryParams, config2 = {}) {
-    this.model = model;
-    this.queryParams = queryParams;
-    this.config = config2;
-    this.query = {
-      where: {},
-      include: {},
-      orderBy: {},
-      skip: 0,
-      take: 10
-    };
-    this.countQuery = {
-      where: {}
-    };
-  }
-  query;
-  countQuery;
-  page = 1;
-  limit = 10;
-  skip = 0;
-  sortBy = "createdAt";
-  sortOrder = "desc";
-  selectFields;
-  search() {
-    const { searchTerm } = this.queryParams;
-    const { searchableFields } = this.config;
-    if (searchTerm && searchableFields && searchableFields.length > 0) {
-      const searchConditions = searchableFields.map(
-        (field) => {
-          if (field.includes(".")) {
-            const parts = field.split(".");
-            if (parts.length === 2) {
-              const [relation, nestedField] = parts;
-              const stringFilter2 = {
-                contains: searchTerm,
-                mode: "insensitive"
-              };
-              return {
-                [relation]: {
-                  [nestedField]: stringFilter2
-                }
-              };
-            } else if (parts.length === 3) {
-              const [relation, nestedRelation, nestedField] = parts;
-              const stringFilter2 = {
-                contains: searchTerm,
-                mode: "insensitive"
-              };
-              return {
-                [relation]: {
-                  some: {
-                    [nestedRelation]: {
-                      [nestedField]: stringFilter2
-                    }
-                  }
-                }
-              };
-            }
-          }
-          const stringFilter = {
-            contains: searchTerm,
-            mode: "insensitive"
-          };
-          return {
-            [field]: stringFilter
-          };
-        }
-      );
-      const whereConditions = this.query.where;
-      whereConditions.OR = searchConditions;
-      const countWhereConditions = this.countQuery.where;
-      countWhereConditions.OR = searchConditions;
-    }
-    return this;
-  }
-  filter() {
-    const { filterableFields } = this.config;
-    const excludedField = [
-      "searchTerm",
-      "page",
-      "limit",
-      "sortBy",
-      "sortOrder",
-      "fields",
-      "include"
-    ];
-    const filterParams = {};
-    Object.keys(this.queryParams).forEach((key) => {
-      if (!excludedField.includes(key)) {
-        filterParams[key] = this.queryParams[key];
-      }
-    });
-    const queryWhere = this.query.where;
-    const countQueryWhere = this.countQuery.where;
-    Object.keys(filterParams).forEach((key) => {
-      const value = filterParams[key];
-      if (value === void 0 || value === "") {
-        return;
-      }
-      const isAllowedField = !filterableFields || filterableFields.length === 0 || filterableFields.includes(key);
-      if (key.includes(".")) {
-        const parts = key.split(".");
-        if (filterableFields && !filterableFields.includes(key)) {
-          return;
-        }
-        if (parts.length === 2) {
-          const [relation, nestedField] = parts;
-          if (!queryWhere[relation]) {
-            queryWhere[relation] = {};
-            countQueryWhere[relation] = {};
-          }
-          const queryRelation = queryWhere[relation];
-          const countRelation = countQueryWhere[relation];
-          queryRelation[nestedField] = this.parseFilterValue(value);
-          countRelation[nestedField] = this.parseFilterValue(value);
-          return;
-        } else if (parts.length === 3) {
-          const [relation, nestedRelation, nestedField] = parts;
-          if (!queryWhere[relation]) {
-            queryWhere[relation] = {
-              some: {}
-            };
-            countQueryWhere[relation] = {
-              some: {}
-            };
-          }
-          const queryRelation = queryWhere[relation];
-          const countRelation = countQueryWhere[relation];
-          if (!queryRelation.some) {
-            queryRelation.some = {};
-          }
-          if (!countRelation.some) {
-            countRelation.some = {};
-          }
-          const querySome = queryRelation.some;
-          const countSome = countRelation.some;
-          if (!querySome[nestedRelation]) {
-            querySome[nestedRelation] = {};
-          }
-          if (!countSome[nestedRelation]) {
-            countSome[nestedRelation] = {};
-          }
-          const queryNestedRelation = querySome[nestedRelation];
-          const countNestedRelation = countSome[nestedRelation];
-          queryNestedRelation[nestedField] = this.parseFilterValue(value);
-          countNestedRelation[nestedField] = this.parseFilterValue(value);
-          return;
-        }
-      }
-      if (!isAllowedField) {
-        return;
-      }
-      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-        queryWhere[key] = this.parseRangeFilter(
-          value
-        );
-        countQueryWhere[key] = this.parseRangeFilter(
-          value
-        );
-        return;
-      }
-      queryWhere[key] = this.parseFilterValue(value);
-      countQueryWhere[key] = this.parseFilterValue(value);
-    });
-    return this;
-  }
-  paginate() {
-    const page = Number(this.queryParams.page) || 1;
-    const limit = Number(this.queryParams.limit) || 10;
-    this.page = page;
-    this.limit = limit;
-    this.skip = (page - 1) * limit;
-    this.query.skip = this.skip;
-    this.query.take = this.limit;
-    return this;
-  }
-  sort() {
-    const sortBy = this.queryParams.sortBy || "createdAt";
-    const sortOrder = this.queryParams.sortOrder === "asc" ? "asc" : "desc";
-    this.sortBy = sortBy;
-    this.sortOrder = sortOrder;
-    if (sortBy.includes(".")) {
-      const parts = sortBy.split(".");
-      if (parts.length === 2) {
-        const [relation, nestedField] = parts;
-        this.query.orderBy = {
-          [relation]: {
-            [nestedField]: sortOrder
-          }
-        };
-      } else if (parts.length === 3) {
-        const [relation, nestedRelation, nestedField] = parts;
-        this.query.orderBy = {
-          [relation]: {
-            [nestedRelation]: {
-              [nestedField]: sortOrder
-            }
-          }
-        };
-      } else {
-        this.query.orderBy = {
-          [sortBy]: sortOrder
-        };
-      }
-    } else {
-      this.query.orderBy = {
-        [sortBy]: sortOrder
-      };
-    }
-    return this;
-  }
-  fields() {
-    const fieldsParam = this.queryParams.fields;
-    if (fieldsParam && typeof fieldsParam === "string") {
-      const fieldsArray = fieldsParam?.split(",").map((field) => field.trim());
-      this.selectFields = {};
-      fieldsArray?.forEach((field) => {
-        if (this.selectFields) {
-          this.selectFields[field] = true;
-        }
-      });
-      this.query.select = this.selectFields;
-      delete this.query.include;
-    }
-    return this;
-  }
-  include(relation) {
-    if (this.selectFields) {
-      return this;
-    }
-    this.query.include = {
-      ...this.query.include,
-      ...relation
-    };
-    return this;
-  }
-  dynamicInclude(includeConfig, defaultInclude) {
-    if (this.selectFields) {
-      return this;
-    }
-    const result = {};
-    defaultInclude?.forEach((field) => {
-      if (includeConfig[field]) {
-        result[field] = includeConfig[field];
-      }
-    });
-    const includeParam = this.queryParams.include;
-    if (includeParam && typeof includeParam === "string") {
-      const requestedRelations = includeParam.split(",").map((relation) => relation.trim());
-      requestedRelations.forEach((relation) => {
-        if (includeConfig[relation]) {
-          result[relation] = includeConfig[relation];
-        }
-      });
-    }
-    this.query.include = {
-      ...this.query.include,
-      ...result
-    };
-    return this;
-  }
-  where(condition) {
-    this.query.where = this.deepMerge(
-      this.query.where,
-      condition
-    );
-    this.countQuery.where = this.deepMerge(
-      this.countQuery.where,
-      condition
-    );
-    return this;
-  }
-  async execute() {
-    const [total, data] = await Promise.all([
-      this.model.count(
-        this.countQuery
-      ),
-      this.model.findMany(
-        this.query
-      )
-    ]);
-    const totalPages = Math.ceil(total / this.limit);
-    return {
-      data,
-      meta: {
-        page: this.page,
-        limit: this.limit,
-        total,
-        totalPages
-      }
-    };
-  }
-  async count() {
-    return await this.model.count(
-      this.countQuery
-    );
-  }
-  getQuery() {
-    return this.query;
-  }
-  deepMerge(target, source) {
-    const result = { ...target };
-    for (const key in source) {
-      if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
-        if (result[key] && typeof result[key] === "object" && !Array.isArray(result[key])) {
-          result[key] = this.deepMerge(
-            result[key],
-            source[key]
-          );
-        } else {
-          result[key] = source[key];
-        }
-      } else {
-        result[key] = source[key];
-      }
-    }
-    return result;
-  }
-  parseFilterValue(value) {
-    if (value === "true") {
-      return true;
-    }
-    if (value === "false") {
-      return false;
-    }
-    if (typeof value === "string" && !isNaN(Number(value)) && value != "") {
-      return Number(value);
-    }
-    if (Array.isArray(value)) {
-      return { in: value.map((item) => this.parseFilterValue(item)) };
-    }
-    return value;
-  }
-  parseRangeFilter(value) {
-    const rangeQuery = {};
-    Object.keys(value).forEach((operator) => {
-      const operatorValue = value[operator];
-      if (operatorValue === void 0) {
-        return;
-      }
-      const parsedValue = typeof operatorValue === "string" && !isNaN(Number(operatorValue)) ? Number(operatorValue) : operatorValue;
-      switch (operator) {
-        case "lt":
-        case "lte":
-        case "gt":
-        case "gte":
-        case "equals":
-        case "not":
-        case "contains":
-        case "startsWith":
-        case "endsWith":
-          rangeQuery[operator] = parsedValue;
-          break;
-        case "in":
-        case "notIn":
-          if (Array.isArray(operatorValue)) {
-            rangeQuery[operator] = operatorValue;
-          } else {
-            rangeQuery[operator] = [parsedValue];
-          }
-          break;
-        default:
-          break;
-      }
-    });
-    return Object.keys(rangeQuery).length > 0 ? rangeQuery : value;
-  }
-};
-
 // src/app/module/user/user.constant.ts
 var userSearchableFields = ["name", "email", "phone"];
-var userFilterableFields = ["isDeleted", "user.role"];
+var userFilterableFields = ["status", "role", "searchTerm"];
 var userIncludeConfig = {
   serviceProvider: true,
   serviceRequests: true,
@@ -4559,9 +4557,7 @@ var getAllUsers = async (query) => {
     searchableFields: userSearchableFields,
     filterableFields: userFilterableFields
   });
-  const result = await queryBuilder.search().filter().where({
-    isDeleted: false
-  }).include({
+  const result = await queryBuilder.search().filter().include({
     serviceProvider: true,
     serviceRequests: true,
     jobApplications: true,
@@ -4596,10 +4592,20 @@ var adminUpdateUserById = async (id, payload) => {
   if (payload.status !== void 0) data.status = payload.status;
   if (payload.emailVerified !== void 0)
     data.emailVerified = payload.emailVerified;
-  if (payload.isDeleted !== void 0) data.isDeleted = payload.isDeleted;
   const result = await prisma.user.update({
     where: { id },
     data
+  });
+  return result;
+};
+var adminDeleteUserById = async (id) => {
+  const result = await prisma.user.update({
+    where: { id },
+    data: {
+      isDeleted: true,
+      status: UserStatus.DELETED,
+      deletedAt: /* @__PURE__ */ new Date()
+    }
   });
   return result;
 };
@@ -4608,7 +4614,8 @@ var UserService = {
   getAllUsers,
   getUserById,
   updateUserById,
-  adminUpdateUserById
+  adminUpdateUserById,
+  adminDeleteUserById
 };
 
 // src/app/module/user/user.controller.ts
@@ -4662,12 +4669,23 @@ var adminUpdateUserById2 = catchAsync(async (req, res) => {
     data: result
   });
 });
+var adminDeleteUserById2 = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserService.adminDeleteUserById(id);
+  sendResponse(res, {
+    httpStatusCode: status19.OK,
+    success: true,
+    message: "User deleted successfully",
+    data: result
+  });
+});
 var UserController = {
   registerStaff: registerStaff2,
   getAllUsers: getAllUsers2,
   getUserById: getUserById2,
   updateUserById: updateUserById2,
-  adminUpdateUserById: adminUpdateUserById2
+  adminUpdateUserById: adminUpdateUserById2,
+  adminDeleteUserById: adminDeleteUserById2
 };
 
 // src/app/module/user/user.validation.ts
@@ -4706,7 +4724,13 @@ router9.get(
 );
 router9.get(
   "/:id",
-  checkAuth(UserRole.ADMIN, UserRole.MANAGER, UserRole.SERVICE_PROVIDER),
+  checkAuth(
+    UserRole.ADMIN,
+    UserRole.MANAGER,
+    UserRole.SERVICE_PROVIDER,
+    UserRole.JOB_CANDIDATE,
+    UserRole.CUSTOMER
+  ),
   UserController.getUserById
 );
 router9.patch(
@@ -4720,9 +4744,14 @@ router9.patch(
   UserController.updateUserById
 );
 router9.patch(
-  "/admin/:id",
+  "/update/:id",
   checkAuth(UserRole.ADMIN),
   UserController.adminUpdateUserById
+);
+router9.patch(
+  "/delete/:id",
+  checkAuth(UserRole.ADMIN),
+  UserController.adminDeleteUserById
 );
 router9.post(
   "/register-staff",
