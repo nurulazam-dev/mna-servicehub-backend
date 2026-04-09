@@ -19,9 +19,15 @@ router.post(
 );
 
 router.patch(
-  "/:id",
+  "/update/:id",
   checkAuth(UserRole.ADMIN),
   ServiceController.updateService,
+);
+
+router.patch(
+  "/delete/:id",
+  checkAuth(UserRole.ADMIN),
+  ServiceController.deleteService,
 );
 
 export const ServiceRoutes: Router = router;

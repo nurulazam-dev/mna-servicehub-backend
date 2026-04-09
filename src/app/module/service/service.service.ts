@@ -87,9 +87,21 @@ const updateService = async (
   return result;
 };
 
+const deleteService = async (id: string) => {
+  const result = await prisma.service.update({
+    where: { id },
+    data: {
+      isActive: false,
+    },
+  });
+
+  return result;
+};
+
 export const ServiceServices = {
   createService,
   getAllServices,
   getSingleService,
   updateService,
+  deleteService,
 };
