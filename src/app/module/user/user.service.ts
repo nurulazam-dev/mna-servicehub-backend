@@ -149,7 +149,7 @@ const adminUpdateUserById = async (
 
 const adminDeleteUserById = async (id: string) => {
   const result = await prisma.user.update({
-    where: { id },
+    where: { id, isDeleted: false },
     data: {
       isDeleted: true,
       status: UserStatus.DELETED,

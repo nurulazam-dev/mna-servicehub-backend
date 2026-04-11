@@ -18,9 +18,16 @@ router.post(
 );
 
 router.patch(
-  "/:id",
+  "/update/:id",
   checkAuth(UserRole.ADMIN),
+  validateRequest(JobPostValidation.updateJobPostZodSchema),
   JobPostController.updateJobPost,
+);
+
+router.patch(
+  "/delete/:id",
+  checkAuth(UserRole.ADMIN),
+  JobPostController.deleteJobPost,
 );
 
 export const JobPostRoutes: Router = router;
