@@ -53,7 +53,7 @@ export class QueryBuilder<
             const parts = field.split(".");
 
             if (parts.length === 2) {
-              const [relation, nestedField] = parts;
+              const [relation, nestedField] = parts as [string, string];
 
               const stringFilter: PrismaStringFilter = {
                 contains: searchTerm,
@@ -66,7 +66,11 @@ export class QueryBuilder<
                 },
               };
             } else if (parts.length === 3) {
-              const [relation, nestedRelation, nestedField] = parts;
+              const [relation, nestedRelation, nestedField] = parts as [
+                string,
+                string,
+                string,
+              ];
 
               const stringFilter: PrismaStringFilter = {
                 contains: searchTerm,
@@ -151,7 +155,7 @@ export class QueryBuilder<
         }
 
         if (parts.length === 2) {
-          const [relation, nestedField] = parts;
+          const [relation, nestedField] = parts as [string, string];
 
           if (!queryWhere[relation]) {
             queryWhere[relation] = {};
@@ -168,7 +172,11 @@ export class QueryBuilder<
           countRelation[nestedField] = this.parseFilterValue(value);
           return;
         } else if (parts.length === 3) {
-          const [relation, nestedRelation, nestedField] = parts;
+          const [relation, nestedRelation, nestedField] = parts as [
+            string,
+            string,
+            string,
+          ];
 
           if (!queryWhere[relation]) {
             queryWhere[relation] = {
@@ -267,7 +275,7 @@ export class QueryBuilder<
       const parts = sortBy.split(".");
 
       if (parts.length === 2) {
-        const [relation, nestedField] = parts;
+        const [relation, nestedField] = parts as [string, string];
 
         this.query.orderBy = {
           [relation]: {
@@ -275,7 +283,11 @@ export class QueryBuilder<
           },
         };
       } else if (parts.length === 3) {
-        const [relation, nestedRelation, nestedField] = parts;
+        const [relation, nestedRelation, nestedField] = parts as [
+          string,
+          string,
+          string,
+        ];
 
         this.query.orderBy = {
           [relation]: {
@@ -476,6 +488,10 @@ export class QueryBuilder<
 
     Object.keys(value).forEach((operator) => {
       const operatorValue = value[operator];
+
+      if (operatorValue === undefined) {
+        return;
+      }
 
       const parsedValue: string | number =
         typeof operatorValue === "string" && !isNaN(Number(operatorValue))

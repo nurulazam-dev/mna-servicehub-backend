@@ -1,7 +1,11 @@
+/* ==================================
+this code is used before deployments
+================================== */
+
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import { bearer, emailOTP, oAuthProxy } from "better-auth/plugins";
+import { bearer, emailOTP } from "better-auth/plugins";
 import { sendEmail } from "../utils/email";
 import { envVars } from "../config/env";
 import { UserRole, UserStatus } from "../../../generated/prisma/enums";
@@ -78,60 +82,7 @@ export const auth = betterAuth({
     },
   },
 
-  /*  session: {
-    expiresIn: 60 * 60 * 60 * 24, 
-    updateAge: 60 * 60 * 60 * 24, 
-    cookieCache: {
-      enabled: true,
-      maxAge: 60 * 60 * 60 * 24, 
-    },
-  }, */
-
-  redirectURLs: {
-    signIn: `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success`,
-  },
-
-  trustedOrigins: [
-    envVars.BETTER_AUTH_URL || "http://localhost:5000",
-    envVars.FRONTEND_URL,
-  ],
-
-  advanced: {
-    // disableCSRFCheck: true
-    useSecureCookies: false,
-    cookies: {
-      session_token: {
-        name: "session_token", // Force this exact name
-        attributes: {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-          partitioned: true,
-        },
-      },
-      state: {
-        name: "session_token",
-        attributes: {
-          sameSite: "none",
-          secure: true,
-          httpOnly: true,
-          // path: "/",
-          partitioned: true,
-        },
-      },
-      /*   sessionToken: {
-        attributes: {
-          sameSite: "none",
-          secure: true,
-          httpOnly: true,
-          path: "/",
-        },
-      }, */
-    },
-  },
-
   plugins: [
-    oAuthProxy(),
     bearer(),
     emailOTP({
       overrideDefaultEmailVerification: true,
@@ -193,4 +144,45 @@ export const auth = betterAuth({
       otpLength: 6,
     }),
   ],
+
+  session: {
+    expiresIn: 60 * 60 * 60 * 24, // 1 day
+    updateAge: 60 * 60 * 60 * 24, // 1 day
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 60 * 24, // 1 day
+    },
+  },
+
+  redirectURLs: {
+    signIn: `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success`,
+  },
+
+  trustedOrigins: [
+    envVars.BETTER_AUTH_URL || "http://localhost:5000",
+    envVars.FRONTEND_URL,
+  ],
+
+  advanced: {
+    // disableCSRFCheck: true
+    useSecureCookies: false,
+    cookies: {
+      state: {
+        attributes: {
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+          path: "/",
+        },
+      },
+      sessionToken: {
+        attributes: {
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+          path: "/",
+        },
+      },
+    },
+  },
 });

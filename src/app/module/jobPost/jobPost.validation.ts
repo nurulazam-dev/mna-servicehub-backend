@@ -27,7 +27,7 @@ const createJobPostZodSchema = z.object({
     .min(2, "Service type must be at least 2 characters")
     .max(100, "Service type must not exceed 100 characters"),
 
-  vacancy: z
+  vacancy: z.coerce
     .number()
     .int("Vacancy must be an integer")
     .positive("Vacancy must be greater than 0")
@@ -42,13 +42,27 @@ const createJobPostZodSchema = z.object({
   //   error: "Deadline must be a valid date",
   // }),
 
-  deadline: z.coerce.date().refine((date) => date > new Date(), {
-    message: "Deadline must be a future date",
-  }),
+  // deadline: z.coerce.date().refine((date) => date > new Date(), {
+  //   message: "Deadline must be a future date",
+  // }),
+
+  deadline: z.coerce.date().refine(
+    (date) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date >= today;
+    },
+    {
+      message: "Deadline must be a future date",
+    },
+  ),
 
   isActive: z.boolean().optional(),
 });
 
+const updateJobPostZodSchema = createJobPostZodSchema.partial();
+
 export const JobPostValidation = {
   createJobPostZodSchema,
+  updateJobPostZodSchema,
 };

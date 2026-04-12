@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { ServiceScheduleController } from "./serviceSchedule.controller";
 import { validateRequest } from "../../middleware/validateRequest.ts";
 import { ServiceScheduleValidation } from "./serviceSchedule.validation";
@@ -38,4 +38,4 @@ router.get(
   ServiceScheduleController.getScheduleById,
 );
 
-export const ServiceScheduleRoutes = router;
+export const ServiceScheduleRoutes: Router = router;

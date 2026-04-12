@@ -6,7 +6,7 @@ model Service {
     averageRating   Float            @default(0.0)
     totalReviews    Int              @default(0)
     isActive        Boolean          @default(true)
-    isDeleted       Boolean          @default(false)
+    // isDeleted       Boolean          @default(false)
     serviceRequests ServiceRequest[]
     reviews         Review[]
     createdAt       DateTime         @default(now())

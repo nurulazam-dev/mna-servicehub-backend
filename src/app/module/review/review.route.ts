@@ -1,6 +1,6 @@
-import express from "express";
+import express, { Router } from "express";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { validateRequest } from "../../middleware/validateRequest.ts";
 import { ReviewValidation } from "./review.validation";
 import { ReviewController } from "./review.controller";
@@ -35,4 +35,4 @@ router.delete(
   ReviewController.deleteReviewById,
 );
 
-export const ReviewRoutes = router;
+export const ReviewRoutes: Router = router;

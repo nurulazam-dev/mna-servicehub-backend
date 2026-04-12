@@ -23,4 +23,4 @@ router.use("/payments", PaymentRoutes);
 router.use("/reviews", ReviewRoutes);
 router.use("/stats", StatsRoutes);
 
-export const IndexRoutes = router;
+export const IndexRoutes: Router = router;

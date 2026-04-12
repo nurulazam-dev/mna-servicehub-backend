@@ -8,7 +8,7 @@ import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 import { handleZodError } from "../errorHelpers/handleZodError";
 import AppError from "../errorHelpers/AppError";
 import { deleteUploadedFilesFromGlobalErrorHandler } from "../utils/deleteUploadedFilesFromGlobalErrorHandler";
-import { Prisma } from "../../generated/prisma/client";
+import { Prisma } from "../../../generated/prisma/client";
 import {
   handlePrismaClientKnownRequestError,
   handlePrismaClientUnknownError,

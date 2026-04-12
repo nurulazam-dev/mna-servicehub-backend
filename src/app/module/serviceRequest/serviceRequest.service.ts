@@ -12,7 +12,7 @@ import {
   PaymentStatus,
   ServiceRequestStatus,
   UserRole,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { sendEmail } from "../../utils/email";
 import { format } from "date-fns";

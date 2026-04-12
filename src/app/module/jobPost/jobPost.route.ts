@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 import { JobPostController } from "./jobPost.controller";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { validateRequest } from "../../middleware/validateRequest.ts";
 import { JobPostValidation } from "./jobPost.validation";
 
@@ -18,9 +18,16 @@ router.post(
 );
 
 router.patch(
-  "/:id",
+  "/update/:id",
   checkAuth(UserRole.ADMIN),
+  validateRequest(JobPostValidation.updateJobPostZodSchema),
   JobPostController.updateJobPost,
 );
 
-export const JobPostRoutes = router;
+router.patch(
+  "/delete/:id",
+  checkAuth(UserRole.ADMIN),
+  JobPostController.deleteJobPost,
+);
+
+export const JobPostRoutes: Router = router;

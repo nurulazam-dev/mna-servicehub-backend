@@ -19,6 +19,18 @@ MNA ServiceHub acts as a centralized digital platform that enables all local ser
 
 ---
 
+## 🔑 Verified Login Credentials (Testing)
+
+| Role                 | Email                       | Password       |
+| :------------------- | :-------------------------- | :------------- |
+| **Admin**            | `admin@servicehub.com`      | `Admin123`     |
+| **Manager**          | `manager@servicehub.com`    | `Manager123`   |
+| **Service_Provider** | `sprovider@servicehub.com`  | `Provider123`  |
+| **Job_Candidate**    | `jcandidate@servicehub.com` | `Candidate123` |
+| **Customer**         | `customer@servicehub.com`   | `Customer123`  |
+
+---
+
 # 📋 Backend Tech Stack:
 
 | Package Name                  | Purpose                                                                     |
@@ -1502,5 +1514,120 @@ averageRating = totalRatingSum / totalReviews;
 - One request → one review (`@unique`)
 - Provider must exist (non-null in completed request)
 - Use transaction for consistency
+
+---
+
+# 🚀 Local Development Setup
+
+Follow the steps below to run the project locally.
+
+---
+
+## 1️⃣ Clone Repository & Install Dependencies
+
+```bash
+git clone https://github.com/nurulazam-dev/mna-servicehub-backend.git
+
+cd mna-servicehub-backend
+
+pnpm install
+```
+
+---
+
+## 2️⃣ Environment Configuration
+
+Create a `.env` file in the root directory and configure the following variables:
+
+```env
+# Application
+NODE_ENV=development
+PORT=5000
+
+# Database
+DATABASE_URL=postgres://user:password@localhost:5432/database
+
+# Authentication (Better Auth)
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:5000
+
+# OAuth (Google)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/callback/google
+
+# JWT
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+ACCESS_TOKEN_EXPIRES_IN=1d
+REFRESH_TOKEN_EXPIRES_IN=7d
+
+# Email (SMTP - Gmail)
+EMAIL_SENDER_SMTP_USER=
+EMAIL_SENDER_SMTP_PASS=#### #### #### ####
+EMAIL_SENDER_SMTP_HOST=smtp.gmail.com
+EMAIL_SENDER_SMTP_PORT=465
+EMAIL_SENDER_SMTP_FROM=
+
+# Frontend
+FRONTEND_URL=http://localhost:3000
+
+# Cloud Storage (Cloudinary)
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+# Payment (Stripe)
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+# Default Admin
+ADMIN_EMAIL=your_admin_email
+ADMIN_PASSWORD=your_admin_password
+```
+
+---
+
+## 3️⃣ Database Setup
+
+Run Prisma commands to generate client and apply migrations:
+
+```bash
+pnpm prisma generate
+pnpm prisma migrate dev
+```
+
+> 💡 Make sure PostgreSQL is running before executing migrations.
+
+---
+
+## 4️⃣ Start Development Server
+
+```bash
+pnpm dev
+```
+
+Server will run at:
+
+```
+http://localhost:5000
+```
+
+---
+
+# 🌐 Deployment
+
+This backend is deployed using a **serverless architecture** optimized for Node.js environments.
+
+- Platform: **Vercel**
+- Runtime: Serverless Functions
+- Database: PostgreSQL (external)
+
+---
+
+# 👨‍💻 Author
+
+Developed and maintained by **Mohammad Nurul Azam**
+GitHub: [https://github.com/nurulazam-dev](https://github.com/nurulazam-dev)
 
 ---

@@ -2,12 +2,11 @@
   "name": "mna-service-hub-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.ts",
   "scripts": {
-    "start": "node dist/server.js",
-    "build": "tsc",
     "dev": "tsx watch src/server.ts",
-    "lint": "eslint ./src/**/*",
+    "build": "prisma generate && tsup src/server.ts --format esm --platform node --target node20 --outDir api --external pa-native",
+    "postinstall": "prisma generate",
     "migrate": "prisma migrate dev",
     "generate": "prisma generate",
     "studio": "prisma studio",
@@ -62,6 +61,7 @@
     "@types/uuid": "^11.0.0",
     "eslint": "^10.1.0",
     "prisma": "^7.5.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.1"

@@ -5,7 +5,7 @@ import status from "http-status";
 import {
   PaymentStatus,
   ServiceRequestStatus,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import { ICreateReviewPayload } from "./review.interface";
 
 const giveReview = async (payload: ICreateReviewPayload) => {

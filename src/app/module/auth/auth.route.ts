@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthController } from "./auth.controller";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 import { validateRequest } from "../../middleware/validateRequest.ts";
 import { AuthValidation } from "./auth.validation";
 
@@ -71,4 +71,4 @@ router.post("/refresh-token", AuthController.getNewToken);
 router.get("/google/success", AuthController.googleLoginSuccess);
 router.get("/oauth/error", AuthController.handleOAuthError);
 
-export const AuthRoutes = router;
+export const AuthRoutes: Router = router;

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { StatsController } from "./stats.controller";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 
 const router = Router();
 
@@ -16,4 +16,4 @@ router.get(
   StatsController.getDashboardStatsData,
 );
 
-export const StatsRoutes = router;
+export const StatsRoutes: Router = router;

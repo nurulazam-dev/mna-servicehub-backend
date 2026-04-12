@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 // import { AdminController } from "./admin.controller";
 import { checkAuth } from "../../middleware/checkAuth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "../../../../generated/prisma/enums";
 
 const router = express.Router();
 
@@ -10,4 +10,4 @@ router.use(checkAuth(UserRole.ADMIN));
 // router.post("/append-sp", AdminController.appendSP);
 // router.patch("/convert-to-sp/:id", AdminController.convertToSP);
 
-export const AdminRoutes = router;
+export const AdminRoutes: Router = router;
