@@ -4,6 +4,7 @@ import { status } from "http-status";
 import { JobApplicationServices } from "./jobApplication.service";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
+import { IQueryParams } from "../../interfaces/query.interface";
 
 const applyToJob = catchAsync(async (req: Request, res: Response) => {
   const userId = (req.user as any).id || (req.user as any).userId;
@@ -55,7 +56,11 @@ const getApplicationById = catchAsync(async (req: Request, res: Response) => {
 
 const getAllApplicationsForAdmin = catchAsync(
   async (req: Request, res: Response) => {
-    const result = await JobApplicationServices.getAllApplicationsForAdmin();
+    const query = req.query;
+
+    const result = await JobApplicationServices.getAllApplicationsForAdmin(
+      query as IQueryParams,
+    );
 
     sendResponse(res, {
       httpStatusCode: status.OK,
@@ -67,15 +72,17 @@ const getAllApplicationsForAdmin = catchAsync(
 );
 
 const updateApplication = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
   const result = await JobApplicationServices.updateApplication(
-    req.params.id as string,
+    id as string,
     req.body,
   );
 
   sendResponse(res, {
     httpStatusCode: status.OK,
     success: true,
-    message: "Application status updated successfully",
+    message: "Application updated successfully",
     data: result,
   });
 });

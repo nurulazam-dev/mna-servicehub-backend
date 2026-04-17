@@ -7,6 +7,14 @@ import { addMinutes, format, parse } from "date-fns";
 import { UserRole } from "../../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { startOfDay, endOfDay } from "date-fns";
+import { IQueryParams } from "../../interfaces/query.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { Prisma, ServiceSchedule } from "../../../../generated/prisma/client";
+import {
+  myServiceScheduleIncludeConfig,
+  serviceScheduleFilterableFields,
+  serviceScheduleSearchableFields,
+} from "./serviceSchedule.constant";
 
 const createServiceSchedule = async (
   userId: string,
@@ -66,25 +74,31 @@ const createServiceSchedule = async (
   return result;
 };
 
-const getMySchedules = async (userId: string) => {
-  const provider = await prisma.serviceProvider.findUnique({
+const getMySchedules = async (query: IQueryParams, providerId: string) => {
+  /*  const provider = await prisma.serviceProvider.findUnique({
     where: { userId },
   });
 
   if (!provider) {
     return [];
-  }
+  } */
 
-  const result = await prisma.serviceSchedule.findMany({
-    where: {
-      providerId: provider.id,
-    },
+  const queryBuilder = new QueryBuilder<
+    ServiceSchedule,
+    Prisma.ServiceScheduleWhereInput,
+    Prisma.ServiceScheduleInclude
+  >(prisma.serviceSchedule, query, {
+    searchableFields: serviceScheduleSearchableFields,
+    filterableFields: serviceScheduleFilterableFields,
+  });
 
-    orderBy: {
-      scheduleDate: "desc",
-    },
-
-    include: {
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .where({
+      providerId: providerId,
+    })
+    .include({
       serviceRequest: {
         select: {
           id: true,
@@ -94,9 +108,13 @@ const getMySchedules = async (userId: string) => {
           },
         },
       },
-    },
-  });
-
+      provider: true,
+    })
+    .dynamicInclude(myServiceScheduleIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
   return result;
 };
 

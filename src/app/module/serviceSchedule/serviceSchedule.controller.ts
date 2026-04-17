@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { ServiceScheduleServices } from "./serviceSchedule.service";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import status from "http-status";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
+import { IQueryParams } from "../../interfaces/query.interface";
 
 const createServiceSchedule = catchAsync(
   async (req: Request, res: Response) => {
@@ -24,9 +26,13 @@ const createServiceSchedule = catchAsync(
 );
 
 const getMySchedules = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user as IRequestUser;
+  const query = req.query;
+  const providerId = (req.user as any).id;
 
-  const result = await ServiceScheduleServices.getMySchedules(user.userId);
+  const result = await ServiceScheduleServices.getMySchedules(
+    query as IQueryParams,
+    providerId,
+  );
 
   sendResponse(res, {
     httpStatusCode: status.OK,

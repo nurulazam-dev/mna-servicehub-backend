@@ -44,6 +44,7 @@ router.get(
 router.patch(
   "/update/:id",
   checkAuth(UserRole.ADMIN),
+  validateRequest(JobApplicationValidation.updateJobApplicationZodSchema),
   JobApplicationController.updateApplication,
 );
 

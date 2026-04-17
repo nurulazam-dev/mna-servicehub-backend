@@ -4,7 +4,7 @@ import AppError from "../../errorHelpers/AppError";
 import status from "http-status";
 import {
   ICreateServiceRequestPayload,
-  IServiceRequestFilterRequest,
+  // IServiceRequestFilterRequest,
   IUpdateServiceByManagement,
   IUpdateServiceCostPayload,
 } from "./serviceRequest.interface";
@@ -16,6 +16,14 @@ import {
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { sendEmail } from "../../utils/email";
 import { format } from "date-fns";
+import { IQueryParams } from "../../interfaces/query.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { Prisma, ServiceRequest } from "../../../../generated/prisma/client";
+import {
+  myServiceRequestByCustomerIncludeConfig,
+  serviceRequestFilterableFields,
+  serviceRequestSearchableFields,
+} from "./serviceRequest.constant";
 
 const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
   if (!payload.customerId) {
@@ -64,12 +72,26 @@ const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
   return result;
 };
 
-const getMyServiceRequestByCustomer = async (customerId: string) => {
-  const result = await prisma.serviceRequest.findMany({
-    where: {
+const getMyServiceRequestByCustomer = async (
+  query: IQueryParams,
+  customerId: string,
+) => {
+  const queryBuilder = new QueryBuilder<
+    ServiceRequest,
+    Prisma.ServiceRequestWhereInput,
+    Prisma.ServiceRequestInclude
+  >(prisma.serviceRequest, query, {
+    searchableFields: serviceRequestSearchableFields,
+    filterableFields: serviceRequestFilterableFields,
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .where({
       customerId: customerId,
-    },
-    include: {
+    })
+    .include({
       service: {
         select: {
           name: true,
@@ -89,11 +111,13 @@ const getMyServiceRequestByCustomer = async (customerId: string) => {
       },
       schedule: true,
       costBreakdown: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      review: true,
+    })
+    .dynamicInclude(myServiceRequestByCustomerIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
 
   return result;
 };
@@ -176,7 +200,7 @@ const getServiceRequestById = async (id: string, user: IRequestUser) => {
   return result;
 };
 
-const getAllServiceRequest = async (filters: IServiceRequestFilterRequest) => {
+/* const getAllServiceRequest = async (filters: IServiceRequestFilterRequest) => {
   const { status, searchTerm, page = 1, limit = 10 } = filters;
 
   const skip = (Number(page) - 1) * Number(limit);
@@ -243,6 +267,66 @@ const getAllServiceRequest = async (filters: IServiceRequestFilterRequest) => {
     meta: { page, limit, total, totalPages },
     data: result,
   };
+}; */
+
+const getAllServiceRequest = async (query: IQueryParams) => {
+  const queryBuilder = new QueryBuilder<
+    ServiceRequest,
+    Prisma.ServiceRequestWhereInput,
+    Prisma.ServiceRequestInclude
+  >(prisma.serviceRequest, query, {
+    searchableFields: serviceRequestSearchableFields,
+    filterableFields: serviceRequestFilterableFields,
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .include({
+      service: { select: { id: true, name: true, reviews: true } },
+      customer: {
+        select: {
+          name: true,
+          image: true,
+          email: true,
+          emailVerified: true,
+          phone: true,
+          address: true,
+          isDeleted: true,
+          status: true,
+        },
+      },
+      provider: {
+        select: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
+      },
+      schedule: true,
+      payment: {
+        select: {
+          status: true,
+          transactionId: true,
+          amount: true,
+          invoiceUrl: true,
+        },
+      },
+
+      costBreakdown: true,
+      review: true,
+    })
+    .dynamicInclude(myServiceRequestByCustomerIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
+
+  return result;
 };
 
 const cancelServiceRequestByCustomer = async (
@@ -365,7 +449,7 @@ const updateServiceRequestByManagement = async (
 ) => {
   const isRequestExist = await prisma.serviceRequest.findUnique({
     where: { id: requestId },
-    include: { customer: true, service: true },
+    include: { customer: true, provider: true, service: true },
   });
 
   if (!isRequestExist || isRequestExist.isDeleted) {

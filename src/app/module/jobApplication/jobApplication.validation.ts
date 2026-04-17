@@ -35,6 +35,17 @@ const createJobApplicationZodSchema = z.object({
     .optional(),
 });
 
+const updateJobApplicationZodSchema = z.object({
+  status: z.enum(JobApplicationStatus).optional(),
+
+  feedback: z
+    .string()
+    .max(1000, "Feedback must not exceed 1000 characters")
+    .nullable()
+    .optional(),
+});
+
 export const JobApplicationValidation = {
   createJobApplicationZodSchema,
+  updateJobApplicationZodSchema,
 };

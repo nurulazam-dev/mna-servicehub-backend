@@ -15,7 +15,7 @@ router.post(
 );
 
 router.get(
-  "/my-service-requests",
+  "/my-service-requests-customer",
   checkAuth(UserRole.CUSTOMER),
   ServiceRequestController.getMyServiceRequestByCustomer,
 );
