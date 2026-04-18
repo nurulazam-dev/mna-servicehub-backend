@@ -456,85 +456,95 @@ const updateServiceRequestByManagement = async (
     throw new AppError(status.NOT_FOUND, "Service request not found!");
   }
 
-  const result = await prisma.$transaction(async (tx) => {
-    const updatedData: any = { status: payload.status };
+  const result = await prisma.$transaction(
+    async (tx) => {
+      const updatedData: any = { status: payload.status };
 
-    if (payload.status === "REJECTED") {
-      if (!payload.rejectionReason) {
-        throw new AppError(status.BAD_REQUEST, "Rejection reason is required!");
-      }
-      updatedData.rejectionReason = payload.rejectionReason;
-      updatedData.providerId = null;
-      updatedData.scheduleId = null;
-    } else if (payload.status === "ACCEPTED") {
-      if (!payload.providerId || !payload.scheduleId) {
-        throw new AppError(
-          status.BAD_REQUEST,
-          "Provider and Schedule are required to accept!",
-        );
-      }
-      updatedData.providerId = payload.providerId;
-      updatedData.scheduleId = payload.scheduleId;
-      updatedData.rejectionReason = null;
-    }
+      if (payload.status === "REJECTED") {
+        if (!payload.rejectionReason) {
+          throw new AppError(
+            status.BAD_REQUEST,
+            "Rejection reason is required!",
+          );
+        }
+        updatedData.rejectionReason = payload.rejectionReason;
+        updatedData.providerId = null;
+        updatedData.scheduleId = null;
+      } else if (payload.status === "ACCEPTED") {
+        if (!payload.providerId || !payload.scheduleId) {
+          throw new AppError(
+            status.BAD_REQUEST,
+            "Provider and Schedule are required to accept!",
+          );
+        }
 
-    const updatedRequest = await tx.serviceRequest.update({
-      where: { id: requestId },
-      data: updatedData,
-      include: {
-        provider: {
-          include: {
-            user: { select: { name: true, email: true, phone: true } },
+        updatedData.providerId = payload.providerId;
+        updatedData.scheduleId = payload.scheduleId;
+        updatedData.rejectionReason = null;
+      }
+
+      const updatedRequest = await tx.serviceRequest.update({
+        where: { id: requestId },
+        data: updatedData,
+        include: {
+          provider: {
+            include: {
+              user: { select: { name: true, email: true, phone: true } },
+            },
           },
+          service: { select: { name: true } },
+          schedule: true,
         },
-        service: { select: { name: true } },
-        schedule: true,
-      },
-    });
+      });
 
-    if (payload.status === "ACCEPTED" && updatedRequest.provider) {
-      try {
-        const requestWithSchedule = updatedRequest as any;
+      if (payload.status === "ACCEPTED" && updatedRequest.provider) {
+        try {
+          const requestWithSchedule = updatedRequest as any;
 
-        const scheduleInfo = requestWithSchedule.schedule
-          ? `${format(new Date(requestWithSchedule.schedule.scheduleDate), "dd MMM, yyyy")} at ${requestWithSchedule.schedule.startTime}`
-          : "Pending Selection";
+          const scheduleInfo = requestWithSchedule.schedule
+            ? `${format(new Date(requestWithSchedule.schedule.scheduleDate), "dd MMM, yyyy")} at ${requestWithSchedule.schedule.startTime}`
+            : "Pending Selection";
 
-        const requestDate = format(
-          new Date(isRequestExist.createdAt),
-          "dd MMM, yyyy 'at' hh:mm a",
-        );
+          const requestDate = format(
+            new Date(isRequestExist.createdAt),
+            "dd MMM, yyyy 'at' hh:mm a",
+          );
 
-        await sendEmail({
-          to: isRequestExist.customer.email,
-          subject: "Service Request Accepted - MNA ServiceHub",
-          templateName: "serviceAssignment",
-          templateData: {
-            name: isRequestExist.customer.name,
-            customerEmail: isRequestExist.customer.email,
-            customerPhone: isRequestExist.customer.phone,
-            activePhone: isRequestExist.activePhone,
-            customerAddress: isRequestExist.customer.address,
-            serviceAddress: isRequestExist.serviceAddress,
-            serviceName: updatedRequest.service.name,
-            requestTime: requestDate,
-            requestId: requestId,
-            providerName: updatedRequest.provider.user.name,
-            providerPhone: updatedRequest.provider.user.phone,
-            providerEmail: updatedRequest.provider.user.email,
-            schedule: scheduleInfo,
-          },
-        });
-      } catch (error) {
-        console.error(
-          `Failed to send confirmation email for Request: ${requestId}`,
-          error,
-        );
+          await sendEmail({
+            to: isRequestExist.customer.email,
+            subject: "Service Request Accepted - MNA ServiceHub",
+            templateName: "serviceAssignment",
+            templateData: {
+              name: isRequestExist.customer.name,
+              customerEmail: isRequestExist.customer.email,
+              customerPhone: isRequestExist.customer.phone,
+              activePhone: isRequestExist.activePhone,
+              customerAddress: isRequestExist.customer.address,
+              serviceAddress: isRequestExist.serviceAddress,
+              serviceName: updatedRequest.service.name,
+              requestTime: requestDate,
+              requestId: requestId,
+              providerName: updatedRequest.provider.user.name,
+              providerPhone: updatedRequest.provider.user.phone,
+              providerEmail: updatedRequest.provider.user.email,
+              schedule: scheduleInfo,
+            },
+          });
+        } catch (error) {
+          console.error(
+            `Failed to send confirmation email for Request: ${requestId}`,
+            error,
+          );
+        }
       }
-    }
 
-    return updatedRequest;
-  });
+      return updatedRequest;
+    },
+    {
+      maxWait: 5000,
+      timeout: 10000,
+    },
+  );
 
   return result;
 };
