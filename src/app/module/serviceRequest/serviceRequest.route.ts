@@ -50,7 +50,7 @@ router.patch(
 );
 
 router.patch(
-  "/update-status-cost/:id",
+  "/update-service-request-cost/:id",
   checkAuth(UserRole.SERVICE_PROVIDER),
   validateRequest(ServiceRequestValidation.updateServiceCostZodSchema),
   ServiceRequestController.updateServiceRequestByServiceProvider,
