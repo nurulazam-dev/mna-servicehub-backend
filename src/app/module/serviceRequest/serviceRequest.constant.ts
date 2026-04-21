@@ -17,6 +17,7 @@ export const myServiceRequestByCustomerIncludeConfig: Partial<
   >
 > = {
   service: true,
+  customer: true,
   provider: true,
   schedule: true,
   costBreakdown: true,

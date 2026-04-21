@@ -52,11 +52,13 @@ const getMyServiceRequestByCustomer = catchAsync(
 
 const getMyServiceRequestByServiceProvider = catchAsync(
   async (req: Request, res: Response) => {
-    const providerId = (req.user as any).id;
+    const query = req.query;
+    const userId = (req.user as any)?.userId;
 
     const result =
       await ServiceRequestServices.getMyServiceRequestByServiceProvider(
-        providerId,
+        query as IQueryParams,
+        userId,
       );
 
     sendResponse(res, {
