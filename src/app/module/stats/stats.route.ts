@@ -11,6 +11,7 @@ router.get(
     UserRole.ADMIN,
     UserRole.MANAGER,
     UserRole.SERVICE_PROVIDER,
+    UserRole.JOB_CANDIDATE,
     UserRole.CUSTOMER,
   ),
   StatsController.getDashboardStatsData,

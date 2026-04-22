@@ -9,7 +9,7 @@ import { PaymentRoutes } from "../module/payment/payment.route";
 import { ReviewRoutes } from "../module/review/review.route";
 import { UserRoutes } from "../module/user/user.route";
 import { StatsRoutes } from "../module/stats/stats.route";
-import { AIRoutes } from "../module/aiChatBot/chatbot.router";
+import { AIRoutes } from "../module/aiChatBot/chatbot.route";
 import { ServiceProviderRoutes } from "../module/serviceProvider/serviceProvider.route";
 
 const router = Router();
