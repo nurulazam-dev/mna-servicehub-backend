@@ -4,7 +4,7 @@ import AppError from "../../errorHelpers/AppError";
 import status from "http-status";
 import {
   ICreateServiceRequestPayload,
-  IServiceRequestFilterRequest,
+  // IServiceRequestFilterRequest,
   IUpdateServiceByManagement,
   IUpdateServiceCostPayload,
 } from "./serviceRequest.interface";
@@ -16,6 +16,14 @@ import {
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { sendEmail } from "../../utils/email";
 import { format } from "date-fns";
+import { IQueryParams } from "../../interfaces/query.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { Prisma, ServiceRequest } from "../../../../generated/prisma/client";
+import {
+  myServiceRequestByCustomerIncludeConfig,
+  serviceRequestFilterableFields,
+  serviceRequestSearchableFields,
+} from "./serviceRequest.constant";
 
 const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
   if (!payload.customerId) {
@@ -64,12 +72,26 @@ const createServiceRequest = async (payload: ICreateServiceRequestPayload) => {
   return result;
 };
 
-const getMyServiceRequestByCustomer = async (customerId: string) => {
-  const result = await prisma.serviceRequest.findMany({
-    where: {
+const getMyServiceRequestByCustomer = async (
+  query: IQueryParams,
+  customerId: string,
+) => {
+  const queryBuilder = new QueryBuilder<
+    ServiceRequest,
+    Prisma.ServiceRequestWhereInput,
+    Prisma.ServiceRequestInclude
+  >(prisma.serviceRequest, query, {
+    searchableFields: serviceRequestSearchableFields,
+    filterableFields: serviceRequestFilterableFields,
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .where({
       customerId: customerId,
-    },
-    include: {
+    })
+    .include({
       service: {
         select: {
           name: true,
@@ -89,25 +111,54 @@ const getMyServiceRequestByCustomer = async (customerId: string) => {
       },
       schedule: true,
       costBreakdown: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      review: true,
+    })
+    .dynamicInclude(myServiceRequestByCustomerIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
 
   return result;
 };
 
-const getMyServiceRequestByServiceProvider = async (providerId: string) => {
-  const result = await prisma.serviceRequest.findMany({
-    where: {
-      providerId: providerId,
-    },
-    include: {
+const getMyServiceRequestByServiceProvider = async (
+  query: IQueryParams,
+  userId: string,
+) => {
+  if (!userId) {
+    throw new AppError(status.UNAUTHORIZED, "User ID not found in token!");
+  }
+
+  const provider = await prisma.serviceProvider.findUnique({
+    where: { userId: userId },
+  });
+
+  if (!provider) {
+    throw new AppError(status.NOT_FOUND, "Provider profile not found!");
+  }
+
+  const queryBuilder = new QueryBuilder<
+    ServiceRequest,
+    Prisma.ServiceRequestWhereInput,
+    Prisma.ServiceRequestInclude
+  >(prisma.serviceRequest, query, {
+    searchableFields: serviceRequestSearchableFields,
+    filterableFields: serviceRequestFilterableFields,
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .where({
+      providerId: provider.id,
+    })
+    .include({
       service: {
         select: {
           name: true,
           description: true,
+          imageUrl: true,
         },
       },
       customer: {
@@ -121,34 +172,34 @@ const getMyServiceRequestByServiceProvider = async (providerId: string) => {
       },
       schedule: true,
       costBreakdown: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      review: true,
+    })
+    .dynamicInclude(myServiceRequestByCustomerIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
 
   return result;
 };
 
 const getServiceRequestById = async (id: string, user: IRequestUser) => {
+  const whereCondition: any = { id };
+
+  if (user.role === UserRole.CUSTOMER) {
+    whereCondition.customerId = user.userId;
+  } else if (user.role === UserRole.SERVICE_PROVIDER) {
+    whereCondition.provider = {
+      userId: user.userId,
+    };
+  }
+
   const result = await prisma.serviceRequest.findUnique({
-    where: { id },
+    where: whereCondition,
     include: {
       service: true,
-      customer: {
-        select: { name: true, email: true, phone: true, address: true },
-      },
-      provider: {
-        select: {
-          user: {
-            select: {
-              name: true,
-              email: true,
-              phone: true,
-            },
-          },
-        },
-      },
+      customer: true,
+      provider: true,
       schedule: true,
       costBreakdown: true,
       payment: true,
@@ -168,7 +219,7 @@ const getServiceRequestById = async (id: string, user: IRequestUser) => {
 
   if (
     user.role === UserRole.SERVICE_PROVIDER &&
-    result.providerId !== user.userId
+    result.provider?.userId !== user.userId
   ) {
     throw new AppError(status.FORBIDDEN, "This job is not assigned to you!");
   }
@@ -176,34 +227,25 @@ const getServiceRequestById = async (id: string, user: IRequestUser) => {
   return result;
 };
 
-const getAllServiceRequest = async (filters: IServiceRequestFilterRequest) => {
-  const { status, searchTerm, page = 1, limit = 10 } = filters;
+const getAllServiceRequest = async (query: IQueryParams) => {
+  const queryBuilder = new QueryBuilder<
+    ServiceRequest,
+    Prisma.ServiceRequestWhereInput,
+    Prisma.ServiceRequestInclude
+  >(prisma.serviceRequest, query, {
+    searchableFields: serviceRequestSearchableFields,
+    filterableFields: serviceRequestFilterableFields,
+  });
 
-  const skip = (Number(page) - 1) * Number(limit);
-
-  const whereConditions: any = {};
-
-  if (status) {
-    whereConditions.status = status;
-  }
-
-  if (searchTerm) {
-    whereConditions.OR = [
-      { customer: { name: { contains: searchTerm, mode: "insensitive" } } },
-      { activePhone: { contains: searchTerm, mode: "insensitive" } },
-      { service: { name: { contains: searchTerm, mode: "insensitive" } } },
-    ];
-  }
-
-  const result = await prisma.serviceRequest.findMany({
-    where: whereConditions,
-    skip,
-    take: Number(limit),
-    include: {
-      service: { select: { name: true, reviews: true } },
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .include({
+      service: { select: { id: true, name: true, reviews: true } },
       customer: {
         select: {
           name: true,
+          image: true,
           email: true,
           emailVerified: true,
           phone: true,
@@ -232,17 +274,17 @@ const getAllServiceRequest = async (filters: IServiceRequestFilterRequest) => {
           invoiceUrl: true,
         },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
 
-  const total = await prisma.serviceRequest.count({ where: whereConditions });
-  const totalPages = Math.ceil(total / Number(limit));
+      costBreakdown: true,
+      review: true,
+    })
+    .dynamicInclude(myServiceRequestByCustomerIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
 
-  return {
-    meta: { page, limit, total, totalPages },
-    data: result,
-  };
+  return result;
 };
 
 const cancelServiceRequestByCustomer = async (
@@ -365,55 +407,74 @@ const updateServiceRequestByManagement = async (
 ) => {
   const isRequestExist = await prisma.serviceRequest.findUnique({
     where: { id: requestId },
-    include: { customer: true, service: true },
+    include: { customer: true, provider: true, service: true },
   });
 
   if (!isRequestExist || isRequestExist.isDeleted) {
     throw new AppError(status.NOT_FOUND, "Service request not found!");
   }
 
-  const result = await prisma.$transaction(async (tx) => {
-    const updatedData: any = { status: payload.status };
+  const result = await prisma.$transaction(
+    async (tx) => {
+      const updatedData: any = { status: payload.status };
 
-    if (payload.status === "REJECTED") {
-      if (!payload.rejectionReason) {
-        throw new AppError(status.BAD_REQUEST, "Rejection reason is required!");
-      }
-      updatedData.rejectionReason = payload.rejectionReason;
-      updatedData.providerId = null;
-      updatedData.scheduleId = null;
-    } else if (payload.status === "ACCEPTED") {
-      if (!payload.providerId || !payload.scheduleId) {
-        throw new AppError(
-          status.BAD_REQUEST,
-          "Provider and Schedule are required to accept!",
-        );
-      }
-      updatedData.providerId = payload.providerId;
-      updatedData.scheduleId = payload.scheduleId;
-      updatedData.rejectionReason = null;
-    }
+      if (payload.status === "REJECTED") {
+        if (!payload.rejectionReason) {
+          throw new AppError(
+            status.BAD_REQUEST,
+            "Rejection reason is required!",
+          );
+        }
+        updatedData.rejectionReason = payload.rejectionReason;
+        updatedData.providerId = null;
+        updatedData.scheduleId = null;
+      } else if (payload.status === "ACCEPTED") {
+        if (!payload.providerId || !payload.scheduleId) {
+          throw new AppError(
+            status.BAD_REQUEST,
+            "Provider and Schedule are required to accept!",
+          );
+        }
 
-    const updatedRequest = await tx.serviceRequest.update({
-      where: { id: requestId },
-      data: updatedData,
-      include: {
-        provider: {
-          include: {
-            user: { select: { name: true, email: true, phone: true } },
+        updatedData.providerId = payload.providerId;
+        updatedData.scheduleId = payload.scheduleId;
+        updatedData.rejectionReason = null;
+
+        await tx.serviceSchedule.update({
+          where: { id: payload.scheduleId },
+          data: { isBooked: true },
+        });
+      }
+
+      const updatedRequest = await tx.serviceRequest.update({
+        where: { id: requestId },
+        data: updatedData,
+        include: {
+          provider: {
+            include: {
+              user: { select: { name: true, email: true, phone: true } },
+            },
           },
+          service: { select: { name: true } },
+          schedule: true,
         },
-        service: { select: { name: true } },
-        schedule: true,
-      },
-    });
+      });
 
-    if (payload.status === "ACCEPTED" && updatedRequest.provider) {
+      return updatedRequest;
+    },
+    {
+      maxWait: 5000,
+      timeout: 10000,
+    },
+  );
+
+  if (payload.status === "ACCEPTED" && result.provider) {
+    (async () => {
       try {
-        const requestWithSchedule = updatedRequest as any;
+        // const requestWithSchedule = updatedRequest as any;
 
-        const scheduleInfo = requestWithSchedule.schedule
-          ? `${format(new Date(requestWithSchedule.schedule.scheduleDate), "dd MMM, yyyy")} at ${requestWithSchedule.schedule.startTime}`
+        const scheduleInfo = result.schedule
+          ? `${format(new Date(result.schedule.scheduleDate), "dd MMM, yyyy")} at ${result.schedule.startTime}`
           : "Pending Selection";
 
         const requestDate = format(
@@ -432,12 +493,12 @@ const updateServiceRequestByManagement = async (
             activePhone: isRequestExist.activePhone,
             customerAddress: isRequestExist.customer.address,
             serviceAddress: isRequestExist.serviceAddress,
-            serviceName: updatedRequest.service.name,
+            serviceName: result.service.name,
             requestTime: requestDate,
             requestId: requestId,
-            providerName: updatedRequest.provider.user.name,
-            providerPhone: updatedRequest.provider.user.phone,
-            providerEmail: updatedRequest.provider.user.email,
+            providerName: result?.provider?.user.name,
+            providerPhone: result?.provider?.user.phone,
+            providerEmail: result?.provider?.user.email,
             schedule: scheduleInfo,
           },
         });
@@ -447,10 +508,8 @@ const updateServiceRequestByManagement = async (
           error,
         );
       }
-    }
-
-    return updatedRequest;
-  });
+    })();
+  }
 
   return result;
 };

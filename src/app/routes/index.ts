@@ -9,12 +9,16 @@ import { PaymentRoutes } from "../module/payment/payment.route";
 import { ReviewRoutes } from "../module/review/review.route";
 import { UserRoutes } from "../module/user/user.route";
 import { StatsRoutes } from "../module/stats/stats.route";
+import { AIRoutes } from "../module/aiChatBot/chatbot.route";
+import { ServiceProviderRoutes } from "../module/serviceProvider/serviceProvider.route";
 
 const router = Router();
 
 router.use("/auth", AuthRoutes);
 router.use("/users", UserRoutes);
+router.use("/service-providers", ServiceProviderRoutes);
 router.use("/services", ServiceRoutes);
+router.use("/ai", AIRoutes);
 router.use("/job-posts", JobPostRoutes);
 router.use("/job-applications", JobApplicationRoutes);
 router.use("/service-requests", ServiceRequestRoutes);

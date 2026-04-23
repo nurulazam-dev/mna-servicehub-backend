@@ -20,7 +20,7 @@ export interface IUpdateServiceCostPayload {
 }
 
 export interface IUpdateServiceByManagement {
-  status: "ACCEPTED" | "REJECTED";
+  status: "PENDING" | "COMPLETED" | "CANCELLED" | "ACCEPTED" | "REJECTED";
   providerId?: string;
   scheduleId?: string;
   rejectionReason?: string;

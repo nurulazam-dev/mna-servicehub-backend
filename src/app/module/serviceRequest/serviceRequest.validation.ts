@@ -26,13 +26,12 @@ const updateServiceRequestByManagementZodSchema = z
     rejectionReason: z
       .string()
       .trim()
-      .min(5, "Rejection reason must be at least 5 characters")
       .max(500, "Rejection reason must not exceed 500 characters")
       .optional(),
 
-    providerId: z.string().uuid("Invalid Provider ID").optional(),
+    providerId: z.string().optional().or(z.literal("")),
 
-    scheduleId: z.string().uuid("Invalid Schedule ID").optional(),
+    scheduleId: z.string().optional().or(z.literal("")),
   })
   .refine((data) => data.status !== "REJECTED" || !!data.rejectionReason, {
     message: "Rejection reason is required when status is REJECTED",

@@ -5,10 +5,15 @@ import {
 } from "./jobApplication.interface";
 import status from "http-status";
 import AppError from "../../errorHelpers/AppError";
+import { UserRole } from "../../../../generated/prisma/enums";
+import { JobApplication, Prisma } from "../../../../generated/prisma/client";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 import {
-  JobApplicationStatus,
-  UserRole,
-} from "../../../../generated/prisma/enums";
+  jobApplicationFilterableFields,
+  jobApplicationIncludeConfig,
+  jobApplicationSearchableFields,
+} from "./jobApplication.constant";
+import { IQueryParams } from "../../interfaces/query.interface";
 
 const applyToJob = async (payload: IJobApplicationPayload) => {
   const jobPost = await prisma.jobPost.findUnique({
@@ -80,7 +85,20 @@ const getApplicationById = async (id: string, userId: string, role: string) => {
   const result = await prisma.jobApplication.findUnique({
     where: { id },
     include: {
-      jobPost: true,
+      jobPost: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          requirements: true,
+          isActive: true,
+          deadline: true,
+          salaryRange: true,
+          serviceType: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
       user: {
         select: {
           name: true,
@@ -106,14 +124,27 @@ const getApplicationById = async (id: string, userId: string, role: string) => {
   return result;
 };
 
-const getAllApplicationsForAdmin = async () => {
-  const result = await prisma.jobApplication.findMany({
-    include: {
-      user: { select: { name: true, email: true, phone: true } },
-      jobPost: { select: { title: true } },
-    },
-    orderBy: { createdAt: "desc" },
+const getAllApplicationsForAdmin = async (query: IQueryParams) => {
+  const queryBuilder = new QueryBuilder<
+    JobApplication,
+    Prisma.JobApplicationWhereInput,
+    Prisma.JobApplicationInclude
+  >(prisma.jobApplication, query, {
+    searchableFields: jobApplicationSearchableFields,
+    filterableFields: jobApplicationFilterableFields,
   });
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .include({
+      user: true,
+      jobPost: true,
+    })
+    .dynamicInclude(jobApplicationIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
 
   return result;
 };
@@ -143,6 +174,7 @@ const updateApplication = async (
             id: true,
             phone: true,
             address: true,
+            role: true,
             isDeleted: true,
             emailVerified: true,
           },
@@ -161,15 +193,17 @@ const updateApplication = async (
       },
     });
 
-    if (payload.status === JobApplicationStatus.ACCEPTED) {
+    if (payload.status === "ACCEPTED") {
+      const userId = updatedApplication.userId;
+
       const isAlreadyProvider = await tx.serviceProvider.findUnique({
-        where: { userId: updatedApplication.userId },
+        where: { userId },
       });
 
       if (!isAlreadyProvider) {
         await tx.serviceProvider.create({
           data: {
-            userId: updatedApplication.userId,
+            userId,
             serviceType:
               updatedApplication.jobPost?.serviceType ?? "General Service",
             isActive: true,
@@ -177,8 +211,8 @@ const updateApplication = async (
         });
 
         await tx.user.update({
-          where: { id: updatedApplication.userId },
-          data: { role: UserRole.SERVICE_PROVIDER },
+          where: { id: userId },
+          data: { role: "SERVICE_PROVIDER" },
         });
       }
     }

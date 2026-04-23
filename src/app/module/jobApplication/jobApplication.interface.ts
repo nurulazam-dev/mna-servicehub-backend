@@ -1,15 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { JobApplicationStatus } from "../../../../generated/prisma/enums";
+import { IJobPostPayload } from "../jobPost/jobPost.interface";
+import { IUserPayload } from "../user/user.interface";
+
+export type JobApplicationStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
 export interface IJobApplicationPayload {
+  id: string;
+  userId: string;
+  user?: IUserPayload;
+  jobPostId?: string | null;
+  jobPost?: IJobPostPayload;
+  cvUrl: string;
+  status: JobApplicationStatus;
+  feedback?: string | null;
+  createdAt: Date | string;
+}
+
+export interface IApplyJobApplicationPayload {
   userId: string;
   jobPostId?: string | null;
   cvUrl: string;
-  status?: "PENDING" | "ACCEPTED" | "REJECTED";
-  feedback?: string | null;
+  status: JobApplicationStatus;
+  createdAt: Date | string;
 }
 
 export interface IUpdateJobApplicationPayload {
   status: JobApplicationStatus;
-  [key: string]: any;
+  feedback?: string | null;
 }
