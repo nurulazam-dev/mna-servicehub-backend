@@ -20,6 +20,12 @@ router.get(
 );
 
 router.get(
+  "/providers",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  UserController.getAllProviders,
+);
+
+router.get(
   "/:id",
   checkAuth(
     UserRole.ADMIN,

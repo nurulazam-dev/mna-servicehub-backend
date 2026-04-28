@@ -23,15 +23,20 @@ const applyToJob = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyApplications = catchAsync(async (req: Request, res: Response) => {
+  const query = req.query;
   const userId = (req.user as any).userId;
 
-  const result = await JobApplicationServices.getMyApplications(userId);
+  const result = await JobApplicationServices.getMyApplications(
+    query as IQueryParams,
+    userId,
+  );
 
   sendResponse(res, {
     httpStatusCode: status.OK,
     success: true,
     message: "Applications fetched successfully",
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 

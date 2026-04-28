@@ -60,10 +60,23 @@ const applyToJob = async (payload: IJobApplicationPayload) => {
   });
 };
 
-const getMyApplications = async (userId: string) => {
-  const result = await prisma.jobApplication.findMany({
-    where: { userId },
-    include: {
+const getMyApplications = async (query: IQueryParams, userId: string) => {
+  const queryBuilder = new QueryBuilder<
+    JobApplication,
+    Prisma.JobApplicationWhereInput,
+    Prisma.JobApplicationInclude
+  >(prisma.jobApplication, query, {
+    searchableFields: jobApplicationSearchableFields,
+    filterableFields: jobApplicationFilterableFields,
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .where({
+      userId: userId,
+    })
+    .include({
       jobPost: {
         select: {
           title: true,
@@ -74,9 +87,12 @@ const getMyApplications = async (userId: string) => {
           deadline: true,
         },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+    })
+    .dynamicInclude(jobApplicationIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
 
   return result;
 };
