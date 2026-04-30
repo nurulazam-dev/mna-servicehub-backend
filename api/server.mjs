@@ -2416,7 +2416,13 @@ import { status as status10 } from "http-status";
 import status9 from "http-status";
 
 // src/app/module/jobApplication/jobApplication.constant.ts
-var jobApplicationSearchableFields = ["userId", "jobPostId"];
+var jobApplicationSearchableFields = [
+  "userId",
+  "jobPostId",
+  "jobPost.title",
+  "jobPost.location",
+  "jobPost.serviceType"
+];
 var jobApplicationFilterableFields = ["status", "searchTerm"];
 var jobApplicationIncludeConfig = {
   user: true,
@@ -2462,23 +2468,25 @@ var applyToJob = async (payload) => {
     include: { jobPost: true }
   });
 };
-var getMyApplications = async (userId) => {
-  const result = await prisma.jobApplication.findMany({
-    where: { userId },
-    include: {
-      jobPost: {
-        select: {
-          title: true,
-          serviceType: true,
-          description: true,
-          salaryRange: true,
-          location: true,
-          deadline: true
-        }
-      }
-    },
-    orderBy: { createdAt: "desc" }
+var getMyApplications = async (query, userId) => {
+  const queryBuilder = new QueryBuilder(prisma.jobApplication, query, {
+    searchableFields: jobApplicationSearchableFields,
+    filterableFields: jobApplicationFilterableFields
   });
+  const result = await queryBuilder.search().filter().where({
+    userId
+  }).include({
+    jobPost: {
+      select: {
+        title: true,
+        serviceType: true,
+        description: true,
+        salaryRange: true,
+        location: true,
+        deadline: true
+      }
+    }
+  }).dynamicInclude(jobApplicationIncludeConfig).paginate().sort().fields().execute();
   return result;
 };
 var getApplicationById = async (id, userId, role) => {
@@ -2614,13 +2622,18 @@ var applyToJob2 = catchAsync(async (req, res) => {
   });
 });
 var getMyApplications2 = catchAsync(async (req, res) => {
+  const query = req.query;
   const userId = req.user.userId;
-  const result = await JobApplicationServices.getMyApplications(userId);
+  const result = await JobApplicationServices.getMyApplications(
+    query,
+    userId
+  );
   sendResponse(res, {
     httpStatusCode: status10.OK,
     success: true,
     message: "Applications fetched successfully",
-    data: result
+    data: result.data,
+    meta: result.meta
   });
 });
 var getApplicationById2 = catchAsync(async (req, res) => {
@@ -4751,6 +4764,36 @@ var getAllUsers = async (query) => {
   }).dynamicInclude(userIncludeConfig).paginate().sort().fields().execute();
   return result;
 };
+var getAllCustomers = async (query) => {
+  const queryBuilder = new QueryBuilder(prisma.user, query, {
+    searchableFields: userSearchableFields,
+    filterableFields: userFilterableFields
+  });
+  const result = await queryBuilder.search().filter().where({
+    role: UserRole.CUSTOMER
+  }).include({
+    serviceProvider: true,
+    serviceRequests: true,
+    jobApplications: true,
+    reviews: true
+  }).dynamicInclude(userIncludeConfig).paginate().sort().fields().execute();
+  return result;
+};
+var getAllProviders = async (query) => {
+  const queryBuilder = new QueryBuilder(prisma.user, query, {
+    searchableFields: userSearchableFields,
+    filterableFields: userFilterableFields
+  });
+  const result = await queryBuilder.search().filter().where({
+    role: UserRole.SERVICE_PROVIDER
+  }).include({
+    serviceProvider: true,
+    serviceRequests: true,
+    jobApplications: true,
+    reviews: true
+  }).dynamicInclude(userIncludeConfig).paginate().sort().fields().execute();
+  return result;
+};
 var getUserById = async (id) => {
   const result = await prisma.user.findUnique({
     where: { id }
@@ -4798,6 +4841,8 @@ var adminDeleteUserById = async (id) => {
 var UserService = {
   registerStaff,
   getAllUsers,
+  getAllCustomers,
+  getAllProviders,
   getUserById,
   updateUserById,
   adminUpdateUserById,
@@ -4821,6 +4866,28 @@ var getAllUsers2 = catchAsync(async (req, res) => {
     httpStatusCode: status21.OK,
     success: true,
     message: "Users fetched successfully",
+    data: result.data,
+    meta: result.meta
+  });
+});
+var getAllCustomers2 = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await UserService.getAllCustomers(query);
+  sendResponse(res, {
+    httpStatusCode: status21.OK,
+    success: true,
+    message: "Customers fetched successfully",
+    data: result.data,
+    meta: result.meta
+  });
+});
+var getAllProviders2 = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await UserService.getAllProviders(query);
+  sendResponse(res, {
+    httpStatusCode: status21.OK,
+    success: true,
+    message: "Providers fetched successfully",
     data: result.data,
     meta: result.meta
   });
@@ -4868,6 +4935,8 @@ var adminDeleteUserById2 = catchAsync(async (req, res) => {
 var UserController = {
   registerStaff: registerStaff2,
   getAllUsers: getAllUsers2,
+  getAllCustomers: getAllCustomers2,
+  getAllProviders: getAllProviders2,
   getUserById: getUserById2,
   updateUserById: updateUserById2,
   adminUpdateUserById: adminUpdateUserById2,
@@ -4907,6 +4976,16 @@ router9.get(
   "/",
   checkAuth(UserRole.ADMIN, UserRole.MANAGER),
   UserController.getAllUsers
+);
+router9.get(
+  "/customers",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  UserController.getAllCustomers
+);
+router9.get(
+  "/providers",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  UserController.getAllProviders
 );
 router9.get(
   "/:id",
