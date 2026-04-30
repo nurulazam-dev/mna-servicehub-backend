@@ -199,7 +199,11 @@ const getServiceRequestById = async (id: string, user: IRequestUser) => {
     include: {
       service: true,
       customer: true,
-      provider: true,
+      provider: {
+        include: {
+          user: true,
+        },
+      },
       schedule: true,
       costBreakdown: true,
       payment: true,
