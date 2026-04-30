@@ -246,6 +246,7 @@ const getAllPayments = async (query: IQueryParams) => {
         include: {
           customer: true,
           service: true,
+          costBreakdown: true,
         },
       },
     })
@@ -280,6 +281,7 @@ const getMyPaidPayments = async (customerId: string, query: any) => {
           service: {
             select: { name: true },
           },
+          costBreakdown: true,
         },
       },
     },
