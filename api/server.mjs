@@ -2908,7 +2908,11 @@ var getServiceRequestById = async (id, user) => {
     include: {
       service: true,
       customer: true,
-      provider: true,
+      provider: {
+        include: {
+          user: true
+        }
+      },
       schedule: true,
       costBreakdown: true,
       payment: true
@@ -5147,12 +5151,20 @@ var getCandidateStatsData = async (user) => {
 };
 var getCustomerStatsData = async (user) => {
   const totalRequests = await prisma.serviceRequest.count({
-    where: { customerId: user.userId }
+    where: {
+      customerId: user.userId
+    }
   });
   const activeRequests = await prisma.serviceRequest.count({
     where: {
       customerId: user.userId,
       status: { in: ["PENDING", "ACCEPTED"] }
+    }
+  });
+  const completedRequests = await prisma.serviceRequest.count({
+    where: {
+      customerId: user.userId,
+      status: { in: ["COMPLETED"] }
     }
   });
   const totalSpent = await prisma.payment.aggregate({
@@ -5165,6 +5177,7 @@ var getCustomerStatsData = async (user) => {
   return {
     totalRequests,
     activeRequests,
+    completedRequests,
     totalSpent: Number(totalSpent._sum.amount || 0)
   };
 };
