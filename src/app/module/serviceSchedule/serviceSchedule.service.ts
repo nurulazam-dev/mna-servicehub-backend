@@ -54,7 +54,7 @@ const createServiceSchedule = async (
 
   for (let i = 1; i <= 3; i++) {
     const slotStart = currentStart;
-    const slotEnd = addMinutes(slotStart, 180); //every schedule duration is 3 hours+gap 15 minutes
+    const slotEnd = addMinutes(slotStart, 180);
 
     slots.push({
       providerId,
