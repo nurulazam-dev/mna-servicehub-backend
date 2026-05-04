@@ -3896,6 +3896,13 @@ var deleteFileFromCloudinary = async (url) => {
   }
 };
 
+// src/app/module/payment/payment.constant.ts
+var paymentSearchableFields = ["transactionId", "stripeCustomerId"];
+var paymentFilterableFields = ["status", "requestId", "searchTerm"];
+var paymentIncludeConfig = {
+  serviceRequest: true
+};
+
 // src/app/module/payment/payment.service.ts
 var createPayment = async (payload) => {
   const serviceRequest = await prisma.serviceRequest.findUnique({
@@ -4068,47 +4075,20 @@ var handlerStripeWebhookEvent = async (payload, signature) => {
   return { success: true };
 };
 var getAllPayments = async (query) => {
-  const { page = 1, limit = 10, searchTerm, status: status29 } = query;
-  const skip = (Number(page) - 1) * Number(limit);
-  const whereConditions = {};
-  if (searchTerm) {
-    whereConditions.OR = [
-      { transactionId: { contains: searchTerm, mode: "insensitive" } },
-      { stripeCustomerId: { contains: searchTerm, mode: "insensitive" } }
-    ];
-  }
-  if (status29) {
-    whereConditions.status = status29;
-  }
-  const result = await prisma.payment.findMany({
-    where: whereConditions,
-    skip,
-    take: Number(limit),
-    orderBy: { createdAt: "desc" },
-    include: {
-      serviceRequest: {
-        include: {
-          customer: {
-            select: { name: true, email: true }
-          },
-          service: {
-            select: { name: true }
-          }
-        }
+  const queryBuilder = new QueryBuilder(prisma.payment, query, {
+    searchableFields: paymentSearchableFields,
+    filterableFields: paymentFilterableFields
+  });
+  const result = await queryBuilder.search().filter().include({
+    serviceRequest: {
+      include: {
+        customer: true,
+        service: true,
+        costBreakdown: true
       }
     }
-  });
-  const total = await prisma.payment.count({ where: whereConditions });
-  const totalPages = Math.ceil(total / Number(limit));
-  return {
-    meta: {
-      page: Number(page),
-      limit: Number(limit),
-      total,
-      totalPages
-    },
-    data: result
-  };
+  }).dynamicInclude(paymentIncludeConfig).paginate().sort().fields().execute();
+  return result;
 };
 var getMyPaidPayments = async (customerId, query) => {
   const { page = 1, limit = 10 } = query;
@@ -4129,7 +4109,8 @@ var getMyPaidPayments = async (customerId, query) => {
         include: {
           service: {
             select: { name: true }
-          }
+          },
+          costBreakdown: true
         }
       }
     }
@@ -4201,7 +4182,8 @@ var handleStripeWebhookEvent = catchAsync(
   }
 );
 var getAllPayments2 = catchAsync(async (req, res) => {
-  const result = await PaymentService.getAllPayments(req.query);
+  const query = req.query;
+  const result = await PaymentService.getAllPayments(query);
   sendResponse(res, {
     httpStatusCode: status17.OK,
     success: true,
