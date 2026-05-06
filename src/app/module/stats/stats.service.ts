@@ -207,13 +207,22 @@ const getCustomerStatsData = async (
   user: IRequestUser,
 ): Promise<IDashboardStatsDataPayload> => {
   const totalRequests = await prisma.serviceRequest.count({
-    where: { customerId: user.userId },
+    where: {
+      customerId: user.userId,
+    },
   });
 
   const activeRequests = await prisma.serviceRequest.count({
     where: {
       customerId: user.userId,
       status: { in: ["PENDING", "ACCEPTED"] },
+    },
+  });
+
+  const completedRequests = await prisma.serviceRequest.count({
+    where: {
+      customerId: user.userId,
+      status: { in: ["COMPLETED"] },
     },
   });
 
@@ -228,6 +237,7 @@ const getCustomerStatsData = async (
   return {
     totalRequests,
     activeRequests,
+    completedRequests,
     totalSpent: Number(totalSpent._sum.amount || 0),
   };
 };

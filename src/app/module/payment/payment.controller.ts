@@ -4,6 +4,7 @@ import status from "http-status";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { PaymentService } from "./payment.service";
+import { IQueryParams } from "../../interfaces/query.interface";
 
 const createPayment = catchAsync(async (req: Request, res: Response) => {
   const result = await PaymentService.createPayment({
@@ -40,7 +41,9 @@ const handleStripeWebhookEvent = catchAsync(
 );
 
 const getAllPayments = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.getAllPayments(req.query);
+  const query = req.query;
+
+  const result = await PaymentService.getAllPayments(query as IQueryParams);
 
   sendResponse(res, {
     httpStatusCode: status.OK,

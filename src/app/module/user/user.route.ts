@@ -14,6 +14,18 @@ router.get(
 );
 
 router.get(
+  "/customers",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  UserController.getAllCustomers,
+);
+
+router.get(
+  "/providers",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  UserController.getAllProviders,
+);
+
+router.get(
   "/:id",
   checkAuth(
     UserRole.ADMIN,

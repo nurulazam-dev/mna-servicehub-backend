@@ -1,6 +1,12 @@
 import { Prisma } from "../../../../generated/prisma/client";
 
-export const jobApplicationSearchableFields = ["userId", "jobPostId"];
+export const jobApplicationSearchableFields = [
+  "userId",
+  "jobPostId",
+  "jobPost.title",
+  "jobPost.location",
+  "jobPost.serviceType",
+];
 
 export const jobApplicationFilterableFields = ["status", "searchTerm"];
 

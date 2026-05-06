@@ -104,6 +104,68 @@ const getAllUsers = async (query: IQueryParams) => {
   return result;
 };
 
+const getAllCustomers = async (query: IQueryParams) => {
+  const queryBuilder = new QueryBuilder<
+    User,
+    Prisma.UserWhereInput,
+    Prisma.UserInclude
+  >(prisma.user, query, {
+    searchableFields: userSearchableFields,
+    filterableFields: userFilterableFields,
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .where({
+      role: UserRole.CUSTOMER,
+    })
+    .include({
+      serviceProvider: true,
+      serviceRequests: true,
+      jobApplications: true,
+      reviews: true,
+    })
+    .dynamicInclude(userIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
+
+  return result;
+};
+
+const getAllProviders = async (query: IQueryParams) => {
+  const queryBuilder = new QueryBuilder<
+    User,
+    Prisma.UserWhereInput,
+    Prisma.UserInclude
+  >(prisma.user, query, {
+    searchableFields: userSearchableFields,
+    filterableFields: userFilterableFields,
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .where({
+      role: UserRole.SERVICE_PROVIDER,
+    })
+    .include({
+      serviceProvider: true,
+      serviceRequests: true,
+      jobApplications: true,
+      reviews: true,
+    })
+    .dynamicInclude(userIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
+
+  return result;
+};
+
 const getUserById = async (id: string) => {
   const result = await prisma.user.findUnique({
     where: { id },
@@ -163,6 +225,8 @@ const adminDeleteUserById = async (id: string) => {
 export const UserService = {
   registerStaff,
   getAllUsers,
+  getAllCustomers,
+  getAllProviders,
   getUserById,
   updateUserById,
   adminUpdateUserById,

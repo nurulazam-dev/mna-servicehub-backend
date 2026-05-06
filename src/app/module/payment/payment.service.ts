@@ -12,6 +12,14 @@ import { sendEmail } from "../../utils/email";
 import { uploadFileToCloudinary } from "../../config/cloudinary.config";
 import { stripe } from "../../config/stripe.config";
 import { envVars } from "../../config/env";
+import {
+  paymentFilterableFields,
+  paymentIncludeConfig,
+  paymentSearchableFields,
+} from "./payment.constant";
+import { IQueryParams } from "../../interfaces/query.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { Payment, Prisma } from "../../../../generated/prisma/client";
 
 const createPayment = async (payload: {
   requestId: string;
@@ -220,54 +228,35 @@ const handlerStripeWebhookEvent = async (payload: any, signature: string) => {
   return { success: true };
 };
 
-const getAllPayments = async (query: any) => {
-  const { page = 1, limit = 10, searchTerm, status } = query;
-  const skip = (Number(page) - 1) * Number(limit);
-
-  const whereConditions: any = {};
-
-  if (searchTerm) {
-    whereConditions.OR = [
-      { transactionId: { contains: searchTerm, mode: "insensitive" } },
-      { stripeCustomerId: { contains: searchTerm, mode: "insensitive" } },
-    ];
-  }
-
-  if (status) {
-    whereConditions.status = status;
-  }
-
-  const result = await prisma.payment.findMany({
-    where: whereConditions,
-    skip,
-    take: Number(limit),
-    orderBy: { createdAt: "desc" },
-    include: {
-      serviceRequest: {
-        include: {
-          customer: {
-            select: { name: true, email: true },
-          },
-          service: {
-            select: { name: true },
-          },
-        },
-      },
-    },
+const getAllPayments = async (query: IQueryParams) => {
+  const queryBuilder = new QueryBuilder<
+    Payment,
+    Prisma.PaymentWhereInput,
+    Prisma.PaymentInclude
+  >(prisma.payment, query, {
+    searchableFields: paymentSearchableFields,
+    filterableFields: paymentFilterableFields,
   });
 
-  const total = await prisma.payment.count({ where: whereConditions });
-  const totalPages = Math.ceil(total / Number(limit));
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .include({
+      serviceRequest: {
+        include: {
+          customer: true,
+          service: true,
+          costBreakdown: true,
+        },
+      },
+    })
+    .dynamicInclude(paymentIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
 
-  return {
-    meta: {
-      page: Number(page),
-      limit: Number(limit),
-      total,
-      totalPages,
-    },
-    data: result,
-  };
+  return result;
 };
 
 const getMyPaidPayments = async (customerId: string, query: any) => {
@@ -292,6 +281,7 @@ const getMyPaidPayments = async (customerId: string, query: any) => {
           service: {
             select: { name: true },
           },
+          costBreakdown: true,
         },
       },
     },

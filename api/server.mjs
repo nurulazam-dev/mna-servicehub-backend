@@ -2416,7 +2416,13 @@ import { status as status10 } from "http-status";
 import status9 from "http-status";
 
 // src/app/module/jobApplication/jobApplication.constant.ts
-var jobApplicationSearchableFields = ["userId", "jobPostId"];
+var jobApplicationSearchableFields = [
+  "userId",
+  "jobPostId",
+  "jobPost.title",
+  "jobPost.location",
+  "jobPost.serviceType"
+];
 var jobApplicationFilterableFields = ["status", "searchTerm"];
 var jobApplicationIncludeConfig = {
   user: true,
@@ -2462,23 +2468,25 @@ var applyToJob = async (payload) => {
     include: { jobPost: true }
   });
 };
-var getMyApplications = async (userId) => {
-  const result = await prisma.jobApplication.findMany({
-    where: { userId },
-    include: {
-      jobPost: {
-        select: {
-          title: true,
-          serviceType: true,
-          description: true,
-          salaryRange: true,
-          location: true,
-          deadline: true
-        }
-      }
-    },
-    orderBy: { createdAt: "desc" }
+var getMyApplications = async (query, userId) => {
+  const queryBuilder = new QueryBuilder(prisma.jobApplication, query, {
+    searchableFields: jobApplicationSearchableFields,
+    filterableFields: jobApplicationFilterableFields
   });
+  const result = await queryBuilder.search().filter().where({
+    userId
+  }).include({
+    jobPost: {
+      select: {
+        title: true,
+        serviceType: true,
+        description: true,
+        salaryRange: true,
+        location: true,
+        deadline: true
+      }
+    }
+  }).dynamicInclude(jobApplicationIncludeConfig).paginate().sort().fields().execute();
   return result;
 };
 var getApplicationById = async (id, userId, role) => {
@@ -2614,13 +2622,18 @@ var applyToJob2 = catchAsync(async (req, res) => {
   });
 });
 var getMyApplications2 = catchAsync(async (req, res) => {
+  const query = req.query;
   const userId = req.user.userId;
-  const result = await JobApplicationServices.getMyApplications(userId);
+  const result = await JobApplicationServices.getMyApplications(
+    query,
+    userId
+  );
   sendResponse(res, {
     httpStatusCode: status10.OK,
     success: true,
     message: "Applications fetched successfully",
-    data: result
+    data: result.data,
+    meta: result.meta
   });
 });
 var getApplicationById2 = catchAsync(async (req, res) => {
@@ -2761,6 +2774,7 @@ var serviceRequestSearchableFields = [
 var serviceRequestFilterableFields = ["status", "searchTerm"];
 var myServiceRequestByCustomerIncludeConfig = {
   service: true,
+  customer: true,
   provider: true,
   schedule: true,
   costBreakdown: true,
@@ -2841,53 +2855,62 @@ var getMyServiceRequestByCustomer = async (query, customerId) => {
   }).dynamicInclude(myServiceRequestByCustomerIncludeConfig).paginate().sort().fields().execute();
   return result;
 };
-var getMyServiceRequestByServiceProvider = async (providerId) => {
-  const result = await prisma.serviceRequest.findMany({
-    where: {
-      providerId
-    },
-    include: {
-      service: {
-        select: {
-          name: true,
-          description: true
-        }
-      },
-      customer: {
-        select: {
-          name: true,
-          email: true,
-          phone: true,
-          address: true,
-          isDeleted: true
-        }
-      },
-      schedule: true,
-      costBreakdown: true
-    },
-    orderBy: {
-      createdAt: "desc"
-    }
+var getMyServiceRequestByServiceProvider = async (query, userId) => {
+  if (!userId) {
+    throw new AppError_default(status11.UNAUTHORIZED, "User ID not found in token!");
+  }
+  const provider = await prisma.serviceProvider.findUnique({
+    where: { userId }
   });
+  if (!provider) {
+    throw new AppError_default(status11.NOT_FOUND, "Provider profile not found!");
+  }
+  const queryBuilder = new QueryBuilder(prisma.serviceRequest, query, {
+    searchableFields: serviceRequestSearchableFields,
+    filterableFields: serviceRequestFilterableFields
+  });
+  const result = await queryBuilder.search().filter().where({
+    providerId: provider.id
+  }).include({
+    service: {
+      select: {
+        name: true,
+        description: true,
+        imageUrl: true
+      }
+    },
+    customer: {
+      select: {
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        isDeleted: true
+      }
+    },
+    schedule: true,
+    costBreakdown: true,
+    review: true
+  }).dynamicInclude(myServiceRequestByCustomerIncludeConfig).paginate().sort().fields().execute();
   return result;
 };
 var getServiceRequestById = async (id, user) => {
+  const whereCondition = { id };
+  if (user.role === UserRole.CUSTOMER) {
+    whereCondition.customerId = user.userId;
+  } else if (user.role === UserRole.SERVICE_PROVIDER) {
+    whereCondition.provider = {
+      userId: user.userId
+    };
+  }
   const result = await prisma.serviceRequest.findUnique({
-    where: { id },
+    where: whereCondition,
     include: {
       service: true,
-      customer: {
-        select: { name: true, email: true, phone: true, address: true }
-      },
+      customer: true,
       provider: {
-        select: {
-          user: {
-            select: {
-              name: true,
-              email: true,
-              phone: true
-            }
-          }
+        include: {
+          user: true
         }
       },
       schedule: true,
@@ -2904,7 +2927,7 @@ var getServiceRequestById = async (id, user) => {
       "You are not authorized to view this request!"
     );
   }
-  if (user.role === UserRole.SERVICE_PROVIDER && result.providerId !== user.userId) {
+  if (user.role === UserRole.SERVICE_PROVIDER && result.provider?.userId !== user.userId) {
     throw new AppError_default(status11.FORBIDDEN, "This job is not assigned to you!");
   }
   return result;
@@ -3044,43 +3067,58 @@ var updateServiceRequestByManagement = async (requestId, payload) => {
   if (!isRequestExist || isRequestExist.isDeleted) {
     throw new AppError_default(status11.NOT_FOUND, "Service request not found!");
   }
-  const result = await prisma.$transaction(async (tx) => {
-    const updatedData = { status: payload.status };
-    if (payload.status === "REJECTED") {
-      if (!payload.rejectionReason) {
-        throw new AppError_default(status11.BAD_REQUEST, "Rejection reason is required!");
+  const result = await prisma.$transaction(
+    async (tx) => {
+      const updatedData = { status: payload.status };
+      if (payload.status === "REJECTED") {
+        if (!payload.rejectionReason) {
+          throw new AppError_default(
+            status11.BAD_REQUEST,
+            "Rejection reason is required!"
+          );
+        }
+        updatedData.rejectionReason = payload.rejectionReason;
+        updatedData.providerId = null;
+        updatedData.scheduleId = null;
+      } else if (payload.status === "ACCEPTED") {
+        if (!payload.providerId || !payload.scheduleId) {
+          throw new AppError_default(
+            status11.BAD_REQUEST,
+            "Provider and Schedule are required to accept!"
+          );
+        }
+        updatedData.providerId = payload.providerId;
+        updatedData.scheduleId = payload.scheduleId;
+        updatedData.rejectionReason = null;
+        await tx.serviceSchedule.update({
+          where: { id: payload.scheduleId },
+          data: { isBooked: true }
+        });
       }
-      updatedData.rejectionReason = payload.rejectionReason;
-      updatedData.providerId = null;
-      updatedData.scheduleId = null;
-    } else if (payload.status === "ACCEPTED") {
-      if (!payload.providerId || !payload.scheduleId) {
-        throw new AppError_default(
-          status11.BAD_REQUEST,
-          "Provider and Schedule are required to accept!"
-        );
-      }
-      updatedData.providerId = payload.providerId;
-      updatedData.scheduleId = payload.scheduleId;
-      updatedData.rejectionReason = null;
+      const updatedRequest = await tx.serviceRequest.update({
+        where: { id: requestId },
+        data: updatedData,
+        include: {
+          provider: {
+            include: {
+              user: { select: { name: true, email: true, phone: true } }
+            }
+          },
+          service: { select: { name: true } },
+          schedule: true
+        }
+      });
+      return updatedRequest;
+    },
+    {
+      maxWait: 5e3,
+      timeout: 1e4
     }
-    const updatedRequest = await tx.serviceRequest.update({
-      where: { id: requestId },
-      data: updatedData,
-      include: {
-        provider: {
-          include: {
-            user: { select: { name: true, email: true, phone: true } }
-          }
-        },
-        service: { select: { name: true } },
-        schedule: true
-      }
-    });
-    if (payload.status === "ACCEPTED" && updatedRequest.provider) {
+  );
+  if (payload.status === "ACCEPTED" && result.provider) {
+    (async () => {
       try {
-        const requestWithSchedule = updatedRequest;
-        const scheduleInfo = requestWithSchedule.schedule ? `${format(new Date(requestWithSchedule.schedule.scheduleDate), "dd MMM, yyyy")} at ${requestWithSchedule.schedule.startTime}` : "Pending Selection";
+        const scheduleInfo = result.schedule ? `${format(new Date(result.schedule.scheduleDate), "dd MMM, yyyy")} at ${result.schedule.startTime}` : "Pending Selection";
         const requestDate = format(
           new Date(isRequestExist.createdAt),
           "dd MMM, yyyy 'at' hh:mm a"
@@ -3096,12 +3134,12 @@ var updateServiceRequestByManagement = async (requestId, payload) => {
             activePhone: isRequestExist.activePhone,
             customerAddress: isRequestExist.customer.address,
             serviceAddress: isRequestExist.serviceAddress,
-            serviceName: updatedRequest.service.name,
+            serviceName: result.service.name,
             requestTime: requestDate,
             requestId,
-            providerName: updatedRequest.provider.user.name,
-            providerPhone: updatedRequest.provider.user.phone,
-            providerEmail: updatedRequest.provider.user.email,
+            providerName: result?.provider?.user.name,
+            providerPhone: result?.provider?.user.phone,
+            providerEmail: result?.provider?.user.email,
             schedule: scheduleInfo
           }
         });
@@ -3111,9 +3149,8 @@ var updateServiceRequestByManagement = async (requestId, payload) => {
           error
         );
       }
-    }
-    return updatedRequest;
-  });
+    })();
+  }
   return result;
 };
 var ServiceRequestServices = {
@@ -3165,9 +3202,11 @@ var getMyServiceRequestByCustomer2 = catchAsync(
 );
 var getMyServiceRequestByServiceProvider2 = catchAsync(
   async (req, res) => {
-    const providerId = req.user.id;
+    const query = req.query;
+    const userId = req.user?.userId;
     const result = await ServiceRequestServices.getMyServiceRequestByServiceProvider(
-      providerId
+      query,
+      userId
     );
     sendResponse(res, {
       httpStatusCode: status12.OK,
@@ -3278,9 +3317,9 @@ var updateServiceRequestByManagementZodSchema = z5.object({
   status: z5.enum(["ACCEPTED", "REJECTED"], {
     error: "Status is required and must be ACCEPTED or REJECTED"
   }),
-  rejectionReason: z5.string().trim().min(5, "Rejection reason must be at least 5 characters").max(500, "Rejection reason must not exceed 500 characters").optional(),
-  providerId: z5.string().uuid("Invalid Provider ID").optional(),
-  scheduleId: z5.string().uuid("Invalid Schedule ID").optional()
+  rejectionReason: z5.string().trim().max(500, "Rejection reason must not exceed 500 characters").optional(),
+  providerId: z5.string().optional().or(z5.literal("")),
+  scheduleId: z5.string().optional().or(z5.literal(""))
 }).refine((data) => data.status !== "REJECTED" || !!data.rejectionReason, {
   message: "Rejection reason is required when status is REJECTED",
   path: ["rejectionReason"]
@@ -3353,7 +3392,7 @@ router5.patch(
   ServiceRequestController.cancelServiceRequestByCustomer
 );
 router5.patch(
-  "/update-status-cost/:id",
+  "/update-service-request-cost/:id",
   checkAuth(UserRole.SERVICE_PROVIDER),
   validateRequest(ServiceRequestValidation.updateServiceCostZodSchema),
   ServiceRequestController.updateServiceRequestByServiceProvider
@@ -3375,6 +3414,22 @@ import { Router as Router6 } from "express";
 import status13 from "http-status";
 import { addMinutes, format as format2, parse } from "date-fns";
 import { startOfDay, endOfDay } from "date-fns";
+
+// src/app/module/serviceSchedule/serviceSchedule.constant.ts
+var serviceScheduleSearchableFields = [
+  "id",
+  "serviceRequestId",
+  "serviceId",
+  "providerId",
+  "scheduleDate"
+];
+var serviceScheduleFilterableFields = ["isBooked", "searchTerm"];
+var myServiceScheduleIncludeConfig = {
+  serviceRequest: true,
+  provider: true
+};
+
+// src/app/module/serviceSchedule/serviceSchedule.service.ts
 var createServiceSchedule = async (userId, payload) => {
   const { scheduleDate, startTime } = payload;
   const targetDate = new Date(scheduleDate);
@@ -3416,32 +3471,25 @@ var createServiceSchedule = async (userId, payload) => {
   });
   return result;
 };
-var getMySchedules = async (userId) => {
-  const provider = await prisma.serviceProvider.findUnique({
-    where: { userId }
+var getMySchedules = async (query, providerId) => {
+  const queryBuilder = new QueryBuilder(prisma.serviceSchedule, query, {
+    searchableFields: serviceScheduleSearchableFields,
+    filterableFields: serviceScheduleFilterableFields
   });
-  if (!provider) {
-    return [];
-  }
-  const result = await prisma.serviceSchedule.findMany({
-    where: {
-      providerId: provider.id
-    },
-    orderBy: {
-      scheduleDate: "desc"
-    },
-    include: {
-      serviceRequest: {
-        select: {
-          id: true,
-          status: true,
-          service: {
-            select: { name: true }
-          }
+  const result = await queryBuilder.search().filter().where({
+    providerId
+  }).include({
+    serviceRequest: {
+      select: {
+        id: true,
+        status: true,
+        service: {
+          select: { name: true }
         }
       }
-    }
-  });
+    },
+    provider: true
+  }).dynamicInclude(myServiceScheduleIncludeConfig).paginate().sort().fields().execute();
   return result;
 };
 var getScheduleByDate = async (user, date) => {
@@ -3569,8 +3617,12 @@ var createServiceSchedule2 = catchAsync(
   }
 );
 var getMySchedules2 = catchAsync(async (req, res) => {
-  const user = req.user;
-  const result = await ServiceScheduleServices.getMySchedules(user.userId);
+  const query = req.query;
+  const providerId = req.user.id;
+  const result = await ServiceScheduleServices.getMySchedules(
+    query,
+    providerId
+  );
   sendResponse(res, {
     httpStatusCode: status14.OK,
     success: true,
@@ -3844,6 +3896,13 @@ var deleteFileFromCloudinary = async (url) => {
   }
 };
 
+// src/app/module/payment/payment.constant.ts
+var paymentSearchableFields = ["transactionId", "stripeCustomerId"];
+var paymentFilterableFields = ["status", "requestId", "searchTerm"];
+var paymentIncludeConfig = {
+  serviceRequest: true
+};
+
 // src/app/module/payment/payment.service.ts
 var createPayment = async (payload) => {
   const serviceRequest = await prisma.serviceRequest.findUnique({
@@ -4016,47 +4075,20 @@ var handlerStripeWebhookEvent = async (payload, signature) => {
   return { success: true };
 };
 var getAllPayments = async (query) => {
-  const { page = 1, limit = 10, searchTerm, status: status29 } = query;
-  const skip = (Number(page) - 1) * Number(limit);
-  const whereConditions = {};
-  if (searchTerm) {
-    whereConditions.OR = [
-      { transactionId: { contains: searchTerm, mode: "insensitive" } },
-      { stripeCustomerId: { contains: searchTerm, mode: "insensitive" } }
-    ];
-  }
-  if (status29) {
-    whereConditions.status = status29;
-  }
-  const result = await prisma.payment.findMany({
-    where: whereConditions,
-    skip,
-    take: Number(limit),
-    orderBy: { createdAt: "desc" },
-    include: {
-      serviceRequest: {
-        include: {
-          customer: {
-            select: { name: true, email: true }
-          },
-          service: {
-            select: { name: true }
-          }
-        }
+  const queryBuilder = new QueryBuilder(prisma.payment, query, {
+    searchableFields: paymentSearchableFields,
+    filterableFields: paymentFilterableFields
+  });
+  const result = await queryBuilder.search().filter().include({
+    serviceRequest: {
+      include: {
+        customer: true,
+        service: true,
+        costBreakdown: true
       }
     }
-  });
-  const total = await prisma.payment.count({ where: whereConditions });
-  const totalPages = Math.ceil(total / Number(limit));
-  return {
-    meta: {
-      page: Number(page),
-      limit: Number(limit),
-      total,
-      totalPages
-    },
-    data: result
-  };
+  }).dynamicInclude(paymentIncludeConfig).paginate().sort().fields().execute();
+  return result;
 };
 var getMyPaidPayments = async (customerId, query) => {
   const { page = 1, limit = 10 } = query;
@@ -4077,7 +4109,8 @@ var getMyPaidPayments = async (customerId, query) => {
         include: {
           service: {
             select: { name: true }
-          }
+          },
+          costBreakdown: true
         }
       }
     }
@@ -4149,7 +4182,8 @@ var handleStripeWebhookEvent = catchAsync(
   }
 );
 var getAllPayments2 = catchAsync(async (req, res) => {
-  const result = await PaymentService.getAllPayments(req.query);
+  const query = req.query;
+  const result = await PaymentService.getAllPayments(query);
   sendResponse(res, {
     httpStatusCode: status17.OK,
     success: true,
@@ -4716,6 +4750,36 @@ var getAllUsers = async (query) => {
   }).dynamicInclude(userIncludeConfig).paginate().sort().fields().execute();
   return result;
 };
+var getAllCustomers = async (query) => {
+  const queryBuilder = new QueryBuilder(prisma.user, query, {
+    searchableFields: userSearchableFields,
+    filterableFields: userFilterableFields
+  });
+  const result = await queryBuilder.search().filter().where({
+    role: UserRole.CUSTOMER
+  }).include({
+    serviceProvider: true,
+    serviceRequests: true,
+    jobApplications: true,
+    reviews: true
+  }).dynamicInclude(userIncludeConfig).paginate().sort().fields().execute();
+  return result;
+};
+var getAllProviders = async (query) => {
+  const queryBuilder = new QueryBuilder(prisma.user, query, {
+    searchableFields: userSearchableFields,
+    filterableFields: userFilterableFields
+  });
+  const result = await queryBuilder.search().filter().where({
+    role: UserRole.SERVICE_PROVIDER
+  }).include({
+    serviceProvider: true,
+    serviceRequests: true,
+    jobApplications: true,
+    reviews: true
+  }).dynamicInclude(userIncludeConfig).paginate().sort().fields().execute();
+  return result;
+};
 var getUserById = async (id) => {
   const result = await prisma.user.findUnique({
     where: { id }
@@ -4763,6 +4827,8 @@ var adminDeleteUserById = async (id) => {
 var UserService = {
   registerStaff,
   getAllUsers,
+  getAllCustomers,
+  getAllProviders,
   getUserById,
   updateUserById,
   adminUpdateUserById,
@@ -4786,6 +4852,28 @@ var getAllUsers2 = catchAsync(async (req, res) => {
     httpStatusCode: status21.OK,
     success: true,
     message: "Users fetched successfully",
+    data: result.data,
+    meta: result.meta
+  });
+});
+var getAllCustomers2 = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await UserService.getAllCustomers(query);
+  sendResponse(res, {
+    httpStatusCode: status21.OK,
+    success: true,
+    message: "Customers fetched successfully",
+    data: result.data,
+    meta: result.meta
+  });
+});
+var getAllProviders2 = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await UserService.getAllProviders(query);
+  sendResponse(res, {
+    httpStatusCode: status21.OK,
+    success: true,
+    message: "Providers fetched successfully",
     data: result.data,
     meta: result.meta
   });
@@ -4833,6 +4921,8 @@ var adminDeleteUserById2 = catchAsync(async (req, res) => {
 var UserController = {
   registerStaff: registerStaff2,
   getAllUsers: getAllUsers2,
+  getAllCustomers: getAllCustomers2,
+  getAllProviders: getAllProviders2,
   getUserById: getUserById2,
   updateUserById: updateUserById2,
   adminUpdateUserById: adminUpdateUserById2,
@@ -4872,6 +4962,16 @@ router9.get(
   "/",
   checkAuth(UserRole.ADMIN, UserRole.MANAGER),
   UserController.getAllUsers
+);
+router9.get(
+  "/customers",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  UserController.getAllCustomers
+);
+router9.get(
+  "/providers",
+  checkAuth(UserRole.ADMIN, UserRole.MANAGER),
+  UserController.getAllProviders
 );
 router9.get(
   "/:id",
@@ -4932,6 +5032,9 @@ var getDashboardStatsData = async (user) => {
     case UserRole.SERVICE_PROVIDER:
       statsData = await getProviderStatsData(user);
       break;
+    case UserRole.JOB_CANDIDATE:
+      statsData = await getCandidateStatsData(user);
+      break;
     case UserRole.CUSTOMER:
       statsData = await getCustomerStatsData(user);
       break;
@@ -4941,28 +5044,32 @@ var getDashboardStatsData = async (user) => {
   return statsData;
 };
 var getAdminStatsData = async () => {
-  const userCount = await prisma.user.count();
-  const providerCount = await prisma.serviceProvider.count();
-  const requestCount = await prisma.serviceRequest.count();
-  const serviceCount = await prisma.service.count();
-  const pendingApplications = await prisma.jobApplication.count({
-    where: { status: JobApplicationStatus.PENDING }
-  });
-  const totalRevenue = await prisma.payment.aggregate({
+  const [
+    userCount,
+    providerCount,
+    requestCount,
+    serviceCount,
+    pendingApplications
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.serviceProvider.count(),
+    prisma.serviceRequest.count(),
+    prisma.service.count(),
+    prisma.jobApplication.count({ where: { status: "PENDING" } })
+  ]);
+  const totalRevenueResult = await prisma.payment.aggregate({
     _sum: { amount: true },
     where: { status: "PAID" }
   });
-  const requestStatusDistribution = await getRequestStatusDistribution();
-  const monthlyRequests = await getMonthlyRequestData();
   return {
     userCount,
     providerCount,
     requestCount,
     serviceCount,
     pendingApplications,
-    totalRevenue,
-    requestStatusDistribution,
-    monthlyRequests
+    totalRevenue: Number(totalRevenueResult._sum.amount || 0),
+    requestStatusDistribution: await getRequestStatusDistribution(),
+    monthlyRequests: await getMonthlyRequestData()
   };
 };
 var getProviderStatsData = async (user) => {
@@ -4992,31 +5099,68 @@ var getProviderStatsData = async (user) => {
     averageRating: avgRating._avg.rating || 0
   };
 };
+var getCandidateStatsData = async (user) => {
+  const candidate = await prisma.user.findUniqueOrThrow({
+    where: { id: user.userId }
+  });
+  const totalJobApplied = await prisma.jobApplication.count({
+    where: { userId: candidate.id }
+  });
+  const totalPendingJobApplications = await prisma.jobApplication.count({
+    where: {
+      userId: candidate.id,
+      status: JobApplicationStatus.PENDING
+    }
+  });
+  const totalAcceptedJobApplications = await prisma.jobApplication.count({
+    where: {
+      userId: candidate.id,
+      status: JobApplicationStatus.ACCEPTED
+    }
+  });
+  const totalRejectedJobApplications = await prisma.jobApplication.count({
+    where: {
+      userId: candidate.id,
+      status: JobApplicationStatus.REJECTED
+    }
+  });
+  return {
+    totalJobApplied: totalJobApplied || 0,
+    pendingApplications: totalPendingJobApplications || 0,
+    acceptedApplications: totalAcceptedJobApplications || 0,
+    rejectedApplications: totalRejectedJobApplications || 0
+  };
+};
 var getCustomerStatsData = async (user) => {
   const totalRequests = await prisma.serviceRequest.count({
-    where: { customerId: user.userId }
+    where: {
+      customerId: user.userId
+    }
   });
   const activeRequests = await prisma.serviceRequest.count({
     where: {
       customerId: user.userId,
-      status: {
-        in: [ServiceRequestStatus.PENDING, ServiceRequestStatus.ACCEPTED]
-      }
+      status: { in: ["PENDING", "ACCEPTED"] }
+    }
+  });
+  const completedRequests = await prisma.serviceRequest.count({
+    where: {
+      customerId: user.userId,
+      status: { in: ["COMPLETED"] }
     }
   });
   const totalSpent = await prisma.payment.aggregate({
     _sum: { amount: true },
     where: {
-      serviceRequest: {
-        customerId: user.userId
-      },
-      status: PaymentStatus.PAID
+      serviceRequest: { customerId: user.userId },
+      status: "PAID"
     }
   });
   return {
     totalRequests,
     activeRequests,
-    totalSpent: totalSpent._sum.amount || 0
+    completedRequests,
+    totalSpent: Number(totalSpent._sum.amount || 0)
   };
 };
 var getRequestStatusDistribution = async () => {
@@ -5068,13 +5212,14 @@ router10.get(
     UserRole.ADMIN,
     UserRole.MANAGER,
     UserRole.SERVICE_PROVIDER,
+    UserRole.JOB_CANDIDATE,
     UserRole.CUSTOMER
   ),
   StatsController.getDashboardStatsData
 );
 var StatsRoutes = router10;
 
-// src/app/module/aiChatBot/chatbot.router.ts
+// src/app/module/aiChatBot/chatbot.route.ts
 import express4 from "express";
 
 // src/app/module/aiChatBot/chatbot.service.ts
@@ -5130,7 +5275,7 @@ var ChatWithAIController = async (req, res) => {
   }
 };
 
-// src/app/module/aiChatBot/chatbot.router.ts
+// src/app/module/aiChatBot/chatbot.route.ts
 var router11 = express4.Router();
 router11.post("/chat", ChatWithAIController);
 var AIRoutes = router11;
